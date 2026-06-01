@@ -1,0 +1,329 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: black;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 100vh;
+    margin: 0;
+
+    overflow: hidden;
+}
+
+#logo {
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+#slotArea {
+    width: 90vw;
+    max-width: 360px;
+    height: 240px;
+
+    background: #222;
+
+    border: 4px solid gold;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    margin-bottom: 30px;
+
+}
+
+#slotTitle {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+#slotWin {
+    font-size: 48px;
+    color: gold;
+}
+
+#spinBtn {
+    width: 70vw;
+    max-width: 240px;
+    height: 80px;
+
+    background: gold;
+    font-size: 24px;
+
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+#spinBtn:hover {
+    background: orange;
+    transform: scale(1.08);
+}
+
+#spinBtn.disabled {
+    background: #666;
+    opacity: 0.6;
+    transform: scale(1);
+}
+
+#reels {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.symbol {
+    width: 28%;
+    max-width: 90px;
+    aspect-ratio: 1 / 1;
+
+    background: linear-gradient(#2c2c2c, #444);
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 42px;
+}
+
+#ctaPopup {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    transform-origin: center center;
+
+    width: 85vw;
+    max-width: 340px;
+    height: 180px;
+
+    background: gold;
+    color: black;
+
+    border-radius: 24px;
+    box-shadow: 0 0 50px gold;
+
+    flex-direction: column;
+    gap: 12px;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 32px;
+    text-align: center;
+
+    cursor: pointer;
+    transition: 0.3s;
+
+    opacity: 0;
+    z-index: 20;
+}
+
+#ctaPopup:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+#ctaPopup.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#overlay {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, 0.85);
+
+    display: none;
+
+    opacity: 0;
+    transition: 0.3s;
+
+    z-index: 10;
+}
+
+#overlay.show {
+    opacity: 1;
+}
+
+#ctaTitle {
+    font-size: 34px;
+    font-weight: bold;
+}
+
+#ctaAmount {
+    font-size: 42px;
+    font-weight: bold;
+    color: #7a0000;
+}
+
+#ctaButton {
+    background: black;
+    color: gold;
+
+    padding: 14px 22px;
+
+    border-radius: 16px;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-6px);
+    }
+
+    50% {
+        transform: translateX(6px);
+    }
+
+    75% {
+        transform: translateX(-4px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+#slotArea.shaking {
+    animation: shake 0.2s infinite;
+}
+
+@keyframes winPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+#slotWin.win-pop {
+    animation: winPop 0.4s;
+}
+
+@keyframes jackpotFlash {
+    0% {
+        box-shadow: 0 0 0 gold;
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 80px gold;
+        transform: scale(1.08);
+    }
+
+    100% {
+        box-shadow: 0 0 40px gold;
+        transform: scale(1);
+    }
+}
+
+#slotArea.jackpot-flash {
+    animation: jackpotFlash 0.6s;
+}
+
+@keyframes smallWinGlow {
+    0% {
+        box-shadow: 0 0 0 gold;
+    }
+
+    50% {
+        box-shadow: 0 0 30px gold;
+    }
+
+    100% {
+        box-shadow: 0 0 0 gold;
+    }
+}
+
+#slotArea.small-win {
+    animation: smallWinGlow 0.5s;
+}
+
+#slotWin.default-win {
+    color: gold;
+    font-size: 48px;
+}
+
+#slotWin.jackpot-win {
+    color: yellow;
+    font-size: 64px;
+}
+
+#slotArea.jackpot-state {
+    box-shadow: 0 0 40px gold;
+}
+
+.symbol-icon {
+    display: inline-block;
+}
+
+@keyframes symbolPop {
+    0% {
+        transform: scale(0.7);
+    }
+
+    60% {
+        transform: scale(1.25);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.symbol-icon.pop {
+    animation: symbolPop 0.30s;
+}
