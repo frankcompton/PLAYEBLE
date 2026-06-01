@@ -1,20 +1,20 @@
 # Deploy
 
-Автодеплой настроен через GitLab Pages в файле `.gitlab-ci.yml`.
+Автодеплой настроен через GitHub Pages в файле `.github/workflows/pages.yml`.
 
-Pipeline запускается при push в default branch и выполняет job `pages`.
-Job создает папку `public`, копирует в нее статические файлы проекта и
-публикует `public` как artifact для GitLab Pages.
+Workflow запускается при push в ветку `main` и вручную через `workflow_dispatch`.
+Он копирует статические файлы проекта в `_site`, загружает их как Pages artifact
+и публикует сайт через официальный GitHub Pages deploy action.
 
-После успешного pipeline сайт доступен в GitLab:
+После успешного workflow сайт будет доступен на GitHub Pages:
 
-`https://playeble-703ea6.gitlab.io`
+`https://frankcompton.github.io/PLAYEBLE/`
 
-Страница настроек Pages в GitLab:
+В настройках репозитория нужно выбрать источник деплоя:
 
-`Deploy > Pages`
+`Settings > Pages > Build and deployment > Source > GitHub Actions`
 
-Для деплоя достаточно закоммитить изменения и отправить их в GitLab:
+Для деплоя достаточно закоммитить изменения и отправить их в GitHub:
 
 ```bash
 git push
