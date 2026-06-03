@@ -7,6 +7,7 @@ const slotArea = document.getElementById("slotArea");
 const symbolIcons = document.querySelectorAll(".symbol-icon");
 const ctaPopup = document.getElementById("ctaPopup");
 const overlay = document.getElementById("overlay");
+const reelStrips = document.querySelectorAll(".reel-strip");
 
 // State
 let spinCount = 0;
@@ -21,32 +22,50 @@ const CTA_DELAY = 1200;
 const SHOW_CLASS_DELAY = 10;
 const SMALL_WIN_GLOW_DURATION = 500;
 const SYMBOL_POP_DURATION = 250;
+const VISIBLE_ROWS = 3;
+const SYMBOL_HEIGHT = 90;
+const SPIN_FILLER_COUNT = 12;
+const REEL_SPIN_BASE_DURATION = 900;
+const REEL_SPIN_STEP_DURATION = 300;
+const WIN_REEL_GLOW_DURATION = 900;
+const COIN_PARTICLE_COUNT = 10;
+const COIN_PARTICLE_DURATION = 800;
 
 
 // Data
 const outcomes = [
-
     {
         type: "lose",
         win: "$0",
-        reels: ["🍋", "💎", "🍒"],
-        spinDuration: 1200   
+        reels: [
+            "🍊", "🍊", "🍋",
+            "🍊", "BAR", "🍒",
+            "🍉", "🍉", "🍒"
+        ],
+        spinDuration: 1200
     },
 
     {
         type: "smallWin",
         win: "$50",
-        reels: ["⭐", "⭐", "🍒"],
-        spinDuration: 1200
+        reels: [
+            "100.00", "BAR", "🍒",
+            "250.00", "🍒", "🍒",
+            "🍇", "🍋", "🍒"
+        ],
+        spinDuration: 1500
     },
 
     {
         type: "jackpot",
-        win: "BIG WIN",
-        reels: ["💎", "💎", "💎"],
+        win: "A$485",
+        reels: [
+            "350.00", "🍋", "50.00",
+            "250.00", "🍒", "🍒",
+            "🍋", "⚡", "🍒"
+        ],
         spinDuration: 1800
     }
-
 ];
 const reelSymbols = ["💎", "🍒", "⭐", "🍋"];
 console.log(spinBtn);
@@ -73,8 +92,14 @@ function showWinText(text) {
     }, WIN_POP_DURATION);
 }
 function setReels(reels) {
-    for (let i = 0; i < symbolIcons.length; i++) {
-        symbolIcons[i].textContent = reels[i] || "?";
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        const iconsInReel = reelStrips[reelIndex].querySelectorAll(".symbol-icon");
+
+        for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+            const outcomeIndex = rowIndex * reelStrips.length + reelIndex;
+
+            iconsInReel[rowIndex].textContent = reels[outcomeIndex] || "?";
+        }
     }
 }
 function showJackpot() {
@@ -96,20 +121,14 @@ function getRandomSymbol() {
 }
 
 function startSpinAnimation() {
-    const spinAnimation = setInterval(() => {
-        for (let i = 0; i < symbolIcons.length; i++) {
-            symbolIcons[i].textContent = getRandomSymbol();
-        }
-    }, REEL_CHANGE_SPEED);
-
-    return spinAnimation;
+    return null;
 }
 function finishSpin(spinAnimation, outcome) {
-    stopSpinVisuals(spinAnimation);
+    resetWinTextStyle();
 
-    showOutcome(outcome);
+    prepareReelsForSpin(outcome);
 
-    handleOutcomeType(outcome);
+    animateReelsToResult(outcome);
 }
 function startSpin() {
     spinCount = spinCount + 1;
@@ -126,9 +145,7 @@ function startSpin() {
 
     const spinAnimation = startSpinAnimation();
 
-    setTimeout(() => {
-        finishSpin(spinAnimation, currentOutcome);
-    }, currentOutcome.spinDuration || SPIN_DURATION);
+    finishSpin(spinAnimation, currentOutcome);
 }
 function goToOffer() {
     console.log("Go to offer");
@@ -137,15 +154,17 @@ function goToOffer() {
 function startSpinVisuals() {
     lockSpinButton();
 
-    slotArea.classList.add("shaking");
     slotWin.textContent = "...";
+
+    startReelSpinVisuals();
 }
 
 function stopSpinVisuals(spinAnimation) {
     clearInterval(spinAnimation);
 
-    slotArea.classList.remove("shaking");
-} 
+    stopReelSpinVisuals();
+}
+
 function showOutcome(outcome) {
     resetWinTextStyle();
 
@@ -154,12 +173,15 @@ function showOutcome(outcome) {
     popSymbols();
 }
 function showSmallWin() {
+    highlightReel(0);
+    spawnCoinParticlesFromReel(0);
+
     slotArea.classList.add("small-win");
 
     setTimeout(() => {
         slotArea.classList.remove("small-win");
     }, SMALL_WIN_GLOW_DURATION);
-} 
+}
 function handleOutcomeType(outcome) {
     if (outcome.type === "smallWin") {
         showSmallWin();
@@ -224,7 +246,6 @@ function initGame() {
     slotArea.classList.remove("jackpot-state");
     slotArea.classList.remove("jackpot-flash");
     slotArea.classList.remove("small-win");
-    slotArea.classList.remove("shaking");
 
     overlay.style.display = "none";
     overlay.classList.remove("show");
@@ -235,16 +256,157 @@ function initGame() {
     unlockSpinButton();
 }
 function popSymbols() {
-    for (let i = 0; i < symbolIcons.length; i++) {
-        symbolIcons[i].classList.remove("pop");
+    const currentSymbolIcons = document.querySelectorAll(".symbol-icon");
 
-        void symbolIcons[i].offsetWidth;
+    for (let i = 0; i < currentSymbolIcons.length; i++) {
+        currentSymbolIcons[i].classList.remove("pop");
 
-        symbolIcons[i].classList.add("pop");
+        void currentSymbolIcons[i].offsetWidth;
+
+        currentSymbolIcons[i].classList.add("pop");
 
         setTimeout(() => {
-            symbolIcons[i].classList.remove("pop");
+            currentSymbolIcons[i].classList.remove("pop");
         }, SYMBOL_POP_DURATION);
+    }
+}
+function startReelSpinVisuals() {
+    // Теперь рилы запускаются через animateReelsToResult()
+}
+function stopReelSpinVisuals() {
+    // Теперь рилы останавливаются сами через transition
+}
+function setReelResult(reelIndex, reels) {
+    const iconsInReel = reelStrips[reelIndex].querySelectorAll(".symbol-icon");
+
+    for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
+        const outcomeIndex = rowIndex * reelStrips.length + reelIndex;
+
+        iconsInReel[rowIndex].textContent = reels[outcomeIndex] || "?";
+    }
+}
+function stopReelsSequentially(outcome) {
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        setTimeout(() => {
+            reelStrips[reelIndex].classList.remove("spinning");
+
+            setReelResult(reelIndex, outcome.reels);
+
+            if (reelIndex === reelStrips.length - 1) {
+                showWinText(outcome.win);
+                popSymbols();
+                handleOutcomeType(outcome);
+            }
+        }, REEL_STOP_DELAY * (reelIndex + 1));
+    }
+}
+function isCoinSymbol(symbol) {
+    return symbol.includes(".00");
+}
+function createSymbolHtml(symbol) {
+    const coinClass = isCoinSymbol(symbol) ? " coin-symbol" : "";
+
+    return `
+        <div class="symbol${coinClass}">
+            <span class="symbol-icon">${symbol}</span>
+        </div>
+    `;
+}
+function getOutcomeColumn(outcome, reelIndex) {
+    return [
+        outcome.reels[reelIndex],
+        outcome.reels[reelIndex + 3],
+        outcome.reels[reelIndex + 6]
+    ];
+}
+function createFillerSymbols() {
+    const fillerSymbols = [];
+
+    for (let i = 0; i < SPIN_FILLER_COUNT; i++) {
+        fillerSymbols.push(getRandomSymbol());
+    }
+
+    return fillerSymbols;
+}
+function prepareReelStrip(reelIndex, outcome) {
+    const resultSymbols = getOutcomeColumn(outcome, reelIndex);
+    const fillerSymbols = createFillerSymbols();
+
+    const stripSymbols = resultSymbols.concat(fillerSymbols);
+
+    reelStrips[reelIndex].innerHTML = stripSymbols
+        .map(createSymbolHtml)
+        .join("");
+
+    const startOffset = SPIN_FILLER_COUNT * SYMBOL_HEIGHT;
+
+    reelStrips[reelIndex].style.transitionDuration = "0ms";
+    reelStrips[reelIndex].style.transform = `translateY(-${startOffset}px)`;
+}
+function prepareReelsForSpin(outcome) {
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        prepareReelStrip(reelIndex, outcome);
+    }
+}
+function animateReelsToResult(outcome) {
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        const duration = REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * reelIndex;
+
+        setTimeout(() => {
+            reelStrips[reelIndex].style.transitionDuration = `${duration}ms`;
+            reelStrips[reelIndex].style.transform = "translateY(0)";
+        }, 20);
+    }
+
+    const totalDuration = REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * (reelStrips.length - 1);
+
+    setTimeout(() => {
+        showWinText(outcome.win);
+        popSymbols();
+        handleOutcomeType(outcome);
+    }, totalDuration + 80);
+}
+function highlightReel(reelIndex) {
+    const reels = document.querySelectorAll(".reel");
+
+    reels[reelIndex].classList.add("win-reel");
+
+    setTimeout(() => {
+        reels[reelIndex].classList.remove("win-reel");
+    }, WIN_REEL_GLOW_DURATION);
+}
+function createCoinParticle(startX, startY) {
+    const coin = document.createElement("div");
+
+    coin.classList.add("coin-particle");
+    coin.textContent = "$";
+
+    coin.style.left = `${startX}px`;
+    coin.style.top = `${startY}px`;
+
+    const flyX = Math.random() * 160 - 80;
+    const flyY = Math.random() * -140 - 40;
+
+    coin.style.setProperty("--fly-x", `${flyX}px`);
+    coin.style.setProperty("--fly-y", `${flyY}px`);
+
+    document.body.appendChild(coin);
+
+    setTimeout(() => {
+        coin.remove();
+    }, COIN_PARTICLE_DURATION);
+}
+function spawnCoinParticlesFromReel(reelIndex) {
+    const reels = document.querySelectorAll(".reel");
+    const reelRect = reels[reelIndex].getBoundingClientRect();
+
+    const startX = reelRect.left + reelRect.width / 2;
+    const startY = reelRect.top + reelRect.height / 2;
+
+    for (let i = 0; i < COIN_PARTICLE_COUNT; i++) {
+        setTimeout(() => {
+            createCoinParticle(startX, startY);
+        }, i * 35);
     }
 }
 
