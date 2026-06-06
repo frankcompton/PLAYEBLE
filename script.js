@@ -33,14 +33,21 @@ const COIN_PARTICLE_DURATION = 800;
 
 
 // Data
+const startScreenReels = {
+    reels: [
+        "coin:100.00", "bar", "cherry",
+        "coin:250.00", "cherry", "cherry",
+        "plum", "lemon", "cherry"
+    ]
+};
 const outcomes = [
     {
         type: "lose",
         win: "$0",
         reels: [
-            "🍊", "🍊", "🍋",
-            "🍊", "BAR", "🍒",
-            "🍉", "🍉", "🍒"
+            "orange", "orange", "lemon",
+            "orange", "bar", "cherry",
+            "melon", "melon", "cherry"
         ],
         spinDuration: 1200
     },
@@ -48,10 +55,11 @@ const outcomes = [
     {
         type: "smallWin",
         win: "$50",
+        winReels: [0],
         reels: [
-            "100.00", "BAR", "🍒",
-            "250.00", "🍒", "🍒",
-            "🍇", "🍋", "🍒"
+            "coin:100.00", "bar", "cherry",
+            "coin:250.00", "cherry", "cherry",
+            "plum", "lemon", "cherry"
         ],
         spinDuration: 1500
     },
@@ -59,15 +67,36 @@ const outcomes = [
     {
         type: "jackpot",
         win: "A$485",
+        winReels: [0, 1, 2],
         reels: [
-            "350.00", "🍋", "50.00",
-            "250.00", "🍒", "🍒",
-            "🍋", "⚡", "🍒"
+            "coin:350.00", "lemon", "coin:50.00",
+            "coin:250.00", "cherry", "cherry",
+            "lemon", "coin2", "cherry"
         ],
         spinDuration: 1800
     }
 ];
-const reelSymbols = ["💎", "🍒", "⭐", "🍋"];
+const symbolMap = {
+    bar: "assets/symbols/bar.webp",
+    cherry: "assets/symbols/cherry.webp",
+    coin: "assets/symbols/coin.webp",
+    coin2: "assets/symbols/coin2.webp",
+    grape: "assets/symbols/grape.webp",
+    lemon: "assets/symbols/lemon.webp",
+    melon: "assets/symbols/melon.webp",
+    orange: "assets/symbols/orange.webp",
+    plum: "assets/symbols/plum.webp"
+};
+const reelSymbols = [
+    "bar",
+    "cherry",
+    "grape",
+    "lemon",
+    "melon",
+    "orange",
+    "plum",
+    "coin2"
+];
 console.log(spinBtn);
 
 // Functions
@@ -102,8 +131,10 @@ function setReels(reels) {
         }
     }
 }
-function showJackpot() {
+function showJackpot(outcome) {
     showJackpotTextStyle();
+
+    highlightWinReels(outcome);
 
     slotArea.classList.add("jackpot-state");
     slotArea.classList.add("jackpot-flash");
@@ -172,9 +203,15 @@ function showOutcome(outcome) {
     setReels(outcome.reels);
     popSymbols();
 }
-function showSmallWin() {
-    highlightReel(0);
-    spawnCoinParticlesFromReel(0);
+function showSmallWin(outcome) {
+    const winReels = outcome.winReels || [];
+
+    for (let i = 0; i < winReels.length; i++) {
+        const reelIndex = winReels[i];
+
+        highlightReel(reelIndex);
+        spawnCoinParticlesFromReel(reelIndex);
+    }
 
     slotArea.classList.add("small-win");
 
@@ -184,15 +221,15 @@ function showSmallWin() {
 }
 function handleOutcomeType(outcome) {
     if (outcome.type === "smallWin") {
-        showSmallWin();
-        unlockSpinButton();
-        return;
-    }
+    showSmallWin(outcome);
+    unlockSpinButton();
+    return;
+}
 
-    if (outcome.type === "jackpot") {
-        showJackpot();
-        return;
-    }
+   if (outcome.type === "jackpot") {
+    showJackpot(outcome);
+    return;
+}
 
     unlockSpinButton();
 }
@@ -253,6 +290,8 @@ function initGame() {
     ctaPopup.style.display = "none";
     ctaPopup.classList.remove("show");
 
+    initReels();
+
     unlockSpinButton();
 }
 function popSymbols() {
@@ -301,14 +340,26 @@ function stopReelsSequentially(outcome) {
     }
 }
 function isCoinSymbol(symbol) {
-    return symbol.includes(".00");
+    return symbol.startsWith("coin:");
+}
+function getCoinValue(symbol) {
+    return symbol.replace("coin:", "");
 }
 function createSymbolHtml(symbol) {
-    const coinClass = isCoinSymbol(symbol) ? " coin-symbol" : "";
+    if (isCoinSymbol(symbol)) {
+        return `
+            <div class="symbol coin-symbol">
+                <img class="symbol-img" src="${symbolMap.coin}" alt="">
+                <span class="coin-value">${getCoinValue(symbol)}</span>
+            </div>
+        `;
+    }
+
+    const imagePath = symbolMap[symbol];
 
     return `
-        <div class="symbol${coinClass}">
-            <span class="symbol-icon">${symbol}</span>
+        <div class="symbol">
+            <img class="symbol-img" src="${imagePath}" alt="">
         </div>
     `;
 }
@@ -408,6 +459,29 @@ function spawnCoinParticlesFromReel(reelIndex) {
             createCoinParticle(startX, startY);
         }, i * 35);
     }
+}
+
+function highlightWinReels(outcome) {
+    const winReels = outcome.winReels || [];
+
+    for (let i = 0; i < winReels.length; i++) {
+        highlightReel(winReels[i]);
+    }
+}
+function renderReels(outcome) {
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        const resultSymbols = getOutcomeColumn(outcome, reelIndex);
+
+        reelStrips[reelIndex].innerHTML = resultSymbols
+            .map(createSymbolHtml)
+            .join("");
+
+        reelStrips[reelIndex].style.transitionDuration = "0ms";
+        reelStrips[reelIndex].style.transform = "translateY(0)";
+    }
+}
+function initReels() {
+    renderReels(startScreenReels);
 }
 
 //Events

@@ -310,15 +310,29 @@ body {
     display: inline-block;
 }
 .symbol.coin-symbol {
-    background: radial-gradient(circle, #ffe978, #d78b00);
-    border-radius: 50%;
-    margin: 4px;
+    position: relative;
+    overflow: visible;
+    z-index: 2;
 }
 
-.symbol.coin-symbol .symbol-icon {
-    color: #8b2a00;
+.symbol.coin-symbol .symbol-img {
+    width: 105%;
+    height: 105%;
+}
+
+.coin-value {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    color: #7b2500;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 900;
+    text-shadow: 0 1px 0 rgba(255, 245, 180, 0.8);
+
+    pointer-events: none;
+    z-index: 3;
 }
 
 @keyframes symbolPop {
@@ -456,4 +470,11 @@ body {
         transform: translate(var(--fly-x), var(--fly-y)) scale(1) rotate(360deg);
         opacity: 0;
     }
+}
+.symbol-img {
+    width: 92%;
+    height: 92%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
 }
