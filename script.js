@@ -4,11 +4,14 @@ console.log("JS connected");
 const spinBtn = document.getElementById("spinBtn");
 const topWinPanel = document.getElementById("topWinPanel");
 const slotArea = document.getElementById("slotArea");
+const gameLogo = document.getElementById("gameLogo");
 const symbolIcons = document.querySelectorAll(".symbol-icon");
 const ctaPopup = document.getElementById("ctaPopup");
+const ctaTitle = document.getElementById("ctaTitle");
+const ctaAmount = document.getElementById("ctaAmount");
+const ctaButton = document.getElementById("ctaButton");
 const overlay = document.getElementById("overlay");
 const reelStrips = document.querySelectorAll(".reel-strip");
-const ctaButton = document.getElementById("ctaButton");
 
 // State
 let spinCount = 0;
@@ -17,97 +20,33 @@ let isCtaActive = false;
 let currentBalance = 0;
 
 // Settings
-const REEL_CHANGE_SPEED = 100;
-const WIN_POP_DURATION = 400;
-const JACKPOT_FLASH_DURATION = 600;
-const CTA_DELAY = 500;
+const CTA_DELAY = gameConfig.timings.ctaDelay;
 const SHOW_CLASS_DELAY = 10;
-const SMALL_WIN_GLOW_DURATION = 500;
+
+const SMALL_WIN_GLOW_DURATION = gameConfig.timings.smallWinGlowDuration;
 const SYMBOL_POP_DURATION = 250;
-const VISIBLE_ROWS = 3;
-const SYMBOL_HEIGHT = 100;
-const SPIN_FILLER_COUNT = 12;
-const REEL_SPIN_BASE_DURATION = 900;
-const REEL_SPIN_STEP_DURATION = 300;
-const WIN_REEL_GLOW_DURATION = 900;
-const COIN_PARTICLE_COUNT = 10;
-const COIN_PARTICLE_DURATION = 800;
-const WIN_SYMBOL_POP_DURATION = 650;
+
+const VISIBLE_ROWS = gameConfig.grid.rows;
+const SYMBOL_HEIGHT = gameConfig.grid.symbolHeight;
+const SPIN_FILLER_COUNT = gameConfig.grid.fillerCount;
+
+const REEL_SPIN_BASE_DURATION = gameConfig.timings.reelSpinBaseDuration;
+const REEL_SPIN_STEP_DURATION = gameConfig.timings.reelSpinStepDuration;
+
+const WIN_REEL_GLOW_DURATION = gameConfig.timings.winReelGlowDuration;
+
+const COIN_PARTICLE_COUNT = gameConfig.effects.coinParticleCount;
+const COIN_PARTICLE_DURATION = gameConfig.timings.coinParticleDuration;
+
+const WIN_SYMBOL_POP_DURATION = gameConfig.timings.winSymbolPopDuration;
+const JACKPOT_FLASH_DURATION = gameConfig.timings.jackpotFlashDuration;
 
 
 // Data
-const startScreenReels = {
-    reels: [
-        "coin:100.00", "s3", "s1",
-        "coin:250.00", "s1", "s1",
-        "s7", "s2", "s1"
-    ]
-};
-const outcomes = [
-    {
-        type: "lose",
-        balance: 0,
-        balanceDelay: 0,
-        balanceCountDuration: 0,
-        reels: [
-            "s6", "s6", "s2",
-            "s6", "s3", "s1",
-            "s5", "s5", "s1"
-        ],
-        spinDuration: 1200
-    },
-
-    {
-    type: "smallWin",
-    balance: 350,
-    balanceDelay: 300,
-    balanceCountDuration: 500,
-    winReels: [0],
-    reels: [
-        "coin:100.00", "s3", "s1",
-        "coin:250.00", "s1", "s1",
-        "s7", "s2", "s1"
-    ],
-    spinDuration: 1500
-},
-
-    {
-    type: "jackpot",
-    balance: 10350,
-    balanceDelay: 500,
-    balanceCountDuration: 2000,
-    winReels: [0, 1, 2],
-    winSymbols: ["bonus"],
-    reels: [
-        "coin:350.00", "s2", "s1",
-        "coin:250.00", "bonus", "s3",
-        "bonus", "s7", "bonus"
-    ],
-    spinDuration: 1800
-}
-];
-const symbolMap = {
-    s1: "assets/symbols/cherry.webp",
-    s2: "assets/symbols/lemon.webp",
-    s3: "assets/symbols/bar.webp",
-    s4: "assets/symbols/grape.webp",
-    s5: "assets/symbols/melon.webp",
-    s6: "assets/symbols/orange.webp",
-    s7: "assets/symbols/plum.webp",
-
-    coin: "assets/symbols/coin.webp",
-    bonus: "assets/symbols/coin2.webp"
-};
-const reelSymbols = [
-    "s1",
-    "s2",
-    "s3",
-    "s4",
-    "s5",
-    "s6",
-    "s7",
-    "bonus"
-];
+const startScreenReels = gameConfig.startScreen;
+const outcomes = gameConfig.spins;
+const symbolMap = gameConfig.assets.symbols;
+const reelSymbols = gameConfig.reelSymbols;
 console.log(spinBtn);
 
 // Functions
@@ -266,12 +205,13 @@ function handleSpinButtonClick() {
     startSpin();
 }
 function initGame() {
+    applyGameAssets();
+
     spinCount = 0;
     isSpinning = false;
     isCtaActive = false;
 
     spinBtn.classList.remove("cta-ready");
-
 
     slotArea.classList.remove("jackpot-state");
     slotArea.classList.remove("jackpot-flash");
@@ -283,14 +223,19 @@ function initGame() {
     ctaPopup.style.display = "none";
     ctaPopup.classList.remove("show");
 
+    updateCtaText();
+
     initReels();
 
-    setBalance(0);
+    applyGameTheme();
 
+    setBalance(gameConfig.balance.startValue);
     clearWinSymbols();
 
     unlockSpinButton();
 }
+
+
 function popSymbols() {
     const currentSymbolIcons = document.querySelectorAll(".symbol-icon");
 
@@ -480,7 +425,10 @@ function initReels() {
     renderReels(startScreenReels);
 }
 function formatBalance(value) {
-    return `${Math.floor(value)} A$`;
+    const roundedValue = Math.floor(value);
+    const formattedValue = roundedValue.toLocaleString("en-US").replace(/,/g, " ");
+
+    return `${formattedValue} ${gameConfig.balance.currency}`;
 }
 function setBalance(value) {
     currentBalance = value;
@@ -568,9 +516,49 @@ function clearWinSymbols() {
         winSymbols[i].classList.remove("pulsing");
     }
 }
+function updateCtaText() {
+    ctaTitle.textContent = gameConfig.cta.title;
+    ctaAmount.textContent = gameConfig.cta.amount;
+    ctaButton.textContent = gameConfig.cta.buttonText;
+}
+function applyGameAssets() {
+    const theme = gameConfig.theme;
+
+    gameLogo.src = gameConfig.assets.logo;
+
+    document.body.style.background = `
+        linear-gradient(${theme.bodyOverlayTop}, ${theme.bodyOverlayBottom}),
+        url("${gameConfig.assets.background}") center center / cover no-repeat
+    `;
+}
+function applyGameTheme() {
+    const theme = gameConfig.theme;
+
+    topWinPanel.style.background = `linear-gradient(${theme.balancePanelTop}, ${theme.balancePanelBottom})`;
+    topWinPanel.style.borderColor = theme.balancePanelBorder;
+    topWinPanel.style.color = theme.balanceText;
+
+    slotArea.style.background = theme.slotBackground;
+    slotArea.style.borderColor = theme.slotBorder;
+    slotArea.style.boxShadow = `0 0 24px ${theme.slotGlow}`;
+
+    ctaPopup.style.background = `linear-gradient(${theme.ctaPopupTop}, ${theme.ctaPopupBottom})`;
+    ctaPopup.style.borderColor = theme.ctaPopupBorder;
+
+    ctaButton.style.background = `linear-gradient(${theme.ctaButtonTop}, ${theme.ctaButtonBottom})`;
+    ctaButton.style.color = theme.ctaButtonText;
+
+    const reels = document.querySelectorAll(".reel");
+
+    for (let i = 0; i < reels.length; i++) {
+        reels[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
+        reels[i].style.borderColor = theme.reelBorder;
+    }
+}
 
 
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
 ctaButton.addEventListener("click", goToOffer);
+
 initGame();
