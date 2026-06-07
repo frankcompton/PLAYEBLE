@@ -3,7 +3,10 @@
 }
 
 body {
-    background: black;
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55)),
+        url("assets/symbols/background.png") center center / cover no-repeat;
+
     color: white;
 
     display: flex;
@@ -43,17 +46,11 @@ body {
     padding: 10px;
 
     box-shadow: 0 0 24px rgba(0, 180, 255, 0.7);
+    position: relative;
+z-index: 1;
 }
 
-#slotTitle {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
 
-#slotWin {
-    font-size: 48px;
-    color: gold;
-}
 
 #spinBtn {
     width: 32vw;
@@ -106,6 +103,8 @@ body {
     transform: translateY(0);
     transition-property: transform;
     transition-timing-function: cubic-bezier(0.12, 0.75, 0.25, 1);
+
+    overflow: visible;
 }
 
 .symbol {
@@ -115,8 +114,10 @@ body {
     justify-content: center;
     align-items: center;
 
-    overflow: hidden;
+    position: relative;
+    overflow: visible;
     flex-shrink: 0;
+    z-index: 1;
 }
 
 .symbol-icon {
@@ -311,13 +312,15 @@ body {
 }
 .symbol.coin-symbol {
     position: relative;
-    overflow: visible;
-    z-index: 2;
 }
 
-.symbol.coin-symbol .symbol-img {
-    width: 105%;
-    height: 105%;
+.symbol.win-symbol {
+    z-index: 10;
+}
+
+.symbol.win-symbol .symbol-img {
+    animation: bonusSymbolPop 0.65s ease-out;
+    filter: drop-shadow(0 0 12px rgba(80, 220, 255, 0.9));
 }
 
 .coin-value {
@@ -476,5 +479,75 @@ body {
     height: 92%;
     object-fit: contain;
     display: block;
+    pointer-events: none;
+}
+@keyframes bonusSymbolPop {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(80, 220, 255, 0));
+    }
+
+    45% {
+        transform: scale(1.28);
+        filter: drop-shadow(0 0 24px rgba(80, 220, 255, 1));
+    }
+
+    100% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 14px rgba(80, 220, 255, 0.9));
+    }
+}
+
+@keyframes bonusSymbolPulse {
+    0% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 10px rgba(80, 220, 255, 0.65));
+    }
+
+    50% {
+        transform: scale(1.16);
+        filter: drop-shadow(0 0 24px rgba(80, 220, 255, 1));
+    }
+
+    100% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 10px rgba(80, 220, 255, 0.65));
+    }
+}
+
+.symbol.win-symbol {
+    z-index: 10;
+}
+
+.symbol.win-symbol .symbol-img {
+    animation: bonusSymbolPop 0.65s ease-out forwards;
+}
+
+.symbol.win-symbol.pulsing .symbol-img {
+    animation: bonusSymbolPulse 1s ease-in-out infinite;
+}
+#slotStage {
+    position: relative;
+
+    width: 92vw;
+    max-width: 620px;
+
+    padding-top: 92px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+#gameLogo {
+    position: absolute;
+    left: 50%;
+    top: -25px;
+    transform: translateX(-50%);
+
+    width: 72%;
+    max-width: 560px;
+    height: auto;
+
+    z-index: 5;
     pointer-events: none;
 }

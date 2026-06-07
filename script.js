@@ -2,7 +2,7 @@ console.log("JS connected");
 
 // Elements
 const spinBtn = document.getElementById("spinBtn");
-const slotWin = document.getElementById("slotWin");
+const topWinPanel = document.getElementById("topWinPanel");
 const slotArea = document.getElementById("slotArea");
 const symbolIcons = document.querySelectorAll(".symbol-icon");
 const ctaPopup = document.getElementById("ctaPopup");
@@ -13,12 +13,13 @@ const reelStrips = document.querySelectorAll(".reel-strip");
 let spinCount = 0;
 let isSpinning = false;
 let isCtaActive = false;
+let currentBalance = 0;
 
 // Settings
 const REEL_CHANGE_SPEED = 100;
 const WIN_POP_DURATION = 400;
 const JACKPOT_FLASH_DURATION = 600;
-const CTA_DELAY = 1200;
+const CTA_DELAY = 500;
 const SHOW_CLASS_DELAY = 10;
 const SMALL_WIN_GLOW_DURATION = 500;
 const SYMBOL_POP_DURATION = 250;
@@ -30,72 +31,81 @@ const REEL_SPIN_STEP_DURATION = 300;
 const WIN_REEL_GLOW_DURATION = 900;
 const COIN_PARTICLE_COUNT = 10;
 const COIN_PARTICLE_DURATION = 800;
+const WIN_SYMBOL_POP_DURATION = 650;
 
 
 // Data
 const startScreenReels = {
     reels: [
-        "coin:100.00", "bar", "cherry",
-        "coin:250.00", "cherry", "cherry",
-        "plum", "lemon", "cherry"
+        "coin:100.00", "s3", "s1",
+        "coin:250.00", "s1", "s1",
+        "s7", "s2", "s1"
     ]
 };
 const outcomes = [
     {
         type: "lose",
-        win: "$0",
+        balance: 0,
+        balanceDelay: 0,
+        balanceCountDuration: 0,
         reels: [
-            "orange", "orange", "lemon",
-            "orange", "bar", "cherry",
-            "melon", "melon", "cherry"
+            "s6", "s6", "s2",
+            "s6", "s3", "s1",
+            "s5", "s5", "s1"
         ],
         spinDuration: 1200
     },
 
     {
-        type: "smallWin",
-        win: "$50",
-        winReels: [0],
-        reels: [
-            "coin:100.00", "bar", "cherry",
-            "coin:250.00", "cherry", "cherry",
-            "plum", "lemon", "cherry"
-        ],
-        spinDuration: 1500
-    },
+    type: "smallWin",
+    balance: 350,
+    balanceDelay: 300,
+    balanceCountDuration: 500,
+    winReels: [0],
+    reels: [
+        "coin:100.00", "s3", "s1",
+        "coin:250.00", "s1", "s1",
+        "s7", "s2", "s1"
+    ],
+    spinDuration: 1500
+},
 
     {
-        type: "jackpot",
-        win: "A$485",
-        winReels: [0, 1, 2],
-        reels: [
-            "coin:350.00", "lemon", "coin:50.00",
-            "coin:250.00", "cherry", "cherry",
-            "lemon", "coin2", "cherry"
-        ],
-        spinDuration: 1800
-    }
+    type: "jackpot",
+    balance: 10350,
+    balanceDelay: 500,
+    balanceCountDuration: 2000,
+    winReels: [0, 1, 2],
+    winSymbols: ["bonus"],
+    reels: [
+        "coin:350.00", "s2", "s1",
+        "coin:250.00", "bonus", "s3",
+        "bonus", "s7", "bonus"
+    ],
+    spinDuration: 1800
+}
 ];
 const symbolMap = {
-    bar: "assets/symbols/bar.webp",
-    cherry: "assets/symbols/cherry.webp",
+    s1: "assets/symbols/cherry.webp",
+    s2: "assets/symbols/lemon.webp",
+    s3: "assets/symbols/bar.webp",
+    s4: "assets/symbols/grape.webp",
+    s5: "assets/symbols/melon.webp",
+    s6: "assets/symbols/orange.webp",
+    s7: "assets/symbols/plum.webp",
+
     coin: "assets/symbols/coin.webp",
-    coin2: "assets/symbols/coin2.webp",
-    grape: "assets/symbols/grape.webp",
-    lemon: "assets/symbols/lemon.webp",
-    melon: "assets/symbols/melon.webp",
-    orange: "assets/symbols/orange.webp",
-    plum: "assets/symbols/plum.webp"
+    bonus: "assets/symbols/coin2.webp"
 };
 const reelSymbols = [
-    "bar",
-    "cherry",
-    "grape",
-    "lemon",
-    "melon",
-    "orange",
-    "plum",
-    "coin2"
+    "s1",
+    "s2",
+    "s3",
+    "s4",
+    "s5",
+    "s6",
+    "s7",
+    "bonus"
 ];
 console.log(spinBtn);
 
@@ -109,17 +119,6 @@ function unlockSpinButton() {
     spinBtn.classList.remove("disabled");
     isSpinning = false;
 }
-function showWinText(text) {
-    slotWin.classList.remove("win-pop");
-
-    slotWin.textContent = text || "$0";
-
-    slotWin.classList.add("win-pop");
-
-    setTimeout(() => {
-        slotWin.classList.remove("win-pop");
-    }, WIN_POP_DURATION);
-}
 function setReels(reels) {
     for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
         const iconsInReel = reelStrips[reelIndex].querySelectorAll(".symbol-icon");
@@ -132,9 +131,8 @@ function setReels(reels) {
     }
 }
 function showJackpot(outcome) {
-    showJackpotTextStyle();
-
     highlightWinReels(outcome);
+    highlightWinSymbols(outcome);
 
     slotArea.classList.add("jackpot-state");
     slotArea.classList.add("jackpot-flash");
@@ -145,7 +143,7 @@ function showJackpot(outcome) {
 
     setTimeout(() => {
         showCta();
-    }, CTA_DELAY);
+    }, outcome.balanceDelay + outcome.balanceCountDuration + CTA_DELAY);
 }
 function getRandomSymbol() {
     return reelSymbols[Math.floor(Math.random() * reelSymbols.length)];
@@ -155,8 +153,6 @@ function startSpinAnimation() {
     return null;
 }
 function finishSpin(spinAnimation, outcome) {
-    resetWinTextStyle();
-
     prepareReelsForSpin(outcome);
 
     animateReelsToResult(outcome);
@@ -185,8 +181,6 @@ function goToOffer() {
 function startSpinVisuals() {
     lockSpinButton();
 
-    slotWin.textContent = "...";
-
     startReelSpinVisuals();
 }
 
@@ -197,9 +191,6 @@ function stopSpinVisuals(spinAnimation) {
 }
 
 function showOutcome(outcome) {
-    resetWinTextStyle();
-
-    showWinText(outcome.win);
     setReels(outcome.reels);
     popSymbols();
 }
@@ -232,14 +223,6 @@ function handleOutcomeType(outcome) {
 }
 
     unlockSpinButton();
-}
-function resetWinTextStyle() {
-    slotWin.classList.remove("jackpot-win");
-    slotWin.classList.add("default-win");
-}
-function showJackpotTextStyle() {
-    slotWin.classList.remove("default-win");
-    slotWin.classList.add("jackpot-win");
 }
 function showOverlayAndPopup() {
     overlay.style.display = "block";
@@ -278,7 +261,6 @@ function initGame() {
 
     spinBtn.textContent = "SPIN";
 
-    resetWinTextStyle();
 
     slotArea.classList.remove("jackpot-state");
     slotArea.classList.remove("jackpot-flash");
@@ -291,6 +273,10 @@ function initGame() {
     ctaPopup.classList.remove("show");
 
     initReels();
+
+    setBalance(0);
+
+    clearWinSymbols();
 
     unlockSpinButton();
 }
@@ -332,7 +318,6 @@ function stopReelsSequentially(outcome) {
             setReelResult(reelIndex, outcome.reels);
 
             if (reelIndex === reelStrips.length - 1) {
-                showWinText(outcome.win);
                 popSymbols();
                 handleOutcomeType(outcome);
             }
@@ -348,7 +333,7 @@ function getCoinValue(symbol) {
 function createSymbolHtml(symbol) {
     if (isCoinSymbol(symbol)) {
         return `
-            <div class="symbol coin-symbol">
+            <div class="symbol coin-symbol" data-symbol="${symbol}">
                 <img class="symbol-img" src="${symbolMap.coin}" alt="">
                 <span class="coin-value">${getCoinValue(symbol)}</span>
             </div>
@@ -358,7 +343,7 @@ function createSymbolHtml(symbol) {
     const imagePath = symbolMap[symbol];
 
     return `
-        <div class="symbol">
+        <div class="symbol" data-symbol="${symbol}">
             <img class="symbol-img" src="${imagePath}" alt="">
         </div>
     `;
@@ -389,6 +374,7 @@ function prepareReelStrip(reelIndex, outcome) {
         .map(createSymbolHtml)
         .join("");
 
+
     const startOffset = SPIN_FILLER_COUNT * SYMBOL_HEIGHT;
 
     reelStrips[reelIndex].style.transitionDuration = "0ms";
@@ -412,9 +398,7 @@ function animateReelsToResult(outcome) {
     const totalDuration = REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * (reelStrips.length - 1);
 
     setTimeout(() => {
-        showWinText(outcome.win);
-        popSymbols();
-        handleOutcomeType(outcome);
+        finishOutcome(outcome);
     }, totalDuration + 80);
 }
 function highlightReel(reelIndex) {
@@ -478,11 +462,98 @@ function renderReels(outcome) {
 
         reelStrips[reelIndex].style.transitionDuration = "0ms";
         reelStrips[reelIndex].style.transform = "translateY(0)";
+
     }
 }
 function initReels() {
     renderReels(startScreenReels);
 }
+function formatBalance(value) {
+    return `${Math.floor(value)} A$`;
+}
+function setBalance(value) {
+    currentBalance = value;
+    topWinPanel.textContent = formatBalance(currentBalance);
+}
+function animateBalanceTo(targetBalance, duration) {
+    const startBalance = currentBalance;
+    const difference = targetBalance - startBalance;
+    const startTime = performance.now();
+
+    if (duration === 0 || difference === 0) {
+        setBalance(targetBalance);
+        return;
+    }
+
+    function updateBalance(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+
+        const currentValue = startBalance + difference * progress;
+
+        topWinPanel.textContent = formatBalance(currentValue);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateBalance);
+        } else {
+            setBalance(targetBalance);
+        }
+    }
+
+    requestAnimationFrame(updateBalance);
+}
+function finishOutcome(outcome) {
+    popSymbols();
+
+    handleOutcomeType(outcome);
+
+    const delay = outcome.balanceDelay || 0;
+
+    setTimeout(() => {
+        animateBalanceTo(outcome.balance, outcome.balanceCountDuration);
+    }, delay);
+}
+function highlightWinSymbols(outcome) {
+    const winSymbols = outcome.winSymbols || [];
+
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        const symbolsInReel = reelStrips[reelIndex].querySelectorAll(".symbol");
+
+        for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
+            const symbolElement = symbolsInReel[rowIndex];
+
+            if (!symbolElement) {
+                continue;
+            }
+
+            const symbolName = symbolElement.dataset.symbol;
+
+            if (!winSymbols.includes(symbolName)) {
+                continue;
+            }
+
+            symbolElement.classList.remove("win-symbol");
+            symbolElement.classList.remove("pulsing");
+
+            void symbolElement.offsetWidth;
+
+            symbolElement.classList.add("win-symbol");
+
+            setTimeout(() => {
+                symbolElement.classList.add("pulsing");
+            }, WIN_SYMBOL_POP_DURATION);
+        }
+    }
+}
+function clearWinSymbols() {
+    const winSymbols = document.querySelectorAll(".win-symbol");
+
+    for (let i = 0; i < winSymbols.length; i++) {
+        winSymbols[i].classList.remove("win-symbol");
+        winSymbols[i].classList.remove("pulsing");
+    }
+}
+
 
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
