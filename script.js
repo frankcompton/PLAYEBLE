@@ -8,6 +8,7 @@ const symbolIcons = document.querySelectorAll(".symbol-icon");
 const ctaPopup = document.getElementById("ctaPopup");
 const overlay = document.getElementById("overlay");
 const reelStrips = document.querySelectorAll(".reel-strip");
+const ctaButton = document.getElementById("ctaButton");
 
 // State
 let spinCount = 0;
@@ -24,7 +25,7 @@ const SHOW_CLASS_DELAY = 10;
 const SMALL_WIN_GLOW_DURATION = 500;
 const SYMBOL_POP_DURATION = 250;
 const VISIBLE_ROWS = 3;
-const SYMBOL_HEIGHT = 90;
+const SYMBOL_HEIGHT = 100;
 const SPIN_FILLER_COUNT = 12;
 const REEL_SPIN_BASE_DURATION = 900;
 const REEL_SPIN_STEP_DURATION = 300;
@@ -181,6 +182,8 @@ function goToOffer() {
 function startSpinVisuals() {
     lockSpinButton();
 
+    slotArea.classList.remove("result-ready");
+
     startReelSpinVisuals();
 }
 
@@ -225,16 +228,24 @@ function handleOutcomeType(outcome) {
     unlockSpinButton();
 }
 function showOverlayAndPopup() {
+    overlay.classList.remove("show");
+    ctaPopup.classList.remove("show");
+
     overlay.style.display = "block";
     ctaPopup.style.display = "flex";
 
-    setTimeout(() => {
-        overlay.classList.add("show");
-        ctaPopup.classList.add("show");
-    }, SHOW_CLASS_DELAY);
+    overlay.offsetHeight;
+    ctaPopup.offsetHeight;
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            overlay.classList.add("show");
+            ctaPopup.classList.add("show");
+        });
+    });
 }
 function showCta() {
-    spinBtn.textContent = "CLAIM BONUS";
+    spinBtn.classList.add("cta-ready");
 
     showOverlayAndPopup();
 
@@ -259,7 +270,7 @@ function initGame() {
     isSpinning = false;
     isCtaActive = false;
 
-    spinBtn.textContent = "SPIN";
+    spinBtn.classList.remove("cta-ready");
 
 
     slotArea.classList.remove("jackpot-state");
@@ -503,6 +514,10 @@ function animateBalanceTo(targetBalance, duration) {
     requestAnimationFrame(updateBalance);
 }
 function finishOutcome(outcome) {
+    renderReels(outcome);
+
+    slotArea.classList.add("result-ready");
+
     popSymbols();
 
     handleOutcomeType(outcome);
@@ -557,5 +572,5 @@ function clearWinSymbols() {
 
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
-ctaPopup.addEventListener("click", goToOffer);
+ctaButton.addEventListener("click", goToOffer);
 initGame();
