@@ -370,7 +370,7 @@ body {
     transform: translate(-50%, -50%);
 
     color: #7b2500;
-    font-size: 24px;
+    font-size: var(--coin-value-font-size, 24px);
     font-weight: 900;
     text-shadow: 0 1px 0 rgba(255, 245, 180, 0.8);
 
@@ -621,4 +621,83 @@ body {
     text-shadow:
         0 3px 0 #8a2500,
         0 0 22px rgba(255, 220, 80, 0.9);
+}
+.reel.anticipation-reel {
+    border-color: #ffd84a;
+    box-shadow:
+        0 0 18px rgba(255, 216, 74, 0.9),
+        inset 0 0 18px rgba(255, 216, 74, 0.35);
+
+    animation: anticipationPulse 0.45s ease-in-out infinite;
+}
+
+@keyframes anticipationPulse {
+    0% {
+        box-shadow:
+            0 0 10px rgba(255, 216, 74, 0.45),
+            inset 0 0 10px rgba(255, 216, 74, 0.2);
+    }
+
+    50% {
+        box-shadow:
+            0 0 26px rgba(255, 216, 74, 1),
+            inset 0 0 22px rgba(255, 216, 74, 0.45);
+    }
+
+    100% {
+        box-shadow:
+            0 0 10px rgba(255, 216, 74, 0.45),
+            inset 0 0 10px rgba(255, 216, 74, 0.2);
+    }
+}
+@media (max-width: 600px) {
+    #game {
+        gap: 14px;
+        padding: 10px;
+    }
+
+    #topWinPanel {
+        width: 92vw;
+        max-width: none;
+        height: 46px;
+
+        font-size: 28px;
+
+        margin-bottom: 12px;
+    }
+
+    #slotStage {
+        width: 96vw;
+        max-width: none;
+
+        padding-top: 58px;
+    }
+
+    #gameLogo {
+        width: 82%;
+        max-width: none;
+    }
+
+    #slotArea {
+        --symbol-height: 78px;
+
+        width: 96vw;
+        max-width: none;
+        height: 250px;
+
+        padding: 8px;
+    }
+
+    #spinBtn {
+        width: 86px;
+        height: 86px;
+    }
+
+    #spinText {
+        font-size: 22px;
+    }
+
+    .coin-value {
+        font-size: 15px;
+    }
 }

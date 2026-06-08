@@ -12,6 +12,9 @@ const ctaAmount = document.getElementById("ctaAmount");
 const ctaButton = document.getElementById("ctaButton");
 const overlay = document.getElementById("overlay");
 const reelStrips = document.querySelectorAll(".reel-strip");
+const game = document.getElementById("game");
+const slotStage = document.getElementById("slotStage");
+const spinText = document.getElementById("spinText");
 
 // State
 let spinCount = 0;
@@ -27,7 +30,7 @@ const SMALL_WIN_GLOW_DURATION = gameConfig.timings.smallWinGlowDuration;
 const SYMBOL_POP_DURATION = 250;
 
 const VISIBLE_ROWS = gameConfig.grid.rows;
-const SYMBOL_HEIGHT = gameConfig.grid.symbolHeight;
+let currentSymbolHeight = gameConfig.grid.symbolHeight;
 const SPIN_FILLER_COUNT = gameConfig.grid.fillerCount;
 
 const REEL_SPIN_BASE_DURATION = gameConfig.timings.reelSpinBaseDuration;
@@ -206,6 +209,7 @@ function handleSpinButtonClick() {
 }
 function initGame() {
     applyGameAssets();
+    applyGameLayout();
 
     spinCount = 0;
     isSpinning = false;
@@ -311,10 +315,10 @@ function getOutcomeColumn(outcome, reelIndex) {
         outcome.reels[reelIndex + 6]
     ];
 }
-function createFillerSymbols() {
+function createFillerSymbols(count) {
     const fillerSymbols = [];
 
-    for (let i = 0; i < SPIN_FILLER_COUNT; i++) {
+    for (let i = 0; i < count; i++) {
         fillerSymbols.push(getRandomSymbol());
     }
 
@@ -322,7 +326,12 @@ function createFillerSymbols() {
 }
 function prepareReelStrip(reelIndex, outcome) {
     const resultSymbols = getOutcomeColumn(outcome, reelIndex);
-    const fillerSymbols = createFillerSymbols();
+
+    const fillerCount = outcome.reelFillerCounts
+        ? outcome.reelFillerCounts[reelIndex]
+        : SPIN_FILLER_COUNT;
+
+    const fillerSymbols = createFillerSymbols(fillerCount);
 
     const stripSymbols = resultSymbols.concat(fillerSymbols);
 
@@ -330,8 +339,7 @@ function prepareReelStrip(reelIndex, outcome) {
         .map(createSymbolHtml)
         .join("");
 
-
-    const startOffset = SPIN_FILLER_COUNT * SYMBOL_HEIGHT;
+    const startOffset = fillerCount * currentSymbolHeight;
 
     reelStrips[reelIndex].style.transitionDuration = "0ms";
     reelStrips[reelIndex].style.transform = `translateY(-${startOffset}px)`;
@@ -342,8 +350,16 @@ function prepareReelsForSpin(outcome) {
     }
 }
 function animateReelsToResult(outcome) {
+    const reels = document.querySelectorAll(".reel");
+
+    const reelDurations = outcome.reelDurations || [
+        REEL_SPIN_BASE_DURATION,
+        REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION,
+        REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * 2
+    ];
+
     for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
-        const duration = REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * reelIndex;
+        const duration = reelDurations[reelIndex];
 
         setTimeout(() => {
             reelStrips[reelIndex].style.transitionDuration = `${duration}ms`;
@@ -351,9 +367,19 @@ function animateReelsToResult(outcome) {
         }, 20);
     }
 
-    const totalDuration = REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * (reelStrips.length - 1);
+    if (outcome.anticipationReel !== undefined) {
+        setTimeout(() => {
+            reels[outcome.anticipationReel].classList.add("anticipation-reel");
+        }, outcome.anticipationDelay);
+    }
+
+    const totalDuration = Math.max(...reelDurations);
 
     setTimeout(() => {
+        if (outcome.anticipationReel !== undefined) {
+            reels[outcome.anticipationReel].classList.remove("anticipation-reel");
+        }
+
         finishOutcome(outcome);
     }, totalDuration + 80);
 }
@@ -530,6 +556,40 @@ function applyGameAssets() {
         linear-gradient(${theme.bodyOverlayTop}, ${theme.bodyOverlayBottom}),
         url("${gameConfig.assets.background}") center center / cover no-repeat
     `;
+}
+function applyGameLayout() {
+    const isMobile = window.innerWidth <= 600;
+    const layout = isMobile ? gameConfig.layout.mobile : gameConfig.layout;
+
+    currentSymbolHeight = layout.symbolHeight || gameConfig.grid.symbolHeight;
+
+    game.style.gap = `${layout.gameGap}px`;
+
+    topWinPanel.style.width = layout.balancePanelWidth;
+    topWinPanel.style.maxWidth = layout.balancePanelMaxWidth;
+    topWinPanel.style.height = layout.balancePanelHeight;
+    topWinPanel.style.fontSize = layout.balancePanelFontSize;
+    topWinPanel.style.marginBottom = layout.balancePanelMarginBottom;
+
+    slotStage.style.width = layout.slotStageWidth;
+    slotStage.style.maxWidth = layout.slotStageMaxWidth;
+    slotStage.style.paddingTop = layout.slotStagePaddingTop;
+
+    gameLogo.style.width = layout.logoWidth;
+    gameLogo.style.maxWidth = layout.logoMaxWidth;
+
+    slotArea.style.setProperty("--symbol-height", `${currentSymbolHeight}px`);
+    slotArea.style.width = layout.slotWidth;
+    slotArea.style.maxWidth = layout.slotMaxWidth;
+    slotArea.style.height = layout.slotHeight;
+    slotArea.style.padding = layout.slotPadding;
+
+    spinBtn.style.width = layout.spinButtonSize;
+    spinBtn.style.height = layout.spinButtonSize;
+
+    spinText.style.fontSize = layout.spinButtonFontSize;
+
+    document.documentElement.style.setProperty("--coin-value-font-size", layout.coinValueFontSize || "24px");
 }
 function applyGameTheme() {
     const theme = gameConfig.theme;

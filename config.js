@@ -29,6 +29,58 @@ const gameConfig = {
     ctaButtonBottom: "#e19a00",
     ctaButtonText: "#5c2200"
 },
+layout: {
+    gameGap: 22,
+
+    balancePanelWidth: "86vw",
+    balancePanelMaxWidth: "560px",
+    balancePanelHeight: "74px",
+    balancePanelFontSize: "46px",
+    balancePanelMarginBottom: "28px",
+
+    slotStageWidth: "92vw",
+    slotStageMaxWidth: "620px",
+    slotStagePaddingTop: "85px",
+
+    logoWidth: "82%",
+    logoMaxWidth: "520px",
+
+    slotWidth: "100%",
+    slotMaxWidth: "620px",
+    slotHeight: "330px",
+    slotPadding: "12px",
+
+    spinButtonSize: "132px",
+    spinButtonFontSize: "28px",
+
+    mobile: {
+        gameGap: 14,
+
+        balancePanelWidth: "92vw",
+        balancePanelMaxWidth: "none",
+        balancePanelHeight: "46px",
+        balancePanelFontSize: "28px",
+        balancePanelMarginBottom: "12px",
+
+        slotStageWidth: "96vw",
+        slotStageMaxWidth: "none",
+        slotStagePaddingTop: "58px",
+
+        logoWidth: "82%",
+        logoMaxWidth: "none",
+
+        slotWidth: "96vw",
+        slotMaxWidth: "none",
+        slotHeight: "250px",
+        slotPadding: "8px",
+
+        spinButtonSize: "86px",
+        spinButtonFontSize: "22px",
+
+        symbolHeight: 78,
+        coinValueFontSize: "15px"
+    }
+},
 
     grid: {
     columns: 3,
@@ -116,18 +168,24 @@ const gameConfig = {
         },
 
         {
-            type: "jackpot",
-            balance: 10350,
-            balanceDelay: 500,
-            balanceCountDuration: 2000,
-            winReels: [0, 1, 2],
-            winSymbols: ["bonus"],
-            reels: [
-                "coin:350.00", "s2", "s1",
-                "coin:250.00", "bonus", "s3",
-                "bonus", "s7", "bonus"
-            ]
-        }
+    type: "jackpot",
+    balance: 10350,
+    balanceDelay: 500,
+    balanceCountDuration: 2000,
+
+    reelDurations: [900, 1200, 4200],
+    reelFillerCounts: [12, 12, 36],
+    anticipationReel: 2,
+    anticipationDelay: 1300,
+
+    winReels: [0, 1, 2],
+    winSymbols: ["bonus"],
+    reels: [
+        "coin:350.00", "s2", "s1",
+        "coin:250.00", "bonus", "s3",
+        "bonus", "s7", "bonus"
+    ]
+}
     ],
 
     cta: {
