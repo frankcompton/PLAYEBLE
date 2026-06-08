@@ -2,6 +2,7 @@
     box-sizing: border-box;
 }
 
+
 body {
     background: #05051f;
 
@@ -54,8 +55,8 @@ body {
 
 
 #spinBtn {
-    width: 132px;
-    height: 132px;
+    width: var(--spin-size);
+    height: var(--spin-size);
 
     border-radius: 50%;
     border: none;
@@ -77,8 +78,9 @@ body {
 
     transition: transform 0.15s, opacity 0.15s;
 }
+
 #spinText {
-    font-size: 28px;
+    font-size: var(--spin-font-size);
     font-weight: 900;
     color: #111;
 
@@ -370,7 +372,7 @@ body {
     transform: translate(-50%, -50%);
 
     color: #7b2500;
-    font-size: var(--coin-value-font-size, 24px);
+    font-size: var(--coin-value-font-size);
     font-weight: 900;
     text-shadow: 0 1px 0 rgba(255, 245, 180, 0.8);
 
@@ -397,39 +399,38 @@ body {
 }
 #game {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    gap: 22px;
-    padding: 18px;
+    gap: var(--game-gap);
+    padding: 10px;
 
     position: relative;
 }
 #topWinPanel {
-    width: 86vw;
-    max-width: 560px;
-    height: 74px;
+    width: var(--balance-width);
+    height: var(--balance-height);
 
     display: flex;
     justify-content: center;
     align-items: center;
 
     background: linear-gradient(#3347ff, #101080);
-    border: 4px solid rgba(255, 220, 120, 0.9);
-    border-radius: 16px;
+    border: calc(3px * var(--ui-scale)) solid rgba(255, 220, 120, 0.9);
+    border-radius: calc(14px * var(--ui-scale));
 
     color: gold;
-    font-size: 46px;
+    font-size: var(--balance-font-size);
     font-weight: bold;
 
     text-shadow: 0 3px 0 #8a2500;
 
     flex-shrink: 0;
-    margin-bottom: 28px;
+    margin-bottom: calc(12px * var(--ui-scale));
 }
 #coinColumn {
     width: 25%;
@@ -572,10 +573,10 @@ body {
 #slotStage {
     position: relative;
 
-    width: 92vw;
-    max-width: 620px;
+    width: var(--slot-width);
+    max-width: none;
 
-    padding-top: 62px;
+    padding-top: var(--slot-stage-padding-top);
 
     display: flex;
     justify-content: center;
@@ -583,14 +584,15 @@ body {
 
     flex-shrink: 0;
 }
+
 #gameLogo {
     position: absolute;
     left: 50%;
-    top: -65px;
+    top: 0;
     transform: translateX(-50%);
 
-    width: 82%;
-    max-width: 520px;
+    width: var(--logo-width);
+    max-width: none;
     height: auto;
 
     z-index: 5;
@@ -678,15 +680,29 @@ body {
         max-width: none;
     }
 
-    #slotArea {
-        --symbol-height: 78px;
+    
+#slotArea {
+    width: var(--slot-width);
+    max-width: none;
+    height: var(--slot-height);
 
-        width: 96vw;
-        max-width: none;
-        height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-        padding: 8px;
-    }
+    background: rgba(5, 5, 45, 0.92);
+    border: calc(3px * var(--ui-scale)) solid #4cc8ff;
+    border-radius: calc(10px * var(--ui-scale));
+
+    padding: calc(8px * var(--ui-scale));
+
+    box-shadow: 0 0 calc(22px * var(--ui-scale)) rgba(0, 180, 255, 0.7);
+
+    position: relative;
+    z-index: 1;
+
+    overflow: visible;
+}
 
     #spinBtn {
         width: 86px;
@@ -699,5 +715,111 @@ body {
 
     .coin-value {
         font-size: 15px;
+    }
+}
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    height: 100dvh;
+    min-height: -webkit-fill-available;
+    overflow: hidden;
+}
+
+:root {
+    --game-gap-responsive: clamp(12px, 3vw, 22px);
+
+    --balance-width-responsive: min(92vw, 560px);
+    --balance-height-responsive: clamp(46px, 13vw, 74px);
+    --balance-font-size-responsive: clamp(28px, 8vw, 46px);
+    --balance-border-responsive: clamp(3px, 0.8vw, 4px);
+    --balance-radius-responsive: clamp(12px, 3vw, 16px);
+    --balance-margin-bottom-responsive: clamp(10px, 3vw, 28px);
+
+    --slot-width-responsive: min(96vw, 620px);
+    --slot-height-responsive: clamp(250px, 68vw, 330px);
+    --slot-padding-responsive: clamp(8px, 2vw, 12px);
+    --slot-border-responsive: clamp(3px, 0.8vw, 4px);
+    --slot-radius-responsive: clamp(10px, 2.5vw, 12px);
+    --symbol-height-responsive: clamp(78px, 20.5vw, 100px);
+    --reel-gap-responsive: clamp(4px, 1.4vw, 6px);
+
+    --logo-width-responsive: min(82vw, 520px);
+    --slot-stage-padding-top-responsive: clamp(54px, 15vw, 85px);
+
+    --spin-size-responsive: clamp(86px, 23vw, 132px);
+    --spin-font-size-responsive: clamp(22px, 6vw, 28px);
+
+    --coin-value-font-size: clamp(14px, 3.8vw, 24px);
+}
+
+#game {
+    width: 100vw;
+    height: 100dvh;
+    justify-content: center;
+    gap: var(--game-gap-responsive);
+    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+}
+
+#topWinPanel {
+    width: var(--balance-width-responsive);
+    max-width: none;
+    height: var(--balance-height-responsive);
+    font-size: var(--balance-font-size-responsive);
+    border-width: var(--balance-border-responsive);
+    border-radius: var(--balance-radius-responsive);
+    margin-bottom: var(--balance-margin-bottom-responsive);
+}
+
+#slotStage {
+    width: var(--slot-width-responsive);
+    max-width: none;
+    padding-top: var(--slot-stage-padding-top-responsive);
+}
+
+#gameLogo {
+    width: var(--logo-width-responsive);
+    max-width: none;
+}
+
+#slotArea {
+    --symbol-height: var(--symbol-height-responsive);
+
+    width: var(--slot-width-responsive);
+    max-width: none;
+    height: var(--slot-height-responsive);
+    padding: var(--slot-padding-responsive);
+    border-width: var(--slot-border-responsive);
+    border-radius: var(--slot-radius-responsive);
+}
+
+#reels {
+    gap: var(--reel-gap-responsive);
+}
+
+#spinBtn {
+    width: var(--spin-size-responsive);
+    height: var(--spin-size-responsive);
+}
+
+#spinText {
+    font-size: var(--spin-font-size-responsive);
+}
+
+/* Очень низкие экраны: слегка сжимаем вертикальные отступы, чтобы кнопка не обрезалась. */
+@media (max-height: 700px) {
+    :root {
+        --game-gap-responsive: 8px;
+        --balance-height-responsive: clamp(42px, 10vh, 60px);
+        --balance-font-size-responsive: clamp(24px, 6vh, 36px);
+        --balance-margin-bottom-responsive: 6px;
+        --slot-stage-padding-top-responsive: clamp(48px, 12vh, 68px);
+        --slot-height-responsive: clamp(230px, 40vh, 300px);
+        --symbol-height-responsive: clamp(72px, 12.5vh, 92px);
+        --spin-size-responsive: clamp(76px, 13vh, 104px);
+        --spin-font-size-responsive: clamp(19px, 3.5vh, 24px);
     }
 }

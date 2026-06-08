@@ -209,7 +209,6 @@ function handleSpinButtonClick() {
 }
 function initGame() {
     applyGameAssets();
-    applyGameLayout();
 
     spinCount = 0;
     isSpinning = false;
@@ -339,7 +338,7 @@ function prepareReelStrip(reelIndex, outcome) {
         .map(createSymbolHtml)
         .join("");
 
-    const startOffset = fillerCount * currentSymbolHeight;
+    const startOffset = fillerCount * getCurrentSymbolHeight();
 
     reelStrips[reelIndex].style.transitionDuration = "0ms";
     reelStrips[reelIndex].style.transform = `translateY(-${startOffset}px)`;
@@ -615,7 +614,15 @@ function applyGameTheme() {
         reels[i].style.borderColor = theme.reelBorder;
     }
 }
+function getCurrentSymbolHeight() {
+    const firstSymbol = reelStrips[0]?.querySelector(".symbol");
 
+    if (firstSymbol) {
+        return firstSymbol.getBoundingClientRect().height;
+    }
+
+    return gameConfig.grid.symbolHeight;
+}
 
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
