@@ -588,7 +588,7 @@ body {
 #gameLogo {
     position: absolute;
     left: 50%;
-    top: 0;
+    top: -8px;
     transform: translateX(-50%);
 
     width: var(--logo-width);
@@ -729,32 +729,7 @@ body {
     overflow: hidden;
 }
 
-:root {
-    --game-gap-responsive: clamp(12px, 3vw, 22px);
 
-    --balance-width-responsive: min(92vw, 560px);
-    --balance-height-responsive: clamp(46px, 13vw, 74px);
-    --balance-font-size-responsive: clamp(28px, 8vw, 46px);
-    --balance-border-responsive: clamp(3px, 0.8vw, 4px);
-    --balance-radius-responsive: clamp(12px, 3vw, 16px);
-    --balance-margin-bottom-responsive: clamp(10px, 3vw, 28px);
-
-    --slot-width-responsive: min(96vw, 620px);
-    --slot-height-responsive: clamp(250px, 68vw, 330px);
-    --slot-padding-responsive: clamp(8px, 2vw, 12px);
-    --slot-border-responsive: clamp(3px, 0.8vw, 4px);
-    --slot-radius-responsive: clamp(10px, 2.5vw, 12px);
-    --symbol-height-responsive: clamp(78px, 20.5vw, 100px);
-    --reel-gap-responsive: clamp(4px, 1.4vw, 6px);
-
-    --logo-width-responsive: min(82vw, 520px);
-    --slot-stage-padding-top-responsive: clamp(54px, 15vw, 85px);
-
-    --spin-size-responsive: clamp(86px, 23vw, 132px);
-    --spin-font-size-responsive: clamp(22px, 6vw, 28px);
-
-    --coin-value-font-size: clamp(14px, 3.8vw, 24px);
-}
 
 #game {
     width: 100vw;
@@ -822,4 +797,95 @@ body {
         --spin-size-responsive: clamp(76px, 13vh, 104px);
         --spin-font-size-responsive: clamp(19px, 3.5vh, 24px);
     }
+}
+/* === GAME SCALER ADAPTIVE SYSTEM === */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    height: 100dvh;
+    min-height: -webkit-fill-available;
+
+    overflow: hidden;
+}
+
+#gameScaler {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+
+    width: 430px;
+    height: 760px;
+
+    transform: translate(-50%, -50%) scale(var(--game-scale, 1));
+    transform-origin: center center;
+
+    z-index: 1;
+}
+
+#game {
+    width: 430px;
+    height: 760px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    gap: 18px;
+    padding: 18px;
+
+    position: relative;
+}
+
+/* базовые размеры сцены */
+#topWinPanel {
+    width: 360px;
+    max-width: none;
+    height: 58px;
+
+    font-size: 34px;
+
+    margin-bottom: 24px;
+}
+
+#slotStage {
+    width: 390px;
+    max-width: none;
+
+    padding-top: 72px;
+}
+
+#gameLogo {
+    width: 340px;
+    max-width: none;
+
+    top: -4px;
+}
+
+#slotArea {
+    --symbol-height: 82px;
+
+    width: 390px;
+    max-width: none;
+    height: 265px;
+
+    padding: 8px;
+}
+
+#spinBtn {
+    width: 96px;
+    height: 96px;
+}
+
+#spinText {
+    font-size: 24px;
+}
+
+.coin-value {
+    font-size: 16px;
 }

@@ -15,6 +15,7 @@ const reelStrips = document.querySelectorAll(".reel-strip");
 const game = document.getElementById("game");
 const slotStage = document.getElementById("slotStage");
 const spinText = document.getElementById("spinText");
+const gameScaler = document.getElementById("gameScaler");
 
 // State
 let spinCount = 0;
@@ -208,6 +209,7 @@ function handleSpinButtonClick() {
     startSpin();
 }
 function initGame() {
+    updateGameScale();
     applyGameAssets();
 
     spinCount = 0;
@@ -618,14 +620,36 @@ function getCurrentSymbolHeight() {
     const firstSymbol = reelStrips[0]?.querySelector(".symbol");
 
     if (firstSymbol) {
-        return firstSymbol.getBoundingClientRect().height;
+        return firstSymbol.getBoundingClientRect().height / getCurrentScale();
     }
 
     return gameConfig.grid.symbolHeight;
+}
+function getCurrentScale() {
+    const scaleValue = getComputedStyle(gameScaler).getPropertyValue("--game-scale");
+
+    return parseFloat(scaleValue) || 1;
+}
+function updateGameScale() {
+    const baseWidth = 430;
+    const baseHeight = 760;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    const scaleByWidth = viewportWidth / baseWidth;
+    const scaleByHeight = viewportHeight / baseHeight;
+
+    const scale = Math.min(scaleByWidth, scaleByHeight);
+
+    gameScaler.style.setProperty("--game-scale", scale);
 }
 
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
 ctaButton.addEventListener("click", goToOffer);
+window.addEventListener("resize", () => {
+    updateGameScale();
+});
 
 initGame();

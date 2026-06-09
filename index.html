@@ -6,78 +6,45 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-    <body>
+<body>
+    <div id="gameScaler">
+        <div id="game">
+            <div id="topWinPanel">0 A$</div>
 
-<div id="game">
-    <div id="topWinPanel">0 A$</div>
+            <div id="slotStage">
+                <img id="gameLogo" alt="Coin Strike">
 
-    <div id="slotStage">
-        <img id="gameLogo" alt="Coin Strike">
-
-        <div id="slotArea">
-            <div id="reels">
-                <div class="reel">
-                    <div class="reel-strip">
-                        <div class="symbol coin-symbol">
-                            <span class="symbol-icon">100.00</span>
+                <div id="slotArea">
+                    <div id="reels">
+                        <div class="reel">
+                            <div class="reel-strip"></div>
                         </div>
 
-                        <div class="symbol coin-symbol">
-                            <span class="symbol-icon">250.00</span>
+                        <div class="reel">
+                            <div class="reel-strip"></div>
                         </div>
 
-                        <div class="symbol">
-                            <span class="symbol-icon">🍇</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reel">
-                    <div class="reel-strip">
-                        <div class="symbol">
-                            <span class="symbol-icon">BAR</span>
-                        </div>
-
-                        <div class="symbol">
-                            <span class="symbol-icon">🍒</span>
-                        </div>
-
-                        <div class="symbol">
-                            <span class="symbol-icon">🍋</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reel">
-                    <div class="reel-strip">
-                        <div class="symbol">
-                            <span class="symbol-icon">🍒</span>
-                        </div>
-
-                        <div class="symbol">
-                            <span class="symbol-icon">🍒</span>
-                        </div>
-
-                        <div class="symbol">
-                            <span class="symbol-icon">🍒</span>
+                        <div class="reel">
+                            <div class="reel-strip"></div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <button id="spinBtn">
+                <span id="spinText">SPIN</span>
+            </button>
         </div>
     </div>
 
+    <div id="overlay"></div>
 
-    <button id="spinBtn">
-    <span id="spinText">SPIN</span>
-</button>
-</div>
-<div id="overlay"></div>    
-<div id="ctaPopup">
-    <div id="ctaTitle">BIG WIN!</div>
-    <div id="ctaAmount">10 350 A$</div>
-    <button id="ctaButton">CLAIM BONUS</button>
-</div>
+    <div id="ctaPopup">
+        <div id="ctaTitle">BIG WIN!</div>
+        <div id="ctaAmount">10 350 A$</div>
+        <button id="ctaButton">CLAIM BONUS</button>
+    </div>
+
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
