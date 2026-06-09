@@ -119,7 +119,14 @@ function startSpin() {
     finishSpin(spinAnimation, currentOutcome);
 }
 function goToOffer() {
-    console.log("Go to offer");
+    const offerUrl = gameConfig.offer.url;
+
+    if (!offerUrl) {
+        console.log("Offer URL is empty");
+        return;
+    }
+
+    window.location.href = offerUrl;
 }
 
 function startSpinVisuals() {
@@ -558,40 +565,6 @@ function applyGameAssets() {
         url("${gameConfig.assets.background}") center center / cover no-repeat
     `;
 }
-function applyGameLayout() {
-    const isMobile = window.innerWidth <= 600;
-    const layout = isMobile ? gameConfig.layout.mobile : gameConfig.layout;
-
-    currentSymbolHeight = layout.symbolHeight || gameConfig.grid.symbolHeight;
-
-    game.style.gap = `${layout.gameGap}px`;
-
-    topWinPanel.style.width = layout.balancePanelWidth;
-    topWinPanel.style.maxWidth = layout.balancePanelMaxWidth;
-    topWinPanel.style.height = layout.balancePanelHeight;
-    topWinPanel.style.fontSize = layout.balancePanelFontSize;
-    topWinPanel.style.marginBottom = layout.balancePanelMarginBottom;
-
-    slotStage.style.width = layout.slotStageWidth;
-    slotStage.style.maxWidth = layout.slotStageMaxWidth;
-    slotStage.style.paddingTop = layout.slotStagePaddingTop;
-
-    gameLogo.style.width = layout.logoWidth;
-    gameLogo.style.maxWidth = layout.logoMaxWidth;
-
-    slotArea.style.setProperty("--symbol-height", `${currentSymbolHeight}px`);
-    slotArea.style.width = layout.slotWidth;
-    slotArea.style.maxWidth = layout.slotMaxWidth;
-    slotArea.style.height = layout.slotHeight;
-    slotArea.style.padding = layout.slotPadding;
-
-    spinBtn.style.width = layout.spinButtonSize;
-    spinBtn.style.height = layout.spinButtonSize;
-
-    spinText.style.fontSize = layout.spinButtonFontSize;
-
-    document.documentElement.style.setProperty("--coin-value-font-size", layout.coinValueFontSize || "24px");
-}
 function applyGameTheme() {
     const theme = gameConfig.theme;
 
@@ -623,7 +596,7 @@ function getCurrentSymbolHeight() {
         return firstSymbol.getBoundingClientRect().height / getCurrentScale();
     }
 
-    return gameConfig.grid.symbolHeight;
+    return 82;
 }
 function getCurrentScale() {
     const scaleValue = getComputedStyle(gameScaler).getPropertyValue("--game-scale");
@@ -631,8 +604,9 @@ function getCurrentScale() {
     return parseFloat(scaleValue) || 1;
 }
 function updateGameScale() {
-    const baseWidth = 430;
-    const baseHeight = 760;
+    const baseWidth = gameConfig.scene.baseWidth;
+    const baseHeight = gameConfig.scene.baseHeight;
+    const maxScale = gameConfig.scene.maxScale;
 
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -640,7 +614,7 @@ function updateGameScale() {
     const scaleByWidth = viewportWidth / baseWidth;
     const scaleByHeight = viewportHeight / baseHeight;
 
-    const scale = Math.min(scaleByWidth, scaleByHeight);
+    const scale = Math.min(scaleByWidth, scaleByHeight, maxScale);
 
     gameScaler.style.setProperty("--game-scale", scale);
 }
@@ -648,8 +622,13 @@ function updateGameScale() {
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
 ctaButton.addEventListener("click", goToOffer);
+
 window.addEventListener("resize", () => {
     updateGameScale();
+});
+
+window.addEventListener("orientationchange", () => {
+    setTimeout(updateGameScale, 300);
 });
 
 initGame();

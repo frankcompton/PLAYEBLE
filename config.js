@@ -1,108 +1,54 @@
 const gameConfig = {
+    // =========================
+    // 1. BASIC GAME SETTINGS
+    // =========================
+
     balance: {
         startValue: 0,
         currency: "A$"
     },
 
+    scene: {
+        baseWidth: 430,
+        baseHeight: 760,
+        maxScale: 1.15
+    },
+
+    // =========================
+    // 2. VISUAL THEME
+    // =========================
+
     theme: {
-    bodyOverlayTop: "rgba(0, 0, 0, 0.35)",
-    bodyOverlayBottom: "rgba(0, 0, 0, 0.55)",
+        bodyOverlayTop: "rgba(0, 0, 0, 0.35)",
+        bodyOverlayBottom: "rgba(0, 0, 0, 0.55)",
 
-    balancePanelTop: "#3347ff",
-    balancePanelBottom: "#101080",
-    balancePanelBorder: "rgba(255, 220, 120, 0.9)",
-    balanceText: "gold",
+        balancePanelTop: "#3347ff",
+        balancePanelBottom: "#101080",
+        balancePanelBorder: "rgba(255, 220, 120, 0.9)",
+        balanceText: "gold",
 
-    slotBackground: "rgba(5, 5, 45, 0.92)",
-    slotBorder: "#4cc8ff",
-    slotGlow: "rgba(0, 180, 255, 0.7)",
+        slotBackground: "rgba(5, 5, 45, 0.92)",
+        slotBorder: "#4cc8ff",
+        slotGlow: "rgba(0, 180, 255, 0.7)",
 
-    reelTop: "#101049",
-    reelBottom: "#05051f",
-    reelBorder: "rgba(120, 220, 255, 0.45)",
+        reelTop: "#101049",
+        reelBottom: "#05051f",
+        reelBorder: "rgba(120, 220, 255, 0.45)",
 
-    ctaPopupTop: "#233dff",
-    ctaPopupBottom: "#07075f",
-    ctaPopupBorder: "gold",
+        ctaPopupTop: "#233dff",
+        ctaPopupBottom: "#07075f",
+        ctaPopupBorder: "gold",
 
-    ctaButtonTop: "#ffe978",
-    ctaButtonBottom: "#e19a00",
-    ctaButtonText: "#5c2200"
-},
-layout: {
-    gameGap: 22,
-
-    balancePanelWidth: "86vw",
-    balancePanelMaxWidth: "560px",
-    balancePanelHeight: "74px",
-    balancePanelFontSize: "46px",
-    balancePanelMarginBottom: "28px",
-
-    slotStageWidth: "92vw",
-    slotStageMaxWidth: "620px",
-    slotStagePaddingTop: "85px",
-
-    logoWidth: "82%",
-    logoMaxWidth: "520px",
-
-    slotWidth: "100%",
-    slotMaxWidth: "620px",
-    slotHeight: "330px",
-    slotPadding: "12px",
-
-    spinButtonSize: "132px",
-    spinButtonFontSize: "28px",
-
-    mobile: {
-        gameGap: 14,
-
-        balancePanelWidth: "92vw",
-        balancePanelMaxWidth: "none",
-        balancePanelHeight: "46px",
-        balancePanelFontSize: "28px",
-        balancePanelMarginBottom: "12px",
-
-        slotStageWidth: "96vw",
-        slotStageMaxWidth: "none",
-        slotStagePaddingTop: "58px",
-
-        logoWidth: "82%",
-        logoMaxWidth: "none",
-
-        slotWidth: "96vw",
-        slotMaxWidth: "none",
-        slotHeight: "250px",
-        slotPadding: "8px",
-
-        spinButtonSize: "86px",
-        spinButtonFontSize: "22px",
-
-        symbolHeight: 78,
-        coinValueFontSize: "15px"
-    }
-},
-
-    grid: {
-    columns: 3,
-    rows: 3,
-    symbolHeight: 100,
-    fillerCount: 12
+        ctaButtonTop: "#ffe978",
+        ctaButtonBottom: "#e19a00",
+        ctaButtonText: "#5c2200"
     },
 
-    timings: {
-        reelSpinBaseDuration: 900,
-        reelSpinStepDuration: 300,
-        ctaDelay: 1200,
-        jackpotFlashDuration: 600,
-        smallWinGlowDuration: 500,
-        winReelGlowDuration: 900,
-        coinParticleDuration: 800,
-        winSymbolPopDuration: 650
-    },
 
-    effects: {
-        coinParticleCount: 10
-    },
+    // =========================
+    // 3. ASSETS
+    // =========================
+
 
     assets: {
     background: "assets/symbols/background.webp",
@@ -122,6 +68,11 @@ layout: {
     }
 },
 
+
+    // Эти символы используются как случайные filler-символы во время прокрутки рилов.
+    // Сюда обычно не надо добавлять coin с суммами, потому что coin:100.00 задаётся отдельно в reels.
+
+
     reelSymbols: [
         "s1",
         "s2",
@@ -133,6 +84,44 @@ layout: {
         "bonus"
     ],
 
+
+        // =========================
+    // 4. GAME MECHANICS
+    // =========================
+
+
+    grid: {
+    columns: 3,
+    rows: 3,
+    fillerCount: 12
+},
+
+    timings: {
+        reelSpinBaseDuration: 900,
+        reelSpinStepDuration: 300,
+        ctaDelay: 1200,
+        jackpotFlashDuration: 600,
+        smallWinGlowDuration: 500,
+        winReelGlowDuration: 900,
+        coinParticleDuration: 800,
+        winSymbolPopDuration: 650
+    },
+
+    effects: {
+        coinParticleCount: 10
+    },
+
+
+    // =========================
+    // 5. START SCREEN
+    // =========================
+
+    // Порядок символов:
+    // [0] [1] [2]
+    // [3] [4] [5]
+    // [6] [7] [8]
+
+
     startScreen: {
         reels: [
             "coin:100.00", "s3", "s1",
@@ -140,6 +129,18 @@ layout: {
             "s7", "s2", "s1"
         ]
     },
+
+
+    // =========================
+    // 6. SPIN SCRIPT
+    // =========================
+
+    // Каждый объект = один клик по SPIN.
+    // reels задаются в таком порядке:
+    // [0] [1] [2]
+    // [3] [4] [5]
+    // [6] [7] [8]
+
 
     spins: [
         {
@@ -188,9 +189,20 @@ layout: {
 }
     ],
 
+
+        // =========================
+    // 7. CTA / OFFER
+    // =========================
+
+
+
     cta: {
         title: "BIG WIN!",
         amount: "10 350 A$",
         buttonText: "CLAIM BONUS"
+    },
+
+    offer: {
+        url: "https://google.com"
     }
 };
