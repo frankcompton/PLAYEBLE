@@ -51,8 +51,8 @@ const gameConfig = {
 
 
     assets: {
-    background: "assets/symbols/background.webp",
-    logo: "assets/symbols/logo.webp",
+    background: "assets/background.webp",
+    logo: "assets/logo.webp",
 
     symbols: {
         s1: "assets/symbols/cherry.webp",
