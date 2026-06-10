@@ -22,12 +22,14 @@ const gameConfig = {
         bodyOverlayTop: "rgba(0, 0, 0, 0.35)",
         bodyOverlayBottom: "rgba(0, 0, 0, 0.55)",
 
-        balancePanelTop: "#3347ff",
-        balancePanelBottom: "#101080",
-        balancePanelBorder: "rgba(255, 220, 120, 0.9)",
-        balanceText: "gold",
+balancePanelTop: "#5d6bff",
+balancePanelMiddle: "#2738e8",
+balancePanelBottom: "#0d1684",
+balancePanelBorder: "#f4d47a",
+balanceText: "#ffd92f",
+balanceGlow: "rgba(255, 220, 120, 0.45)",
 
-        slotBackground: "rgba(5, 5, 45, 0.92)",
+slotBackground: "rgba(5, 5, 45, 0.92)",
         slotBorder: "#4cc8ff",
         slotGlow: "rgba(0, 180, 255, 0.7)",
 

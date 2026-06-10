@@ -31,7 +31,7 @@ const SMALL_WIN_GLOW_DURATION = gameConfig.timings.smallWinGlowDuration;
 const SYMBOL_POP_DURATION = 250;
 
 const VISIBLE_ROWS = gameConfig.grid.rows;
-let currentSymbolHeight = gameConfig.grid.symbolHeight;
+let currentSymbolHeight = 82;
 const SPIN_FILLER_COUNT = gameConfig.grid.fillerCount;
 
 const REEL_SPIN_BASE_DURATION = gameConfig.timings.reelSpinBaseDuration;
@@ -568,10 +568,6 @@ function applyGameAssets() {
 function applyGameTheme() {
     const theme = gameConfig.theme;
 
-    topWinPanel.style.background = `linear-gradient(${theme.balancePanelTop}, ${theme.balancePanelBottom})`;
-    topWinPanel.style.borderColor = theme.balancePanelBorder;
-    topWinPanel.style.color = theme.balanceText;
-
     slotArea.style.background = theme.slotBackground;
     slotArea.style.borderColor = theme.slotBorder;
     slotArea.style.boxShadow = `0 0 24px ${theme.slotGlow}`;
@@ -581,6 +577,7 @@ function applyGameTheme() {
 
     ctaButton.style.background = `linear-gradient(${theme.ctaButtonTop}, ${theme.ctaButtonBottom})`;
     ctaButton.style.color = theme.ctaButtonText;
+    
 
     const reels = document.querySelectorAll(".reel");
 
@@ -588,6 +585,23 @@ function applyGameTheme() {
         reels[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
         reels[i].style.borderColor = theme.reelBorder;
     }
+   topWinPanel.style.background = `
+    linear-gradient(
+        180deg,
+        ${theme.balancePanelTop} 0%,
+        ${theme.balancePanelMiddle} 42%,
+        ${theme.balancePanelBottom} 100%
+    )
+`;
+
+topWinPanel.style.borderColor = theme.balancePanelBorder;
+topWinPanel.style.color = theme.balanceText;
+
+topWinPanel.style.boxShadow = `
+    0 0 14px ${theme.balanceGlow},
+    inset 0 4px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -10px 18px rgba(0, 0, 70, 0.65)
+`; 
 }
 function getCurrentSymbolHeight() {
     const firstSymbol = reelStrips[0]?.querySelector(".symbol");
