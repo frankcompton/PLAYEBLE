@@ -40,7 +40,7 @@ const REEL_SPIN_STEP_DURATION = gameConfig.timings.reelSpinStepDuration;
 const WIN_REEL_GLOW_DURATION = gameConfig.timings.winReelGlowDuration;
 
 const COIN_PARTICLE_COUNT = gameConfig.effects.coinParticleCount;
-const COIN_PARTICLE_DURATION = gameConfig.timings.coinParticleDuration;
+const COIN_PARTICLE_DURATION = gameConfig.effects.coinParticleDuration;
 
 const WIN_SYMBOL_POP_DURATION = gameConfig.timings.winSymbolPopDuration;
 const JACKPOT_FLASH_DURATION = gameConfig.timings.jackpotFlashDuration;
@@ -75,6 +75,8 @@ function setReels(reels) {
     }
 }
 function showJackpot(outcome) {
+
+
     highlightWinReels(outcome);
     highlightWinSymbols(outcome);
 
@@ -89,8 +91,14 @@ function showJackpot(outcome) {
         showCta();
     }, outcome.balanceDelay + outcome.balanceCountDuration + CTA_DELAY);
 }
+
+
 function getRandomSymbol() {
     return reelSymbols[Math.floor(Math.random() * reelSymbols.length)];
+}
+
+function getRandomNumber(min, max) {
+    return Math.random() * (max - min) + min;
 }
 
 function startSpinAnimation() {
@@ -148,20 +156,29 @@ function showOutcome(outcome) {
     popSymbols();
 }
 function showSmallWin(outcome) {
+
+
     const winReels = outcome.winReels || [];
 
     for (let i = 0; i < winReels.length; i++) {
         const reelIndex = winReels[i];
 
-        highlightReel(reelIndex);
-        spawnCoinParticlesFromReel(reelIndex);
+        if (gameConfig.effects.reelWinGlowEnabled) {
+            highlightReel(reelIndex);
+        }
+
+        if (gameConfig.effects.coinParticlesEnabled) {
+            spawnCoinParticlesFromReel(reelIndex);
+        }
     }
 
-    slotArea.classList.add("small-win");
+    if (gameConfig.effects.slotWinGlowEnabled) {
+        slotArea.classList.add("small-win");
 
-    setTimeout(() => {
-        slotArea.classList.remove("small-win");
-    }, SMALL_WIN_GLOW_DURATION);
+        setTimeout(() => {
+            slotArea.classList.remove("small-win");
+        }, SMALL_WIN_GLOW_DURATION);
+    }
 }
 function handleOutcomeType(outcome) {
     if (outcome.type === "smallWin") {
@@ -218,6 +235,7 @@ function handleSpinButtonClick() {
 function initGame() {
     updateGameScale();
     applyGameAssets();
+    applyGameFonts();
 
     spinCount = 0;
     isSpinning = false;
@@ -375,18 +393,21 @@ function animateReelsToResult(outcome) {
         }, 20);
     }
 
-    if (outcome.anticipationReel !== undefined) {
-        setTimeout(() => {
-            reels[outcome.anticipationReel].classList.add("anticipation-reel");
-        }, outcome.anticipationDelay);
-    }
+  if (
+    outcome.anticipationReel !== undefined &&
+    gameConfig.effects.anticipationGlowEnabled
+) {
+    setTimeout(() => {
+        reels[outcome.anticipationReel].classList.add("anticipation-reel");
+    }, outcome.anticipationDelay);
+}
 
     const totalDuration = Math.max(...reelDurations);
 
     setTimeout(() => {
         if (outcome.anticipationReel !== undefined) {
-            reels[outcome.anticipationReel].classList.remove("anticipation-reel");
-        }
+    reels[outcome.anticipationReel].classList.remove("anticipation-reel");
+}
 
         finishOutcome(outcome);
     }, totalDuration + 80);
@@ -401,6 +422,8 @@ function highlightReel(reelIndex) {
     }, WIN_REEL_GLOW_DURATION);
 }
 function createCoinParticle(startX, startY) {
+    const effects = gameConfig.effects;
+
     const coin = document.createElement("div");
 
     coin.classList.add("coin-particle");
@@ -409,17 +432,51 @@ function createCoinParticle(startX, startY) {
     coin.style.left = `${startX}px`;
     coin.style.top = `${startY}px`;
 
-    const flyX = Math.random() * 160 - 80;
-    const flyY = Math.random() * -140 - 40;
+    const coinSize = getRandomNumber(
+        effects.coinParticleMinSize,
+        effects.coinParticleMaxSize
+    );
+
+    const flyX = getRandomNumber(
+        -effects.coinParticleSpreadX,
+        effects.coinParticleSpreadX
+    );
+
+    const burstY = -getRandomNumber(
+        effects.coinParticleBurstUpMin,
+        effects.coinParticleBurstUpMax
+    );
+
+    const fallY = getRandomNumber(
+        effects.coinParticleFallMin,
+        effects.coinParticleFallMax
+    );
+
+    const endScale = getRandomNumber(
+        effects.coinParticleEndScaleMin,
+        effects.coinParticleEndScaleMax
+    );
+
+    const rotation = getRandomNumber(240, 900);
+
+    coin.style.setProperty("--coin-size", `${coinSize}px`);
+    coin.style.setProperty("--coin-duration", `${effects.coinParticleDuration}ms`);
 
     coin.style.setProperty("--fly-x", `${flyX}px`);
-    coin.style.setProperty("--fly-y", `${flyY}px`);
+    coin.style.setProperty("--burst-y", `${burstY}px`);
+    coin.style.setProperty("--fall-y", `${fallY}px`);
+
+    coin.style.setProperty("--coin-start-scale", effects.coinParticleStartScale);
+    coin.style.setProperty("--coin-end-scale", endScale);
+
+    coin.style.setProperty("--coin-rotation", `${rotation}deg`);
+    coin.style.setProperty("--coin-rotation-quarter", `${rotation / 4}deg`);
 
     document.body.appendChild(coin);
 
     setTimeout(() => {
         coin.remove();
-    }, COIN_PARTICLE_DURATION);
+    }, effects.coinParticleDuration);
 }
 function spawnCoinParticlesFromReel(reelIndex) {
     const reels = document.querySelectorAll(".reel");
@@ -428,14 +485,20 @@ function spawnCoinParticlesFromReel(reelIndex) {
     const startX = reelRect.left + reelRect.width / 2;
     const startY = reelRect.top + reelRect.height / 2;
 
+    const stagger = gameConfig.effects.coinParticleStagger;
+
     for (let i = 0; i < COIN_PARTICLE_COUNT; i++) {
         setTimeout(() => {
             createCoinParticle(startX, startY);
-        }, i * 35);
+        }, i * stagger);
     }
 }
 
 function highlightWinReels(outcome) {
+    if (!gameConfig.effects.reelWinGlowEnabled) {
+        return;
+    }
+
     const winReels = outcome.winReels || [];
 
     for (let i = 0; i < winReels.length; i++) {
@@ -468,14 +531,22 @@ function setBalance(value) {
     currentBalance = value;
     topWinPanel.textContent = formatBalance(currentBalance);
 }
-function animateBalanceTo(targetBalance, duration) {
+function animateBalanceTo(targetBalance, duration, outcome) {
     const startBalance = currentBalance;
     const difference = targetBalance - startBalance;
     const startTime = performance.now();
 
+    const balanceEffect = outcome?.balanceEffect || "pop";
+
     if (duration === 0 || difference === 0) {
         setBalance(targetBalance);
         return;
+    }
+
+    if (balanceEffect === "pulse") {
+        startBalancePulse();
+    } else {
+        playBalancePop();
     }
 
     function updateBalance(currentTime) {
@@ -490,11 +561,46 @@ function animateBalanceTo(targetBalance, duration) {
             requestAnimationFrame(updateBalance);
         } else {
             setBalance(targetBalance);
+            stopBalancePulse();
         }
     }
 
     requestAnimationFrame(updateBalance);
 }
+function playBalancePop() {
+    if (!gameConfig.effects.balancePopEnabled) {
+        return;
+    }
+
+    topWinPanel.style.setProperty(
+        "--balance-pop-duration",
+        `${gameConfig.effects.balancePopDuration}ms`
+    );
+
+    topWinPanel.classList.remove("balance-pop");
+
+    void topWinPanel.offsetWidth;
+
+    topWinPanel.classList.add("balance-pop");
+
+    setTimeout(() => {
+        topWinPanel.classList.remove("balance-pop");
+    }, gameConfig.effects.balancePopDuration);
+}
+
+function startBalancePulse() {
+    if (!gameConfig.effects.balancePopEnabled) {
+        return;
+    }
+
+    topWinPanel.classList.remove("balance-pop");
+    topWinPanel.classList.add("balance-pulsing");
+}
+
+function stopBalancePulse() {
+    topWinPanel.classList.remove("balance-pulsing");
+}
+
 function finishOutcome(outcome) {
     renderReels(outcome);
 
@@ -507,7 +613,7 @@ function finishOutcome(outcome) {
     const delay = outcome.balanceDelay || 0;
 
     setTimeout(() => {
-        animateBalanceTo(outcome.balance, outcome.balanceCountDuration);
+        animateBalanceTo(outcome.balance, outcome.balanceCountDuration, outcome);
     }, delay);
 }
 function highlightWinSymbols(outcome) {
@@ -536,9 +642,11 @@ function highlightWinSymbols(outcome) {
 
             symbolElement.classList.add("win-symbol");
 
-            setTimeout(() => {
-                symbolElement.classList.add("pulsing");
-            }, WIN_SYMBOL_POP_DURATION);
+            if (gameConfig.effects.bonusPulseEnabled) {
+    setTimeout(() => {
+        symbolElement.classList.add("pulsing");
+    }, WIN_SYMBOL_POP_DURATION);
+}
         }
     }
 }
@@ -603,6 +711,31 @@ topWinPanel.style.boxShadow = `
     inset 0 -10px 18px rgba(0, 0, 70, 0.65)
 `; 
 }
+
+function applyGameFonts() {
+    const fonts = gameConfig.fonts;
+
+    topWinPanel.style.fontFamily = fonts.balancePanel;
+
+    document.documentElement.style.setProperty(
+        "--coin-value-font-family",
+        fonts.coinValue
+    );
+
+    document.documentElement.style.setProperty(
+        "--coin-particle-font-family",
+        fonts.coinParticle
+    );
+
+    if (ctaTitle) {
+        ctaTitle.style.fontFamily = fonts.ctaTitle;
+    }
+
+    if (ctaButton) {
+        ctaButton.style.fontFamily = fonts.ctaButton;
+    }
+}
+
 function getCurrentSymbolHeight() {
     const firstSymbol = reelStrips[0]?.querySelector(".symbol");
 

@@ -25,7 +25,7 @@ const gameConfig = {
 balancePanelTop: "#5d6bff",
 balancePanelMiddle: "#2738e8",
 balancePanelBottom: "#0d1684",
-balancePanelBorder: "#f4d47a",
+balancePanelBorder: "#ffd92f",
 balanceText: "#ffd92f",
 balanceGlow: "rgba(255, 220, 120, 0.45)",
 
@@ -46,6 +46,13 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
         ctaButtonText: "#5c2200"
     },
 
+    fonts: {
+    balancePanel: '"Arial Black", Impact, sans-serif',
+    coinValue: '"Arial Black", Impact, sans-serif',
+    coinParticle: '"Arial Black", Impact, sans-serif',
+    ctaTitle: '"Arial Black", Impact, sans-serif',
+    ctaButton: '"Arial Black", Impact, sans-serif'
+},
 
     // =========================
     // 3. ASSETS
@@ -105,13 +112,40 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
         jackpotFlashDuration: 600,
         smallWinGlowDuration: 500,
         winReelGlowDuration: 900,
-        coinParticleDuration: 800,
         winSymbolPopDuration: 650
     },
 
-    effects: {
-        coinParticleCount: 10
-    },
+effects: {
+    coinParticlesEnabled: true,
+    coinParticleCount: 16,
+    coinParticleDuration: 1300,
+
+    coinParticleMinSize: 20,
+    coinParticleMaxSize: 34,
+
+    coinParticleSpreadX: 210,
+    coinParticleBurstUpMin: 20,
+    coinParticleBurstUpMax: 90,
+    coinParticleFallMin: 120,
+    coinParticleFallMax: 260,
+
+    coinParticleStartScale: 0.35,
+    coinParticleEndScaleMin: 1.15,
+    coinParticleEndScaleMax: 1.75,
+
+    coinParticleStagger: 18,
+
+slotWinGlowEnabled: true,
+slotShineEnabled: false,
+slotShineDuration: 900,
+
+reelWinGlowEnabled: true,
+anticipationGlowEnabled: true,
+bonusPulseEnabled: true,
+
+balancePopEnabled: true,
+balancePopDuration: 620,
+},
 
 
     // =========================
@@ -124,13 +158,13 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     // [6] [7] [8]
 
 
-    startScreen: {
-        reels: [
-            "coin:100.00", "s3", "s1",
-            "coin:250.00", "s1", "s1",
-            "s7", "s2", "s1"
-        ]
-    },
+startScreen: {
+    reels: [
+        "s6", "s3", "s1",
+        "s4", "s2", "s5",
+        "s7", "s6", "s1"
+    ]
+},
 
 
     // =========================
@@ -176,6 +210,8 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     balanceDelay: 500,
     balanceCountDuration: 2000,
 
+    balanceEffect: "pulse",
+
     reelDurations: [900, 1200, 4200],
     reelFillerCounts: [12, 12, 36],
     anticipationReel: 2,
@@ -184,8 +220,8 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     winReels: [0, 1, 2],
     winSymbols: ["bonus"],
     reels: [
-        "coin:350.00", "s2", "s1",
-        "coin:250.00", "bonus", "s3",
+        "s6", "s2", "s1",
+        "s4", "bonus", "s3",
         "bonus", "s7", "bonus"
     ]
 }
@@ -201,7 +237,7 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     cta: {
         title: "BIG WIN!",
         amount: "10 350 A$",
-        buttonText: "CLAIM BONUS"
+        buttonText: "CLAIM!"
     },
 
     offer: {
