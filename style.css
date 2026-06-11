@@ -978,3 +978,62 @@ body {
         opacity: 0.25;
     }
 }
+
+/* === SPIN BUTTON IDLE ANIMATION === */
+
+#spinBtn::after {
+    content: "";
+
+    position: absolute;
+    inset: -8px;
+
+    border-radius: inherit;
+
+    background: radial-gradient(
+        ellipse at center,
+        rgba(255, 220, 80, 0.55) 0%,
+        rgba(255, 160, 20, 0.22) 48%,
+        rgba(255, 160, 20, 0) 72%
+    );
+
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+
+@keyframes spinButtonIdleScale {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.035);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes spinButtonIdleGlow {
+    0% {
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0.25;
+    }
+}
+
+#spinBtn.spin-idle:not(.disabled):not(.cta-ready) {
+    animation: spinButtonIdleScale 1.15s ease-in-out infinite;
+}
+
+#spinBtn.spin-idle:not(.disabled):not(.cta-ready)::after {
+    animation: spinButtonIdleGlow 1.15s ease-in-out infinite;
+}

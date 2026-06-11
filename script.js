@@ -110,6 +110,7 @@ function finishSpin(spinAnimation, outcome) {
     animateReelsToResult(outcome);
 }
 function startSpin() {
+    spinBtn.classList.remove("spin-idle");
     spinCount = spinCount + 1;
 
     if (spinCount > outcomes.length) {
@@ -236,6 +237,8 @@ function initGame() {
     updateGameScale();
     applyGameAssets();
     applyGameFonts();
+
+    spinBtn.classList.add("spin-idle");
 
     spinCount = 0;
     isSpinning = false;
