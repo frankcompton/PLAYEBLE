@@ -183,15 +183,15 @@ function showSmallWin(outcome) {
 }
 function handleOutcomeType(outcome) {
     if (outcome.type === "smallWin") {
-    showSmallWin(outcome);
-    unlockSpinButton();
-    return;
-}
+        showSmallWin(outcome);
+        unlockSpinButton();
+        return;
+    }
 
-   if (outcome.type === "jackpot") {
-    showJackpot(outcome);
-    return;
-}
+    if (outcome.type === "jackpot") {
+        showJackpot(outcome);
+        return;
+    }
 
     unlockSpinButton();
 }
@@ -371,7 +371,7 @@ function prepareReelStrip(reelIndex, outcome) {
     const startOffset = fillerCount * getCurrentSymbolHeight();
 
     reelStrips[reelIndex].style.transitionDuration = "0ms";
-    reelStrips[reelIndex].style.transform = `translateY(-${startOffset}px)`;
+    reelStrips[reelIndex].style.transform = `translate3d(0, -${startOffset}px, 0)`;
 }
 function prepareReelsForSpin(outcome) {
     for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
@@ -392,25 +392,25 @@ function animateReelsToResult(outcome) {
 
         setTimeout(() => {
             reelStrips[reelIndex].style.transitionDuration = `${duration}ms`;
-            reelStrips[reelIndex].style.transform = "translateY(0)";
+            reelStrips[reelIndex].style.transform = "translate3d(0, 0, 0)";
         }, 20);
     }
 
-  if (
-    outcome.anticipationReel !== undefined &&
-    gameConfig.effects.anticipationGlowEnabled
-) {
-    setTimeout(() => {
-        reels[outcome.anticipationReel].classList.add("anticipation-reel");
-    }, outcome.anticipationDelay);
-}
+    if (
+        outcome.anticipationReel !== undefined &&
+        gameConfig.effects.anticipationGlowEnabled
+    ) {
+        setTimeout(() => {
+            reels[outcome.anticipationReel].classList.add("anticipation-reel");
+        }, outcome.anticipationDelay);
+    }
 
     const totalDuration = Math.max(...reelDurations);
 
     setTimeout(() => {
         if (outcome.anticipationReel !== undefined) {
-    reels[outcome.anticipationReel].classList.remove("anticipation-reel");
-}
+            reels[outcome.anticipationReel].classList.remove("anticipation-reel");
+        }
 
         finishOutcome(outcome);
     }, totalDuration + 80);
@@ -517,7 +517,7 @@ function renderReels(outcome) {
             .join("");
 
         reelStrips[reelIndex].style.transitionDuration = "0ms";
-        reelStrips[reelIndex].style.transform = "translateY(0)";
+        reelStrips[reelIndex].style.transform = "translate3d(0, 0, 0)";
 
     }
 }
@@ -605,8 +605,6 @@ function stopBalancePulse() {
 }
 
 function finishOutcome(outcome) {
-    renderReels(outcome);
-
     slotArea.classList.add("result-ready");
 
     popSymbols();
@@ -646,10 +644,10 @@ function highlightWinSymbols(outcome) {
             symbolElement.classList.add("win-symbol");
 
             if (gameConfig.effects.bonusPulseEnabled) {
-    setTimeout(() => {
-        symbolElement.classList.add("pulsing");
-    }, WIN_SYMBOL_POP_DURATION);
-}
+                setTimeout(() => {
+                    symbolElement.classList.add("pulsing");
+                }, WIN_SYMBOL_POP_DURATION);
+            }
         }
     }
 }
@@ -688,7 +686,7 @@ function applyGameTheme() {
 
     ctaButton.style.background = `linear-gradient(${theme.ctaButtonTop}, ${theme.ctaButtonBottom})`;
     ctaButton.style.color = theme.ctaButtonText;
-    
+
 
     const reels = document.querySelectorAll(".reel");
 
@@ -696,7 +694,7 @@ function applyGameTheme() {
         reels[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
         reels[i].style.borderColor = theme.reelBorder;
     }
-   topWinPanel.style.background = `
+    topWinPanel.style.background = `
     linear-gradient(
         180deg,
         ${theme.balancePanelTop} 0%,
@@ -705,14 +703,14 @@ function applyGameTheme() {
     )
 `;
 
-topWinPanel.style.borderColor = theme.balancePanelBorder;
-topWinPanel.style.color = theme.balanceText;
+    topWinPanel.style.borderColor = theme.balancePanelBorder;
+    topWinPanel.style.color = theme.balanceText;
 
-topWinPanel.style.boxShadow = `
+    topWinPanel.style.boxShadow = `
     0 0 14px ${theme.balanceGlow},
     inset 0 4px 0 rgba(255, 255, 255, 0.35),
     inset 0 -10px 18px rgba(0, 0, 70, 0.65)
-`; 
+`;
 }
 
 function applyGameFonts() {
