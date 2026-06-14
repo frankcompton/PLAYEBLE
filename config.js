@@ -147,6 +147,43 @@ balancePopEnabled: true,
 balancePopDuration: 620,
 },
 
+fx: {
+    idleSparksEnabled: true,
+    idleSparkCount: 32,
+    idleSparkMinSize: 2,
+    idleSparkMaxSize: 4,
+    idleSparkMinSpeedY: 0.25,
+    idleSparkMaxSpeedY: 0.55,
+    idleSparkMaxSpeedX: 0.16,
+
+    jackpotFlashEnabled: true,
+    jackpotFlashDuration: 280,
+
+    jackpotRaysEnabled: true,
+    jackpotRaysDuration: 1400,
+    jackpotRayCount: 18,
+    jackpotRayLength: 360,
+    jackpotRayWidth: 34,
+    jackpotRaysRotationSpeed: 0.012,
+
+    jackpotBurstEnabled: true,
+    jackpotBurstCount: 60,
+    jackpotBurstDuration: 1500,
+
+    jackpotBurstMinSize: 4,
+    jackpotBurstMaxSize: 10,
+
+    jackpotBurstSpreadX: 280,
+    jackpotBurstLaunchUpMin: 40,
+    jackpotBurstLaunchUpMax: 140,
+    jackpotBurstFallMin: 140,
+    jackpotBurstFallMax: 280,
+
+    jackpotBurstGravity: 0.12,
+    jackpotBurstRotationMin: 0.03,
+    jackpotBurstRotationMax: 0.12
+},
+
 
     // =========================
     // 5. START SCREEN

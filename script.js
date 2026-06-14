@@ -76,6 +76,10 @@ function setReels(reels) {
 }
 function showJackpot(outcome) {
 
+    if (window.playJackpotFx) {
+    window.playJackpotFx();
+}
+
 
     highlightWinReels(outcome);
     highlightWinSymbols(outcome);
