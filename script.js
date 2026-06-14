@@ -147,6 +147,10 @@ function startSpinVisuals() {
 
     slotArea.classList.remove("result-ready");
 
+    if (window.playSpinStartFx) {
+        window.playSpinStartFx();
+    }
+
     startReelSpinVisuals();
 }
 
@@ -161,9 +165,11 @@ function showOutcome(outcome) {
     popSymbols();
 }
 function showSmallWin(outcome) {
-
-
     const winReels = outcome.winReels || [];
+
+    if (window.playSmallWinFx) {
+        window.playSmallWinFx(winReels);
+    }
 
     for (let i = 0; i < winReels.length; i++) {
         const reelIndex = winReels[i];
@@ -219,6 +225,10 @@ function showOverlayAndPopup() {
 function showCta() {
     spinBtn.classList.add("cta-ready");
 
+    if (window.playCtaFx) {
+        window.playCtaFx();
+    }
+
     showOverlayAndPopup();
 
     isCtaActive = true;
@@ -253,6 +263,14 @@ function initGame() {
     slotArea.classList.remove("jackpot-state");
     slotArea.classList.remove("jackpot-flash");
     slotArea.classList.remove("small-win");
+
+    if (window.stopCoinRain) {
+        window.stopCoinRain();
+    }
+
+    if (window.stopAnticipationFx) {
+        window.stopAnticipationFx();
+    }
 
     overlay.style.display = "none";
     overlay.classList.remove("show");
@@ -398,6 +416,12 @@ function animateReelsToResult(outcome) {
             reelStrips[reelIndex].style.transitionDuration = `${duration}ms`;
             reelStrips[reelIndex].style.transform = "translate3d(0, 0, 0)";
         }, 20);
+
+        setTimeout(() => {
+            if (window.playReelStopFx) {
+                window.playReelStopFx(reelIndex);
+            }
+        }, duration + 30);
     }
 
     if (
@@ -406,6 +430,10 @@ function animateReelsToResult(outcome) {
     ) {
         setTimeout(() => {
             reels[outcome.anticipationReel].classList.add("anticipation-reel");
+
+            if (window.playAnticipationFx) {
+                window.playAnticipationFx(outcome.anticipationReel);
+            }
         }, outcome.anticipationDelay);
     }
 
@@ -414,6 +442,10 @@ function animateReelsToResult(outcome) {
     setTimeout(() => {
         if (outcome.anticipationReel !== undefined) {
             reels[outcome.anticipationReel].classList.remove("anticipation-reel");
+
+            if (window.stopAnticipationFx) {
+                window.stopAnticipationFx();
+            }
         }
 
         finishOutcome(outcome);
@@ -434,7 +466,7 @@ function createCoinParticle(startX, startY) {
     const coin = document.createElement("div");
 
     coin.classList.add("coin-particle");
-    coin.textContent = "$";
+    coin.textContent = gameConfig.currency.effectCoinText || "$";
 
     coin.style.left = `${startX}px`;
     coin.style.top = `${startY}px`;
@@ -556,6 +588,8 @@ function animateBalanceTo(targetBalance, duration, outcome) {
         playBalancePop();
     }
 
+    let lastBalanceSparkStep = 0;
+
     function updateBalance(currentTime) {
         const elapsedTime = currentTime - startTime;
         const progress = Math.min(elapsedTime / duration, 1);
@@ -563,6 +597,15 @@ function animateBalanceTo(targetBalance, duration, outcome) {
         const currentValue = startBalance + difference * progress;
 
         topWinPanel.textContent = formatBalance(currentValue);
+
+        if (difference !== 0 && window.playBalanceSparkFx) {
+            const sparkStep = Math.floor(progress * 8);
+
+            if (sparkStep > lastBalanceSparkStep) {
+                lastBalanceSparkStep = sparkStep;
+                window.playBalanceSparkFx();
+            }
+        }
 
         if (progress < 1) {
             requestAnimationFrame(updateBalance);
@@ -610,6 +653,14 @@ function stopBalancePulse() {
 
 function finishOutcome(outcome) {
     slotArea.classList.add("result-ready");
+
+    if (
+        gameConfig.fx.slotShineEnabled &&
+        window.playSlotShineFx &&
+        (outcome.type === "smallWin" || outcome.type === "jackpot")
+    ) {
+        window.playSlotShineFx();
+    }
 
     popSymbols();
 
@@ -673,6 +724,11 @@ function applyGameAssets() {
 
     gameLogo.src = gameConfig.assets.logo;
 
+    document.documentElement.style.setProperty(
+    "--balance-panel-image",
+    `url("${gameConfig.assets.ui.balancePanel}")`
+);
+
     document.body.style.background = `
         linear-gradient(${theme.bodyOverlayTop}, ${theme.bodyOverlayBottom}),
         url("${gameConfig.assets.background}") center center / cover no-repeat
@@ -698,23 +754,7 @@ function applyGameTheme() {
         reels[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
         reels[i].style.borderColor = theme.reelBorder;
     }
-    topWinPanel.style.background = `
-    linear-gradient(
-        180deg,
-        ${theme.balancePanelTop} 0%,
-        ${theme.balancePanelMiddle} 42%,
-        ${theme.balancePanelBottom} 100%
-    )
-`;
-
-    topWinPanel.style.borderColor = theme.balancePanelBorder;
-    topWinPanel.style.color = theme.balanceText;
-
-    topWinPanel.style.boxShadow = `
-    0 0 14px ${theme.balanceGlow},
-    inset 0 4px 0 rgba(255, 255, 255, 0.35),
-    inset 0 -10px 18px rgba(0, 0, 70, 0.65)
-`;
+topWinPanel.style.color = theme.balanceText;
 }
 
 function applyGameFonts() {

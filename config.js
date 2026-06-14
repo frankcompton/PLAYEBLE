@@ -8,6 +8,10 @@ const gameConfig = {
         currency: "A$"
     },
 
+    currency: {
+    effectCoinText: "$"
+},
+
     scene: {
         baseWidth: 430,
         baseHeight: 760,
@@ -19,8 +23,8 @@ const gameConfig = {
     // =========================
 
     theme: {
-        bodyOverlayTop: "rgba(0, 0, 0, 0.35)",
-        bodyOverlayBottom: "rgba(0, 0, 0, 0.55)",
+        bodyOverlayTop: "rgba(0, 0, 0, 0.10)",
+        bodyOverlayBottom: "rgba(0, 0, 0, 0.20)",
 
 balancePanelTop: "#5d6bff",
 balancePanelMiddle: "#2738e8",
@@ -62,6 +66,10 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     assets: {
     background: "assets/background.webp",
     logo: "assets/logo.webp",
+
+     ui: {
+        balancePanel: "assets/ui/balance-panel.webp"
+    },
 
     symbols: {
         s1: "assets/symbols/cherry.webp",
@@ -149,39 +157,99 @@ balancePopDuration: 620,
 
 fx: {
     idleSparksEnabled: true,
-    idleSparkCount: 32,
+    idleSparkCount: 40,
     idleSparkMinSize: 2,
-    idleSparkMaxSize: 4,
+    idleSparkMaxSize: 5,
     idleSparkMinSpeedY: 0.25,
-    idleSparkMaxSpeedY: 0.55,
-    idleSparkMaxSpeedX: 0.16,
+    idleSparkMaxSpeedY: 0.65,
+    idleSparkMaxSpeedX: 0.2,
+
+    twinkleStarsEnabled: true,
+    twinkleStarCount: 14,
+    twinkleStarMinSize: 3,
+    twinkleStarMaxSize: 6,
+
+    ambientGlowEnabled: true,
+    ambientGlowY: 340,
+    ambientGlowRadius: 210,
+    ambientGlowColor: 0x4cc8ff,
+    ambientGlowAlpha: 0.08,
+    ambientGlowPulse: 0.06,
+
+    spinStartFxEnabled: false,
+    spinStartBurstCount: 18,
+    spinStartSpreadX: 120,
+    spinStartDuration: 480,
+    spinStartY: 360,
+
+    reelLandFxEnabled: false,
+    reelLandBurstCount: 10,
+    reelLandSpreadX: 70,
+    reelLandDuration: 520,
+    reelLandY: 390,
+
+    anticipationParticlesEnabled: false,
+    anticipationParticleCount: 10,
+
+    smallWinBurstEnabled: false,
+    smallWinBurstCount: 22,
+    smallWinSpreadX: 110,
+    smallWinBurstDuration: 750,
+
+    slotShineEnabled: false,
+    slotShineDuration: 900,
+    slotShineY: 250,
+    slotShineWidth: 90,
+    slotShineHeight: 280,
+
+    balanceSparksEnabled: true,
+    balanceSparkCount: 10,
+    balanceSparkSpreadX: 80,
+    balanceSparkDuration: 550,
+
+    ctaConfettiEnabled: true,
+    ctaConfettiCount: 72,
+    ctaConfettiDuration: 2700,
 
     jackpotFlashEnabled: true,
-    jackpotFlashDuration: 280,
+    jackpotFlashDuration: 520,
 
     jackpotRaysEnabled: true,
     jackpotRaysDuration: 1400,
-    jackpotRayCount: 18,
-    jackpotRayLength: 360,
-    jackpotRayWidth: 34,
-    jackpotRaysRotationSpeed: 0.012,
+    jackpotRaysY: 370,
+    jackpotRayCount: 22,
+    jackpotRayLength: 580,
+    jackpotRayWidth: 36,
+    jackpotRaysRotationSpeed: 0.014,
 
     jackpotBurstEnabled: true,
-    jackpotBurstCount: 60,
+    jackpotBurstCount: 72,
+    jackpotStarBurstCount: 18,
     jackpotBurstDuration: 1500,
+    jackpotBurstY: 380,
 
     jackpotBurstMinSize: 4,
-    jackpotBurstMaxSize: 10,
+    jackpotBurstMaxSize: 11,
 
-    jackpotBurstSpreadX: 280,
+    jackpotBurstSpreadX: 300,
     jackpotBurstLaunchUpMin: 40,
-    jackpotBurstLaunchUpMax: 140,
-    jackpotBurstFallMin: 140,
-    jackpotBurstFallMax: 280,
+    jackpotBurstLaunchUpMax: 150,
 
     jackpotBurstGravity: 0.12,
     jackpotBurstRotationMin: 0.03,
-    jackpotBurstRotationMax: 0.12
+    jackpotBurstRotationMax: 0.12,
+
+    jackpotShockwaveEnabled: true,
+    jackpotShockwaveDuration: 680,
+
+    coinRainEnabled: true,
+    coinRainText: "$",
+    coinRainInterval: 5,
+    coinRainMinSize: 12,
+    coinRainMaxSize: 24,
+    coinRainMinSpeed: 1.8,
+    coinRainMaxSpeed: 3.6,
+    coinRainDropDuration: 2600
 },
 
 

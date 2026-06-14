@@ -3,6 +3,10 @@ let fxLayer = null;
 
 let idleSparks = [];
 let burstParticles = [];
+let activeParticles = [];
+let shockwaveRings = [];
+let confettiPieces = [];
+let twinkleStars = [];
 
 let flashOverlay = null;
 let flashLife = 0;
@@ -11,6 +15,15 @@ let flashMaxLife = 1;
 let raysContainer = null;
 let raysLife = 0;
 let raysMaxLife = 1;
+
+let ambientGlow = null;
+let slotShine = null;
+let slotShineLife = 0;
+let slotShineMaxLife = 0;
+
+let anticipationState = null;
+let coinRainActive = false;
+let coinRainTimer = 0;
 
 async function initFx() {
     fxLayer = document.getElementById("fxLayer");
@@ -40,14 +53,41 @@ async function initFx() {
 
     fxLayer.appendChild(fxApp.canvas);
 
+    createAmbientGlow();
     createRaysContainer();
     createFlashOverlay();
+    createSlotShine();
 
     if (gameConfig.fx.idleSparksEnabled) {
         createIdleSparks();
     }
 
+    if (gameConfig.fx.twinkleStarsEnabled) {
+        createTwinkleStars();
+    }
+
     fxApp.ticker.add(updateFx);
+}
+
+function createAmbientGlow() {
+    if (!gameConfig.fx.ambientGlowEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const sceneWidth = gameConfig.scene.baseWidth;
+
+    ambientGlow = new PIXI.Graphics();
+    ambientGlow.x = sceneWidth / 2;
+    ambientGlow.y = fx.ambientGlowY;
+
+    ambientGlow.circle(0, 0, fx.ambientGlowRadius);
+    ambientGlow.fill({ color: fx.ambientGlowColor, alpha: fx.ambientGlowAlpha });
+
+    ambientGlow.alpha = 0.55;
+    ambientGlow.blendMode = "add";
+
+    fxApp.stage.addChildAt(ambientGlow, 0);
 }
 
 function createFlashOverlay() {
@@ -63,13 +103,21 @@ function createFlashOverlay() {
     fxApp.stage.addChild(flashOverlay);
 }
 
+function createSlotShine() {
+    slotShine = new PIXI.Graphics();
+    slotShine.visible = false;
+    slotShine.alpha = 0;
+
+    fxApp.stage.addChild(slotShine);
+}
+
 function createRaysContainer() {
     const fx = gameConfig.fx;
 
     raysContainer = new PIXI.Container();
 
     raysContainer.x = gameConfig.scene.baseWidth / 2;
-    raysContainer.y = 370;
+    raysContainer.y = fx.jackpotRaysY;
 
     raysContainer.alpha = 0;
     raysContainer.visible = false;
@@ -101,15 +149,17 @@ function createIdleSparks() {
     const fx = gameConfig.fx;
     const sceneWidth = gameConfig.scene.baseWidth;
     const sceneHeight = gameConfig.scene.baseHeight;
+    const colors = [0xffd45a, 0x7df6ff, 0xfff2b0, 0xffb400];
 
     for (let i = 0; i < fx.idleSparkCount; i++) {
         const spark = new PIXI.Graphics();
 
         const radius = getRandomNumber(fx.idleSparkMinSize, fx.idleSparkMaxSize);
+        const color = colors[Math.floor(Math.random() * colors.length)];
 
         spark.circle(0, 0, radius);
         spark.fill({
-            color: 0xffd45a,
+            color,
             alpha: getRandomNumber(0.2, 0.75)
         });
 
@@ -120,17 +170,91 @@ function createIdleSparks() {
         spark.speedX = getRandomNumber(-fx.idleSparkMaxSpeedX, fx.idleSparkMaxSpeedX);
 
         spark.life = Math.random() * Math.PI * 2;
+        spark.pulseSpeed = getRandomNumber(0.02, 0.05);
+        spark.baseAlpha = getRandomNumber(0.2, 0.55);
 
         fxApp.stage.addChild(spark);
         idleSparks.push(spark);
     }
 }
 
+function createTwinkleStars() {
+    const fx = gameConfig.fx;
+    const sceneWidth = gameConfig.scene.baseWidth;
+    const sceneHeight = gameConfig.scene.baseHeight;
+
+    for (let i = 0; i < fx.twinkleStarCount; i++) {
+        const star = new PIXI.Graphics();
+
+        const size = getRandomNumber(fx.twinkleStarMinSize, fx.twinkleStarMaxSize);
+
+        drawStarShape(star, size, 0xffe88a);
+
+        star.x = Math.random() * sceneWidth;
+        star.y = Math.random() * sceneHeight * 0.72;
+
+        star.life = Math.random() * Math.PI * 2;
+        star.pulseSpeed = getRandomNumber(0.015, 0.035);
+        star.baseScale = getRandomNumber(0.6, 1.2);
+
+        star.scale.set(star.baseScale);
+        star.alpha = 0;
+        star.blendMode = "add";
+
+        fxApp.stage.addChild(star);
+        twinkleStars.push(star);
+    }
+}
+
+function drawStarShape(graphics, size, color) {
+    const spikes = 4;
+    const outerRadius = size;
+    const innerRadius = size * 0.38;
+
+    graphics.clear();
+
+    for (let i = 0; i < spikes * 2; i++) {
+        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+        const angle = (Math.PI / spikes) * i - Math.PI / 2;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+
+        if (i === 0) {
+            graphics.moveTo(x, y);
+        } else {
+            graphics.lineTo(x, y);
+        }
+    }
+
+    graphics.closePath();
+    graphics.fill({ color, alpha: 0.85 });
+}
+
 function updateFx() {
+    updateAmbientGlow();
     updateIdleSparks();
+    updateTwinkleStars();
     updateRays();
     updateBurstParticles();
+    updateActiveParticles();
+    updateShockwaveRings();
+    updateConfetti();
     updateFlashOverlay();
+    updateSlotShine();
+    updateAnticipationFx();
+    updateCoinRain();
+}
+
+function updateAmbientGlow() {
+    if (!ambientGlow) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const pulse = (Math.sin(Date.now() * 0.0018) + 1) * 0.5;
+
+    ambientGlow.alpha = fx.ambientGlowAlpha + pulse * fx.ambientGlowPulse;
+    ambientGlow.scale.set(0.92 + pulse * 0.12);
 }
 
 function updateIdleSparks() {
@@ -143,9 +267,9 @@ function updateIdleSparks() {
         spark.y -= spark.speedY;
         spark.x += spark.speedX;
 
-        spark.life += 0.03;
+        spark.life += spark.pulseSpeed;
 
-        spark.alpha = 0.25 + (Math.sin(spark.life) + 1) * 0.2;
+        spark.alpha = spark.baseAlpha + (Math.sin(spark.life) + 1) * 0.22;
 
         if (spark.y < -10) {
             spark.y = sceneHeight + 10;
@@ -159,6 +283,20 @@ function updateIdleSparks() {
         if (spark.x > sceneWidth + 10) {
             spark.x = -10;
         }
+    }
+}
+
+function updateTwinkleStars() {
+    for (let i = 0; i < twinkleStars.length; i++) {
+        const star = twinkleStars[i];
+
+        star.life += star.pulseSpeed;
+
+        const wave = (Math.sin(star.life) + 1) * 0.5;
+
+        star.alpha = wave * 0.75;
+        star.rotation = star.life * 0.08;
+        star.scale.set(star.baseScale * (0.75 + wave * 0.35));
     }
 }
 
@@ -208,6 +346,593 @@ function updateBurstParticles() {
     }
 }
 
+function updateActiveParticles() {
+    for (let i = activeParticles.length - 1; i >= 0; i--) {
+        const particle = activeParticles[i];
+
+        particle.life += 1;
+
+        particle.vy += particle.gravity || 0;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.rotation += particle.rotationSpeed || 0;
+
+        const progress = particle.life / particle.maxLife;
+
+        if (particle.fadeStart !== undefined) {
+            if (progress < particle.fadeStart) {
+                particle.alpha = particle.peakAlpha || 1;
+            } else {
+                particle.alpha = (particle.peakAlpha || 1) * (1 - (progress - particle.fadeStart) / (1 - particle.fadeStart));
+            }
+        } else if (progress < 0.3) {
+            particle.alpha = 1;
+        } else {
+            particle.alpha = 1 - progress;
+        }
+
+        if (particle.scaleSpeed) {
+            particle.scale.x += particle.scaleSpeed;
+            particle.scale.y += particle.scaleSpeed;
+        }
+
+        if (particle.life >= particle.maxLife) {
+            fxApp.stage.removeChild(particle);
+            activeParticles.splice(i, 1);
+        }
+    }
+}
+
+function updateShockwaveRings() {
+    for (let i = shockwaveRings.length - 1; i >= 0; i--) {
+        const ring = shockwaveRings[i];
+
+        ring.life += 1;
+
+        const progress = ring.life / ring.maxLife;
+
+        ring.scale.set(ring.startScale + progress * ring.expandScale);
+        ring.alpha = (1 - progress) * ring.peakAlpha;
+
+        if (ring.life >= ring.maxLife) {
+            fxApp.stage.removeChild(ring);
+            shockwaveRings.splice(i, 1);
+        }
+    }
+}
+
+function updateConfetti() {
+    const sceneHeight = gameConfig.scene.baseHeight;
+
+    for (let i = confettiPieces.length - 1; i >= 0; i--) {
+        const piece = confettiPieces[i];
+
+        piece.life += 1;
+
+        piece.vy += piece.gravity;
+        piece.x += piece.vx;
+        piece.y += piece.vy;
+        piece.rotation += piece.rotationSpeed;
+
+        const progress = piece.life / piece.maxLife;
+
+        piece.alpha = progress < 0.85 ? 1 : 1 - (progress - 0.85) / 0.15;
+
+        if (piece.y > sceneHeight + 40 || piece.life >= piece.maxLife) {
+            fxApp.stage.removeChild(piece);
+            confettiPieces.splice(i, 1);
+        }
+    }
+}
+
+function updateSlotShine() {
+    if (!slotShine || slotShineLife <= 0) {
+        return;
+    }
+
+    slotShineLife -= 1;
+
+    const progress = 1 - slotShineLife / slotShineMaxLife;
+    const fx = gameConfig.fx;
+
+    slotShine.clear();
+    slotShine.visible = true;
+
+    const shineWidth = fx.slotShineWidth;
+    const shineHeight = fx.slotShineHeight;
+    const sweepX = -shineWidth + progress * (gameConfig.scene.baseWidth + shineWidth * 2);
+
+    slotShine.rect(sweepX, fx.slotShineY, shineWidth, shineHeight);
+    slotShine.fill({ color: 0xffffff, alpha: 0.18 });
+
+    slotShine.alpha = progress < 0.15
+        ? progress / 0.15
+        : progress > 0.85
+            ? (1 - progress) / 0.15
+            : 1;
+
+    if (slotShineLife <= 0) {
+        slotShine.visible = false;
+        slotShine.alpha = 0;
+    }
+}
+
+function updateAnticipationFx() {
+    if (!anticipationState) {
+        return;
+    }
+
+    anticipationState.life += 1;
+
+    const particles = anticipationState.particles;
+
+    for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i];
+
+        particle.orbitAngle += particle.orbitSpeed;
+        particle.x = anticipationState.centerX + Math.cos(particle.orbitAngle) * particle.orbitRadius;
+        particle.y = anticipationState.centerY + Math.sin(particle.orbitAngle) * particle.orbitRadius * 0.55;
+
+        particle.alpha = 0.45 + (Math.sin(particle.orbitAngle * 3) + 1) * 0.25;
+        particle.scale.set(particle.baseScale + Math.sin(particle.orbitAngle * 2) * 0.15);
+    }
+}
+
+function updateCoinRain() {
+    if (!coinRainActive) {
+        return;
+    }
+
+    coinRainTimer += 1;
+
+    const fx = gameConfig.fx;
+
+    if (coinRainTimer % fx.coinRainInterval === 0) {
+        spawnCoinRainDrop();
+    }
+}
+ 
+function createPixiCoin(radius) {
+    const coin = new PIXI.Container();
+
+    const body = new PIXI.Graphics();
+
+    body.circle(0, 0, radius);
+    body.fill({
+        color: 0xffd84a,
+        alpha: 1
+    });
+
+    body.circle(-radius * 0.28, -radius * 0.28, radius * 0.45);
+    body.fill({
+        color: 0xfff8b8,
+        alpha: 0.55
+    });
+
+    const ring = new PIXI.Graphics();
+
+    ring.circle(0, 0, radius * 0.65);
+    ring.stroke({
+        width: Math.max(1, radius * 0.08),
+        color: 0x8a4a00,
+        alpha: 0.38
+    });
+
+    const label = new PIXI.Text({
+        text: gameConfig.currency.effectCoinText || "$",
+        style: {
+            fontFamily: "Arial Black, Impact, sans-serif",
+            fontSize: Math.round(radius * getCoinTextScale()),
+            fontWeight: "900",
+            fill: 0x7b2500,
+            stroke: {
+                color: 0xffef8a,
+                width: Math.max(1, radius * 0.08)
+            }
+        }
+    });
+
+    label.anchor.set(0.5);
+    label.y = -radius * 0.04;
+
+    coin.addChild(body);
+    coin.addChild(ring);
+    coin.addChild(label);
+
+    return coin;
+}
+
+function getCoinTextScale() {
+    const text = gameConfig.currency.effectCoinText || "$";
+
+    if (text.length >= 2) {
+        return 0.62;
+    }
+
+    return 0.95;
+}
+
+function spawnCoinRainDrop() {
+    const fx = gameConfig.fx;
+    const sceneWidth = gameConfig.scene.baseWidth;
+
+    const size = getRandomNumber(fx.coinRainMinSize, fx.coinRainMaxSize);
+    const particle = createPixiCoin(size);
+
+    particle.x = getRandomNumber(40, sceneWidth - 40);
+    particle.y = -10;
+
+    particle.vx = getRandomNumber(-0.4, 0.4);
+    particle.vy = getRandomNumber(fx.coinRainMinSpeed, fx.coinRainMaxSpeed);
+    particle.gravity = 0.04;
+    particle.rotationSpeed = getRandomNumber(-0.08, 0.08);
+
+    particle.life = 0;
+    particle.maxLife = Math.max(1, Math.round(fx.coinRainDropDuration / 16));
+    particle.fadeStart = 0.7;
+    particle.peakAlpha = 0.9;
+
+    particle.scale.set(getRandomNumber(0.85, 1.15));
+
+    fxApp.stage.addChild(particle);
+    activeParticles.push(particle);
+}
+
+function getReelCenterPoint(reelIndex) {
+    const reels = document.querySelectorAll(".reel");
+
+    if (!reels[reelIndex]) {
+        const fx = gameConfig.fx;
+        const slotWidth = 390;
+        const reelWidth = (slotWidth - 16 - 12) / 3;
+        const startX = (gameConfig.scene.baseWidth - slotWidth) / 2 + 8;
+
+        return {
+            x: startX + reelWidth * (reelIndex + 0.5) + reelIndex * 6,
+            y: fx.reelLandY
+        };
+    }
+
+    const rect = reels[reelIndex].getBoundingClientRect();
+    const canvasRect = fxApp.canvas.getBoundingClientRect();
+
+    const scaleX = gameConfig.scene.baseWidth / canvasRect.width;
+    const scaleY = gameConfig.scene.baseHeight / canvasRect.height;
+
+    return {
+        x: (rect.left + rect.width / 2 - canvasRect.left) * scaleX,
+        y: (rect.bottom - rect.height * 0.12 - canvasRect.top) * scaleY
+    };
+}
+
+function getBalancePanelPoint() {
+    const panel = document.getElementById("topWinPanel");
+
+    if (!panel) {
+        return {
+            x: gameConfig.scene.baseWidth / 2,
+            y: 40
+        };
+    }
+
+    const rect = panel.getBoundingClientRect();
+    const canvasRect = fxApp.canvas.getBoundingClientRect();
+
+    const scaleX = gameConfig.scene.baseWidth / canvasRect.width;
+    const scaleY = gameConfig.scene.baseHeight / canvasRect.height;
+
+    return {
+        x: (rect.left + rect.width / 2 - canvasRect.left) * scaleX,
+        y: (rect.top + rect.height * 0.5 - canvasRect.top) * scaleY
+    };
+}
+
+function spawnSparkBurst(x, y, options) {
+    if (!fxApp) {
+        return;
+    }
+
+    const count = options.count || 12;
+    const colors = options.colors || [0xffe27a, 0xffc83d, 0x7df6ff, 0xfff2b0];
+    const spreadX = options.spreadX || 90;
+    const launchUpMin = options.launchUpMin || 20;
+    const launchUpMax = options.launchUpMax || 70;
+    const duration = options.duration || 700;
+    const minSize = options.minSize || 2;
+    const maxSize = options.maxSize || 5;
+    const gravity = options.gravity !== undefined ? options.gravity : 0.08;
+
+    for (let i = 0; i < count; i++) {
+        const particle = new PIXI.Graphics();
+        const size = getRandomNumber(minSize, maxSize);
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        particle.circle(0, 0, size);
+        particle.fill({ color, alpha: 1 });
+
+        particle.x = x + getRandomNumber(-8, 8);
+        particle.y = y + getRandomNumber(-4, 4);
+
+        particle.vx = getRandomNumber(-spreadX, spreadX) / 40;
+        particle.vy = -getRandomNumber(launchUpMin, launchUpMax) / 28;
+
+        particle.gravity = gravity;
+        particle.rotationSpeed = getRandomNumber(-0.12, 0.12);
+        particle.life = 0;
+        particle.maxLife = Math.max(1, Math.round(duration / 16));
+        particle.scale.set(getRandomNumber(0.7, 1.1));
+        particle.fadeStart = 0.35;
+
+        fxApp.stage.addChild(particle);
+        activeParticles.push(particle);
+    }
+}
+
+function spawnShockwaveRing(x, y, options) {
+    if (!fxApp) {
+        return;
+    }
+
+    const ring = new PIXI.Graphics();
+    const radius = options.radius || 18;
+
+    ring.circle(0, 0, radius);
+    ring.stroke({
+        color: options.color || 0xffd45a,
+        width: options.width || 3,
+        alpha: 0.85
+    });
+
+    ring.x = x;
+    ring.y = y;
+    ring.blendMode = "add";
+
+    ring.life = 0;
+    ring.maxLife = Math.max(1, Math.round((options.duration || 500) / 16));
+    ring.startScale = options.startScale || 0.4;
+    ring.expandScale = options.expandScale || 2.4;
+    ring.peakAlpha = options.peakAlpha || 0.75;
+
+    fxApp.stage.addChild(ring);
+    shockwaveRings.push(ring);
+}
+
+function playSpinStartFx() {
+    if (!fxApp || !gameConfig.fx.spinStartFxEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const centerX = gameConfig.scene.baseWidth / 2;
+    const centerY = fx.spinStartY;
+
+    spawnSparkBurst(centerX, centerY, {
+        count: fx.spinStartBurstCount,
+        spreadX: fx.spinStartSpreadX,
+        launchUpMin: 10,
+        launchUpMax: 45,
+        duration: fx.spinStartDuration,
+        minSize: 2,
+        maxSize: 4,
+        gravity: 0.05,
+        colors: [0x7df6ff, 0x4cc8ff, 0xffffff, 0xffe27a]
+    });
+
+    spawnShockwaveRing(centerX, centerY, {
+        color: 0x4cc8ff,
+        duration: fx.spinStartDuration,
+        radius: 22,
+        width: 2,
+        startScale: 0.5,
+        expandScale: 3.2,
+        peakAlpha: 0.45
+    });
+}
+
+function playReelStopFx(reelIndex) {
+    if (!fxApp || !gameConfig.fx.reelLandFxEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const point = getReelCenterPoint(reelIndex);
+
+    spawnSparkBurst(point.x, point.y, {
+        count: fx.reelLandBurstCount,
+        spreadX: fx.reelLandSpreadX,
+        launchUpMin: 8,
+        launchUpMax: 35,
+        duration: fx.reelLandDuration,
+        minSize: 2,
+        maxSize: 5,
+        gravity: 0.1,
+        colors: [0xffe27a, 0x7df6ff, 0xffffff]
+    });
+
+    if (reelIndex === 2) {
+        spawnShockwaveRing(point.x, point.y, {
+            color: 0xffd45a,
+            duration: 420,
+            radius: 16,
+            width: 2,
+            startScale: 0.35,
+            expandScale: 2,
+            peakAlpha: 0.55
+        });
+    }
+}
+
+function playAnticipationFx(reelIndex) {
+    if (!fxApp || !gameConfig.fx.anticipationParticlesEnabled) {
+        return;
+    }
+
+    stopAnticipationFx();
+
+    const point = getReelCenterPoint(reelIndex);
+    const fx = gameConfig.fx;
+    const particles = [];
+
+    for (let i = 0; i < fx.anticipationParticleCount; i++) {
+        const particle = new PIXI.Graphics();
+        const size = getRandomNumber(2.5, 4.5);
+
+        particle.circle(0, 0, size);
+        particle.fill({ color: 0xffd84a, alpha: 0.9 });
+        particle.blendMode = "add";
+
+        particle.orbitAngle = (Math.PI * 2 / fx.anticipationParticleCount) * i;
+        particle.orbitSpeed = getRandomNumber(0.04, 0.07);
+        particle.orbitRadius = getRandomNumber(28, 52);
+        particle.baseScale = getRandomNumber(0.8, 1.2);
+
+        fxApp.stage.addChild(particle);
+        particles.push(particle);
+    }
+
+    anticipationState = {
+        centerX: point.x,
+        centerY: point.y - 40,
+        particles,
+        life: 0
+    };
+}
+
+function stopAnticipationFx() {
+    if (!anticipationState) {
+        return;
+    }
+
+    for (let i = 0; i < anticipationState.particles.length; i++) {
+        fxApp.stage.removeChild(anticipationState.particles[i]);
+    }
+
+    anticipationState = null;
+}
+
+function playSmallWinFx(winReels) {
+    if (!fxApp || !gameConfig.fx.smallWinBurstEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const reels = winReels || [0];
+
+    for (let i = 0; i < reels.length; i++) {
+        const point = getReelCenterPoint(reels[i]);
+
+        spawnSparkBurst(point.x, point.y - 50, {
+            count: fx.smallWinBurstCount,
+            spreadX: fx.smallWinSpreadX,
+            launchUpMin: 25,
+            launchUpMax: 80,
+            duration: fx.smallWinBurstDuration,
+            minSize: 3,
+            maxSize: 7,
+            gravity: 0.07,
+            colors: [0xffe27a, 0xffc83d, 0xffb400, 0xfff2b0]
+        });
+
+        spawnShockwaveRing(point.x, point.y - 30, {
+            color: 0xffd45a,
+            duration: 600,
+            radius: 20,
+            width: 2.5,
+            startScale: 0.4,
+            expandScale: 2.6,
+            peakAlpha: 0.6
+        });
+    }
+}
+
+function playSlotShineFx() {
+    if (!fxApp || !gameConfig.fx.slotShineEnabled) {
+        return;
+    }
+
+    slotShineMaxLife = Math.max(1, Math.round(gameConfig.fx.slotShineDuration / 16));
+    slotShineLife = slotShineMaxLife;
+}
+
+function playBalanceSparkFx() {
+    if (!fxApp || !gameConfig.fx.balanceSparksEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const point = getBalancePanelPoint();
+
+    spawnSparkBurst(point.x, point.y, {
+        count: fx.balanceSparkCount,
+        spreadX: fx.balanceSparkSpreadX,
+        launchUpMin: 12,
+        launchUpMax: 40,
+        duration: fx.balanceSparkDuration,
+        minSize: 2,
+        maxSize: 4,
+        gravity: 0.06,
+        colors: [0xffd92f, 0xffe978, 0xffffff, 0xffb400]
+    });
+}
+
+function playCtaFx() {
+    if (!fxApp || !gameConfig.fx.ctaConfettiEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const sceneWidth = gameConfig.scene.baseWidth;
+    const colors = [0xffd45a, 0xff6b6b, 0x7df6ff, 0xff85c8, 0x8bff7a, 0xffffff];
+
+    for (let i = 0; i < fx.ctaConfettiCount; i++) {
+        const piece = new PIXI.Graphics();
+        const width = getRandomNumber(5, 9);
+        const height = getRandomNumber(8, 14);
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        piece.rect(-width / 2, -height / 2, width, height);
+        piece.fill({ color, alpha: 1 });
+
+        piece.x = getRandomNumber(sceneWidth * 0.15, sceneWidth * 0.85);
+        piece.y = -getRandomNumber(10, 120);
+
+        piece.vx = getRandomNumber(-1.8, 1.8);
+        piece.vy = getRandomNumber(1.2, 3.4);
+        piece.gravity = 0.05;
+        piece.rotationSpeed = getRandomNumber(-0.14, 0.14);
+        piece.life = 0;
+        piece.maxLife = Math.max(1, Math.round(fx.ctaConfettiDuration / 16));
+
+        fxApp.stage.addChild(piece);
+        confettiPieces.push(piece);
+    }
+
+    spawnSparkBurst(sceneWidth / 2, 120, {
+        count: 24,
+        spreadX: 180,
+        launchUpMin: 30,
+        launchUpMax: 90,
+        duration: 900,
+        minSize: 3,
+        maxSize: 6,
+        gravity: 0.06,
+        colors: [0xffe27a, 0xffc83d, 0xffffff]
+    });
+}
+
+function startCoinRain() {
+    if (!gameConfig.fx.coinRainEnabled) {
+        return;
+    }
+
+    coinRainActive = true;
+    coinRainTimer = 0;
+}
+
+function stopCoinRain() {
+    coinRainActive = false;
+}
+
 function playJackpotFx() {
     if (!fxApp) {
         return;
@@ -224,6 +949,12 @@ function playJackpotFx() {
     if (gameConfig.fx.jackpotBurstEnabled) {
         playJackpotBurst();
     }
+
+    if (gameConfig.fx.jackpotShockwaveEnabled) {
+        playJackpotShockwave();
+    }
+
+    startCoinRain();
 }
 
 function playJackpotFlash() {
@@ -250,10 +981,34 @@ function playJackpotBurst() {
     const fx = gameConfig.fx;
 
     const startX = gameConfig.scene.baseWidth / 2;
-    const startY = 380;
+    const startY = fx.jackpotBurstY;
 
     for (let i = 0; i < fx.jackpotBurstCount; i++) {
         createBurstParticle(startX, startY);
+    }
+
+    for (let i = 0; i < fx.jackpotStarBurstCount; i++) {
+        createStarBurstParticle(startX, startY);
+    }
+}
+
+function playJackpotShockwave() {
+    const fx = gameConfig.fx;
+    const centerX = gameConfig.scene.baseWidth / 2;
+    const centerY = fx.jackpotBurstY;
+
+    for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+            spawnShockwaveRing(centerX, centerY, {
+                color: i === 0 ? 0xffffff : 0xffd45a,
+                duration: fx.jackpotShockwaveDuration,
+                radius: 24 + i * 8,
+                width: 3 - i * 0.5,
+                startScale: 0.3,
+                expandScale: 4.5 + i * 0.8,
+                peakAlpha: 0.7 - i * 0.15
+            });
+        }, i * 120);
     }
 }
 
@@ -295,15 +1050,35 @@ function createBurstParticle(startX, startY) {
     burstParticles.push(particle);
 }
 
+function createStarBurstParticle(startX, startY) {
+    const fx = gameConfig.fx;
+    const particle = new PIXI.Graphics();
+    const size = getRandomNumber(4, 7);
+
+    drawStarShape(particle, size, 0xffffff);
+
+    particle.x = startX + getRandomNumber(-10, 10);
+    particle.y = startY + getRandomNumber(-6, 6);
+
+    particle.vx = getRandomNumber(-fx.jackpotBurstSpreadX * 0.6, fx.jackpotBurstSpreadX * 0.6) / 30;
+    particle.vy = -getRandomNumber(fx.jackpotBurstLaunchUpMin, fx.jackpotBurstLaunchUpMax) / 18;
+
+    particle.gravity = fx.jackpotBurstGravity * 0.8;
+    particle.rotationSpeed = getRandomNumber(0.06, 0.14) * (Math.random() > 0.5 ? 1 : -1);
+    particle.life = 0;
+    particle.maxLife = Math.max(1, Math.round(fx.jackpotBurstDuration * 0.85 / 16));
+    particle.fadeStart = 0.25;
+    particle.peakAlpha = 1;
+    particle.scale.set(getRandomNumber(0.7, 1.2));
+    particle.blendMode = "add";
+
+    fxApp.stage.addChild(particle);
+    activeParticles.push(particle);
+}
+
 function getRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
-
-window.playJackpotFx = playJackpotFx;
-
-window.addEventListener("load", () => {
-    initFx();
-});
 
 function updateRays() {
     if (!raysContainer || raysLife <= 0) {
@@ -331,3 +1106,18 @@ function updateRays() {
         raysContainer.visible = false;
     }
 }
+
+window.playJackpotFx = playJackpotFx;
+window.playSpinStartFx = playSpinStartFx;
+window.playReelStopFx = playReelStopFx;
+window.playAnticipationFx = playAnticipationFx;
+window.stopAnticipationFx = stopAnticipationFx;
+window.playSmallWinFx = playSmallWinFx;
+window.playSlotShineFx = playSlotShineFx;
+window.playBalanceSparkFx = playBalanceSparkFx;
+window.playCtaFx = playCtaFx;
+window.stopCoinRain = stopCoinRain;
+
+window.addEventListener("load", () => {
+    initFx();
+});
