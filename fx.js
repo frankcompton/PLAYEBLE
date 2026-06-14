@@ -39,13 +39,13 @@ async function initFx() {
     fxApp = new PIXI.Application();
 
     await fxApp.init({
-        width: sceneWidth,
-        height: sceneHeight,
-        backgroundAlpha: 0,
-        antialias: true,
-        resolution: window.devicePixelRatio || 1,
-        autoDensity: true
-    });
+    width: window.innerWidth,
+    height: window.innerHeight,
+    backgroundAlpha: 0,
+    antialias: true,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true
+});
 
     fxApp.canvas.style.width = "100%";
     fxApp.canvas.style.height = "100%";
@@ -91,11 +91,9 @@ function createAmbientGlow() {
 }
 
 function createFlashOverlay() {
-    const sceneWidth = gameConfig.scene.baseWidth;
-    const sceneHeight = gameConfig.scene.baseHeight;
-
     flashOverlay = new PIXI.Graphics();
-    flashOverlay.rect(0, 0, sceneWidth, sceneHeight);
+
+    flashOverlay.rect(0, 0, window.innerWidth, window.innerHeight);
     flashOverlay.fill({ color: 0xfff4b0, alpha: 1 });
 
     flashOverlay.alpha = 0;
@@ -116,8 +114,8 @@ function createRaysContainer() {
 
     raysContainer = new PIXI.Container();
 
-    raysContainer.x = gameConfig.scene.baseWidth / 2;
-    raysContainer.y = fx.jackpotRaysY;
+    raysContainer.x = 0;
+    raysContainer.y = 0;
 
     raysContainer.alpha = 0;
     raysContainer.visible = false;
@@ -147,8 +145,8 @@ function createRaysContainer() {
 
 function createIdleSparks() {
     const fx = gameConfig.fx;
-    const sceneWidth = gameConfig.scene.baseWidth;
-    const sceneHeight = gameConfig.scene.baseHeight;
+    const sceneWidth = window.innerWidth;
+    const sceneHeight = window.innerHeight;
     const colors = [0xffd45a, 0x7df6ff, 0xfff2b0, 0xffb400];
 
     for (let i = 0; i < fx.idleSparkCount; i++) {
@@ -258,8 +256,8 @@ function updateAmbientGlow() {
 }
 
 function updateIdleSparks() {
-    const sceneWidth = gameConfig.scene.baseWidth;
-    const sceneHeight = gameConfig.scene.baseHeight;
+    const sceneWidth = window.innerWidth;
+    const sceneHeight = window.innerHeight;
 
     for (let i = 0; i < idleSparks.length; i++) {
         const spark = idleSparks[i];
@@ -554,7 +552,7 @@ function getCoinTextScale() {
 
 function spawnCoinRainDrop() {
     const fx = gameConfig.fx;
-    const sceneWidth = gameConfig.scene.baseWidth;
+    const sceneWidth = window.innerWidth;
 
     const size = getRandomNumber(fx.coinRainMinSize, fx.coinRainMaxSize);
     const particle = createPixiCoin(size);
@@ -582,26 +580,17 @@ function getReelCenterPoint(reelIndex) {
     const reels = document.querySelectorAll(".reel");
 
     if (!reels[reelIndex]) {
-        const fx = gameConfig.fx;
-        const slotWidth = 390;
-        const reelWidth = (slotWidth - 16 - 12) / 3;
-        const startX = (gameConfig.scene.baseWidth - slotWidth) / 2 + 8;
-
-        return {
-            x: startX + reelWidth * (reelIndex + 0.5) + reelIndex * 6,
-            y: fx.reelLandY
-        };
+        return getScreenPointFromGamePoint(
+            gameConfig.scene.baseWidth / 2,
+            gameConfig.fx.reelLandY
+        );
     }
 
     const rect = reels[reelIndex].getBoundingClientRect();
-    const canvasRect = fxApp.canvas.getBoundingClientRect();
-
-    const scaleX = gameConfig.scene.baseWidth / canvasRect.width;
-    const scaleY = gameConfig.scene.baseHeight / canvasRect.height;
 
     return {
-        x: (rect.left + rect.width / 2 - canvasRect.left) * scaleX,
-        y: (rect.bottom - rect.height * 0.12 - canvasRect.top) * scaleY
+        x: rect.left + rect.width / 2,
+        y: rect.bottom - rect.height * 0.12
     };
 }
 
@@ -609,21 +598,17 @@ function getBalancePanelPoint() {
     const panel = document.getElementById("topWinPanel");
 
     if (!panel) {
-        return {
-            x: gameConfig.scene.baseWidth / 2,
-            y: 40
-        };
+        return getScreenPointFromGamePoint(
+            gameConfig.scene.baseWidth / 2,
+            40
+        );
     }
 
     const rect = panel.getBoundingClientRect();
-    const canvasRect = fxApp.canvas.getBoundingClientRect();
-
-    const scaleX = gameConfig.scene.baseWidth / canvasRect.width;
-    const scaleY = gameConfig.scene.baseHeight / canvasRect.height;
 
     return {
-        x: (rect.left + rect.width / 2 - canvasRect.left) * scaleX,
-        y: (rect.top + rect.height * 0.5 - canvasRect.top) * scaleY
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height * 0.5
     };
 }
 
@@ -703,8 +688,13 @@ function playSpinStartFx() {
     }
 
     const fx = gameConfig.fx;
-    const centerX = gameConfig.scene.baseWidth / 2;
-    const centerY = fx.spinStartY;
+    const centerPoint = getScreenPointFromGamePoint(
+    gameConfig.scene.baseWidth / 2,
+    fx.spinStartY
+);
+
+const centerX = centerPoint.x;
+const centerY = centerPoint.y;
 
     spawnSparkBurst(centerX, centerY, {
         count: fx.spinStartBurstCount,
@@ -881,7 +871,7 @@ function playCtaFx() {
     }
 
     const fx = gameConfig.fx;
-    const sceneWidth = gameConfig.scene.baseWidth;
+    const sceneWidth = window.innerWidth;
     const colors = [0xffd45a, 0xff6b6b, 0x7df6ff, 0xff85c8, 0x8bff7a, 0xffffff];
 
     for (let i = 0; i < fx.ctaConfettiCount; i++) {
@@ -968,20 +958,35 @@ function playJackpotRays() {
         return;
     }
 
+    const raysPoint = getScreenPointFromGamePoint(
+        gameConfig.scene.baseWidth / 2,
+        370
+    );
+
+    raysContainer.x = raysPoint.x;
+    raysContainer.y = raysPoint.y;
+
+    raysContainer.baseScale = getGameScreenScale();
+
     raysMaxLife = Math.max(1, Math.round(gameConfig.fx.jackpotRaysDuration / 16));
     raysLife = raysMaxLife;
 
     raysContainer.visible = true;
     raysContainer.alpha = 0;
     raysContainer.rotation = Math.random() * Math.PI * 2;
-    raysContainer.scale.set(0.85);
+    raysContainer.scale.set(0.85 * raysContainer.baseScale);
 }
 
 function playJackpotBurst() {
     const fx = gameConfig.fx;
 
-    const startX = gameConfig.scene.baseWidth / 2;
-    const startY = fx.jackpotBurstY;
+    const startPoint = getScreenPointFromGamePoint(
+    gameConfig.scene.baseWidth / 2,
+    380
+);
+
+const startX = startPoint.x;
+const startY = startPoint.y;
 
     for (let i = 0; i < fx.jackpotBurstCount; i++) {
         createBurstParticle(startX, startY);
@@ -994,8 +999,13 @@ function playJackpotBurst() {
 
 function playJackpotShockwave() {
     const fx = gameConfig.fx;
-    const centerX = gameConfig.scene.baseWidth / 2;
-    const centerY = fx.jackpotBurstY;
+    const centerPoint = getScreenPointFromGamePoint(
+    gameConfig.scene.baseWidth / 2,
+    fx.jackpotBurstY
+);
+
+const centerX = centerPoint.x;
+const centerY = centerPoint.y;
 
     for (let i = 0; i < 3; i++) {
         setTimeout(() => {
@@ -1099,12 +1109,47 @@ function updateRays() {
         raysContainer.alpha = 1 - progress;
     }
 
-    raysContainer.scale.set(0.85 + progress * 0.25);
+    const baseScale = raysContainer.baseScale || 1;
+
+raysContainer.scale.set(baseScale * (0.85 + progress * 0.25));
 
     if (raysLife <= 0) {
         raysContainer.alpha = 0;
         raysContainer.visible = false;
     }
+}
+
+function getScreenPointFromGamePoint(gameX, gameY) {
+    const gameScaler = document.getElementById("gameScaler");
+
+    if (!gameScaler) {
+        return {
+            x: gameX,
+            y: gameY
+        };
+    }
+
+    const rect = gameScaler.getBoundingClientRect();
+
+    const scaleX = rect.width / gameConfig.scene.baseWidth;
+    const scaleY = rect.height / gameConfig.scene.baseHeight;
+
+    return {
+        x: rect.left + gameX * scaleX,
+        y: rect.top + gameY * scaleY
+    };
+}
+
+function getGameScreenScale() {
+    const gameScaler = document.getElementById("gameScaler");
+
+    if (!gameScaler) {
+        return 1;
+    }
+
+    const rect = gameScaler.getBoundingClientRect();
+
+    return rect.width / gameConfig.scene.baseWidth;
 }
 
 window.playJackpotFx = playJackpotFx;
@@ -1120,4 +1165,18 @@ window.stopCoinRain = stopCoinRain;
 
 window.addEventListener("load", () => {
     initFx();
+});
+window.addEventListener("resize", () => {
+    if (!fxApp) {
+        return;
+    }
+
+    fxApp.renderer.resize(window.innerWidth, window.innerHeight);
+
+    if (flashOverlay) {
+        flashOverlay.clear();
+        flashOverlay.rect(0, 0, window.innerWidth, window.innerHeight);
+        flashOverlay.fill({ color: 0xfff4b0, alpha: 1 });
+        flashOverlay.alpha = 0;
+    }
 });
