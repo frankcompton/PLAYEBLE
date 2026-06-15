@@ -24,6 +24,13 @@ let slotShineMaxLife = 0;
 let anticipationState = null;
 let coinRainActive = false;
 let coinRainTimer = 0;
+let fxViewportWidth = window.innerWidth;
+let fxViewportHeight = window.innerHeight;
+
+function updateFxViewportSize() {
+    fxViewportWidth = window.innerWidth;
+    fxViewportHeight = window.innerHeight;
+}
 
 async function initFx() {
     fxLayer = document.getElementById("fxLayer");
@@ -36,14 +43,16 @@ async function initFx() {
     const sceneWidth = gameConfig.scene.baseWidth;
     const sceneHeight = gameConfig.scene.baseHeight;
 
+    updateFxViewportSize();
+
     fxApp = new PIXI.Application();
 
     await fxApp.init({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: fxViewportWidth,
+    height: fxViewportHeight,
     backgroundAlpha: 0,
-    antialias: true,
-    resolution: window.devicePixelRatio || 1,
+    antialias: false,
+    resolution: Math.min(window.devicePixelRatio || 1, 1.5),
     autoDensity: true
 });
 
@@ -93,7 +102,7 @@ function createAmbientGlow() {
 function createFlashOverlay() {
     flashOverlay = new PIXI.Graphics();
 
-    flashOverlay.rect(0, 0, window.innerWidth, window.innerHeight);
+    flashOverlay.rect(0, 0, fxViewportWidth, fxViewportHeight);
     flashOverlay.fill({ color: 0xfff4b0, alpha: 1 });
 
     flashOverlay.alpha = 0;
@@ -145,8 +154,8 @@ function createRaysContainer() {
 
 function createIdleSparks() {
     const fx = gameConfig.fx;
-    const sceneWidth = window.innerWidth;
-    const sceneHeight = window.innerHeight;
+    const sceneWidth = fxViewportWidth;
+    const sceneHeight = fxViewportHeight;
     const colors = [0xffd45a, 0x7df6ff, 0xfff2b0, 0xffb400];
 
     for (let i = 0; i < fx.idleSparkCount; i++) {
@@ -256,8 +265,8 @@ function updateAmbientGlow() {
 }
 
 function updateIdleSparks() {
-    const sceneWidth = window.innerWidth;
-    const sceneHeight = window.innerHeight;
+    const sceneWidth = fxViewportWidth;
+    const sceneHeight = fxViewportHeight;
 
     for (let i = 0; i < idleSparks.length; i++) {
         const spark = idleSparks[i];
@@ -552,7 +561,7 @@ function getCoinTextScale() {
 
 function spawnCoinRainDrop() {
     const fx = gameConfig.fx;
-    const sceneWidth = window.innerWidth;
+    const sceneWidth = fxViewportWidth;
 
     const size = getRandomNumber(fx.coinRainMinSize, fx.coinRainMaxSize);
     const particle = createPixiCoin(size);
@@ -871,7 +880,7 @@ function playCtaFx() {
     }
 
     const fx = gameConfig.fx;
-    const sceneWidth = window.innerWidth;
+    const sceneWidth = fxViewportWidth;
     const colors = [0xffd45a, 0xff6b6b, 0x7df6ff, 0xff85c8, 0x8bff7a, 0xffffff];
 
     for (let i = 0; i < fx.ctaConfettiCount; i++) {
@@ -1171,11 +1180,13 @@ window.addEventListener("resize", () => {
         return;
     }
 
-    fxApp.renderer.resize(window.innerWidth, window.innerHeight);
+    updateFxViewportSize();
+
+    fxApp.renderer.resize(fxViewportWidth, fxViewportHeight);
 
     if (flashOverlay) {
         flashOverlay.clear();
-        flashOverlay.rect(0, 0, window.innerWidth, window.innerHeight);
+        flashOverlay.rect(0, 0, fxViewportWidth, fxViewportHeight);
         flashOverlay.fill({ color: 0xfff4b0, alpha: 1 });
         flashOverlay.alpha = 0;
     }

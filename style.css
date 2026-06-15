@@ -116,10 +116,28 @@ body {
     flex: 1;
     height: 100%;
 
+    position: relative;
     overflow: hidden;
+    contain: paint;
 
     background: linear-gradient(#101049, #05051f);
     border: 1px solid rgba(120, 220, 255, 0.45);
+}
+
+.reel::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+
+    border: 1px solid rgba(255, 216, 74, 0.75);
+    box-shadow:
+        0 0 22px rgba(255, 216, 74, 0.95),
+        inset 0 0 18px rgba(255, 216, 74, 0.35);
+
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.985);
+    will-change: opacity, transform;
 }
 
 .reel-strip {
@@ -663,30 +681,26 @@ body {
 
 .reel.anticipation-reel {
     border-color: #ffd84a;
-    box-shadow:
-        0 0 18px rgba(255, 216, 74, 0.9),
-        inset 0 0 18px rgba(255, 216, 74, 0.35);
+}
 
+.reel.anticipation-reel::after {
     animation: anticipationPulse 0.45s ease-in-out infinite;
 }
 
 @keyframes anticipationPulse {
     0% {
-        box-shadow:
-            0 0 10px rgba(255, 216, 74, 0.45),
-            inset 0 0 10px rgba(255, 216, 74, 0.2);
+        opacity: 0.45;
+        transform: translate3d(0, 0, 0) scale(0.985);
     }
 
     50% {
-        box-shadow:
-            0 0 26px rgba(255, 216, 74, 1),
-            inset 0 0 22px rgba(255, 216, 74, 0.45);
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
     }
 
     100% {
-        box-shadow:
-            0 0 10px rgba(255, 216, 74, 0.45),
-            inset 0 0 10px rgba(255, 216, 74, 0.2);
+        opacity: 0.45;
+        transform: translate3d(0, 0, 0) scale(0.985);
     }
 }
 
