@@ -16,6 +16,9 @@ const game = document.getElementById("game");
 const slotStage = document.getElementById("slotStage");
 const spinText = document.getElementById("spinText");
 const gameScaler = document.getElementById("gameScaler");
+const preloader = document.getElementById("preloader");
+const preloaderLogo = document.getElementById("preloaderLogo");
+const preloaderProgress = document.getElementById("preloaderProgress");
 
 // State
 let spinCount = 0;
@@ -890,6 +893,109 @@ function updateGameScale() {
     gameScaler.style.setProperty("--game-scale", scale);
 }
 
+function getPreloadImageSources() {
+    const sources = [];
+
+    sources.push(gameConfig.assets.background);
+    sources.push(gameConfig.assets.logo);
+
+    if (gameConfig.assets.ui) {
+        for (const uiAssetName in gameConfig.assets.ui) {
+            sources.push(gameConfig.assets.ui[uiAssetName]);
+        }
+    }
+
+    for (const symbolName in gameConfig.assets.symbols) {
+        sources.push(gameConfig.assets.symbols[symbolName]);
+    }
+
+    return [...new Set(sources.filter(Boolean))];
+}
+
+function preloadImage(src) {
+    return new Promise((resolve) => {
+        const image = new Image();
+
+        image.onload = () => {
+            if (image.decode) {
+                image.decode().then(resolve).catch(resolve);
+                return;
+            }
+
+            resolve();
+        };
+
+        image.onerror = resolve;
+        image.src = src;
+    });
+}
+
+function updatePreloaderProgress(progress) {
+    if (!preloaderProgress) {
+        return;
+    }
+
+    const percent = Math.round(Math.max(0, Math.min(1, progress)) * 100);
+    preloaderProgress.style.width = `${percent}%`;
+}
+
+function hidePreloader() {
+    if (!preloader) {
+        return;
+    }
+
+    updatePreloaderProgress(1);
+    preloader.classList.add("hidden");
+}
+
+function startPreloader() {
+    if (!preloader) {
+        return;
+    }
+
+    const minVisibleTime = 700;
+    const startTime = performance.now();
+    const imageSources = getPreloadImageSources();
+
+    preloader.style.background = `
+        linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
+        url("${gameConfig.assets.background}") center center / cover no-repeat
+    `;
+
+    if (preloaderLogo) {
+        preloaderLogo.src = gameConfig.assets.logo;
+    }
+
+    updatePreloaderProgress(0.06);
+
+    if (imageSources.length === 0) {
+        setTimeout(hidePreloader, minVisibleTime);
+        return;
+    }
+
+    let loadedCount = 0;
+
+    const preloadPromises = imageSources.map((src) => {
+        return preloadImage(src).then(() => {
+            loadedCount += 1;
+            updatePreloaderProgress(loadedCount / imageSources.length);
+        });
+    });
+
+    const windowLoadedPromise = document.readyState === "complete"
+        ? Promise.resolve()
+        : new Promise((resolve) => {
+            window.addEventListener("load", resolve, { once: true });
+        });
+
+    Promise.all([...preloadPromises, windowLoadedPromise]).then(() => {
+        const elapsedTime = performance.now() - startTime;
+        const remainingTime = Math.max(0, minVisibleTime - elapsedTime);
+
+        setTimeout(hidePreloader, remainingTime);
+    });
+}
+
 //Events
 spinBtn.addEventListener("click", handleSpinButtonClick);
 ctaButton.addEventListener("click", goToOffer);
@@ -902,4 +1008,5 @@ window.addEventListener("orientationchange", () => {
     setTimeout(updateGameScale, 300);
 });
 
+startPreloader();
 initGame();

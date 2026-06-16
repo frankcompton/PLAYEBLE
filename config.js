@@ -233,7 +233,7 @@ fx: {
     slotShineWidth: 90,
     slotShineHeight: 280,
 
-    balanceSparksEnabled: true,
+    balanceSparksEnabled: false,
     balanceSparkCount: 10,
     balanceSparkSpreadX: 80,
     balanceSparkDuration: 550,
@@ -275,12 +275,20 @@ fx: {
 
     coinRainEnabled: true,
     coinRainText: "$",
-    coinRainInterval: 5,
+    coinRainInterval: 8,
     coinRainMinSize: 12,
     coinRainMaxSize: 24,
     coinRainMinSpeed: 1.8,
     coinRainMaxSpeed: 3.6,
-    coinRainDropDuration: 2600
+    coinRainDropDuration: 2600,
+
+    softGlowEnabled: true,
+    softGlowDuration: 2200,
+    softGlowColor: 0xffd45a,
+    softGlowRadiusX: 260,
+    softGlowRadiusY: 180,
+    softGlowPeakAlpha: 0.48,
+    softGlowY: 350
 },
 
 

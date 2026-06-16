@@ -24,6 +24,11 @@ let slotShineMaxLife = 0;
 let anticipationState = null;
 let coinRainActive = false;
 let coinRainTimer = 0;
+
+let softGlowContainer = null;
+let softGlowLife = 0;
+let softGlowMaxLife = 1;
+
 let fxViewportWidth = window.innerWidth;
 let fxViewportHeight = window.innerHeight;
 
@@ -63,6 +68,7 @@ async function initFx() {
     fxLayer.appendChild(fxApp.canvas);
 
     createAmbientGlow();
+    createSoftGlow();
     createRaysContainer();
     createFlashOverlay();
     createSlotShine();
@@ -84,11 +90,14 @@ function createAmbientGlow() {
     }
 
     const fx = gameConfig.fx;
-    const sceneWidth = gameConfig.scene.baseWidth;
+    const glowPoint = getScreenPointFromGamePoint(
+        gameConfig.scene.baseWidth / 2,
+        fx.ambientGlowY
+    );
 
     ambientGlow = new PIXI.Graphics();
-    ambientGlow.x = sceneWidth / 2;
-    ambientGlow.y = fx.ambientGlowY;
+    ambientGlow.x = glowPoint.x;
+    ambientGlow.y = glowPoint.y;
 
     ambientGlow.circle(0, 0, fx.ambientGlowRadius);
     ambientGlow.fill({ color: fx.ambientGlowColor, alpha: fx.ambientGlowAlpha });
@@ -97,6 +106,38 @@ function createAmbientGlow() {
     ambientGlow.blendMode = "add";
 
     fxApp.stage.addChildAt(ambientGlow, 0);
+}
+
+function createSoftGlow() {
+    if (!gameConfig.fx.softGlowEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+
+    softGlowContainer = new PIXI.Container();
+    softGlowContainer.visible = false;
+    softGlowContainer.alpha = 0;
+    softGlowContainer.blendMode = "add";
+
+    const layers = [
+        { scale: 1.0, alpha: 0.14 },
+        { scale: 1.35, alpha: 0.09 },
+        { scale: 1.75, alpha: 0.05 }
+    ];
+
+    for (let i = 0; i < layers.length; i++) {
+        const glow = new PIXI.Graphics();
+        const layer = layers[i];
+
+        glow.circle(0, 0, 1);
+        glow.fill({ color: fx.softGlowColor, alpha: layer.alpha });
+        glow.scale.set(fx.softGlowRadiusX * layer.scale, fx.softGlowRadiusY * layer.scale);
+
+        softGlowContainer.addChild(glow);
+    }
+
+    fxApp.stage.addChildAt(softGlowContainer, 1);
 }
 
 function createFlashOverlay() {
@@ -187,8 +228,8 @@ function createIdleSparks() {
 
 function createTwinkleStars() {
     const fx = gameConfig.fx;
-    const sceneWidth = gameConfig.scene.baseWidth;
-    const sceneHeight = gameConfig.scene.baseHeight;
+    const sceneWidth = fxViewportWidth;
+    const sceneHeight = fxViewportHeight;
 
     for (let i = 0; i < fx.twinkleStarCount; i++) {
         const star = new PIXI.Graphics();
@@ -239,6 +280,7 @@ function drawStarShape(graphics, size, color) {
 
 function updateFx() {
     updateAmbientGlow();
+    updateSoftGlow();
     updateIdleSparks();
     updateTwinkleStars();
     updateRays();
@@ -262,6 +304,28 @@ function updateAmbientGlow() {
 
     ambientGlow.alpha = fx.ambientGlowAlpha + pulse * fx.ambientGlowPulse;
     ambientGlow.scale.set(0.92 + pulse * 0.12);
+}
+
+function updateSoftGlow() {
+    if (!softGlowContainer || softGlowLife <= 0) {
+        return;
+    }
+
+    softGlowLife -= 1;
+
+    const progress = 1 - softGlowLife / softGlowMaxLife;
+    const fx = gameConfig.fx;
+
+    let alphaCurve = 1 - Math.abs(progress * 2 - 1);
+    alphaCurve = Math.max(0, Math.min(1, alphaCurve));
+
+    softGlowContainer.alpha = alphaCurve * fx.softGlowPeakAlpha;
+    softGlowContainer.scale.set(0.92 + progress * 0.16);
+
+    if (softGlowLife <= 0) {
+        softGlowContainer.alpha = 0;
+        softGlowContainer.visible = false;
+    }
 }
 
 function updateIdleSparks() {
@@ -385,6 +449,11 @@ function updateActiveParticles() {
 
         if (particle.life >= particle.maxLife) {
             fxApp.stage.removeChild(particle);
+
+            if (particle.isCoinRain) {
+                coinRainDropsAlive = Math.max(0, coinRainDropsAlive - 1);
+            }
+
             activeParticles.splice(i, 1);
         }
     }
@@ -409,7 +478,7 @@ function updateShockwaveRings() {
 }
 
 function updateConfetti() {
-    const sceneHeight = gameConfig.scene.baseHeight;
+    const sceneHeight = fxViewportHeight;
 
     for (let i = confettiPieces.length - 1; i >= 0; i--) {
         const piece = confettiPieces[i];
@@ -928,6 +997,27 @@ function startCoinRain() {
     coinRainTimer = 0;
 }
 
+function playSoftGlow() {
+    if (!softGlowContainer || !gameConfig.fx.softGlowEnabled) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const point = getScreenPointFromGamePoint(
+        gameConfig.scene.baseWidth / 2,
+        fx.softGlowY || 350
+    );
+
+    softGlowContainer.x = point.x;
+    softGlowContainer.y = point.y;
+    softGlowContainer.scale.set(0.92);
+    softGlowContainer.visible = true;
+    softGlowContainer.alpha = 0;
+
+    softGlowMaxLife = Math.max(1, Math.round((fx.softGlowDuration || 2200) / 16));
+    softGlowLife = softGlowMaxLife;
+}
+
 function stopCoinRain() {
     coinRainActive = false;
 }
@@ -953,6 +1043,7 @@ function playJackpotFx() {
         playJackpotShockwave();
     }
 
+    playSoftGlow();
     startCoinRain();
 }
 
@@ -1099,6 +1190,10 @@ function getRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+function lerp(start, end, progress) {
+    return start + (end - start) * progress;
+}
+
 function updateRays() {
     if (!raysContainer || raysLife <= 0) {
         return;
@@ -1189,5 +1284,15 @@ window.addEventListener("resize", () => {
         flashOverlay.rect(0, 0, fxViewportWidth, fxViewportHeight);
         flashOverlay.fill({ color: 0xfff4b0, alpha: 1 });
         flashOverlay.alpha = 0;
+    }
+
+    if (ambientGlow) {
+        const glowPoint = getScreenPointFromGamePoint(
+            gameConfig.scene.baseWidth / 2,
+            gameConfig.fx.ambientGlowY
+        );
+
+        ambientGlow.x = glowPoint.x;
+        ambientGlow.y = glowPoint.y;
     }
 });
