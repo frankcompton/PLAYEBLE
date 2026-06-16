@@ -128,6 +128,10 @@ effects: {
     coinParticleCount: 16,
     coinParticleDuration: 1300,
 
+    coinParticlesFromReelEnabled: false,
+    coinParticlesFromWinCoinsEnabled: true,
+    coinParticlesPerWinCoin: 8,
+
     coinParticleMinSize: 20,
     coinParticleMaxSize: 34,
 
@@ -153,6 +157,33 @@ bonusPulseEnabled: true,
 
 balancePopEnabled: true,
 balancePopDuration: 620,
+},
+
+sfx: {
+    enabled: true,
+    masterVolume: 0.7,
+
+    sounds: {
+        spin: {
+            src: "assets/sfx/spin.mp3",
+            volume: 0.45
+        },
+
+        lose: {
+            src: "assets/sfx/lose.mp3",
+            volume: 0.55
+        },
+
+        smallWin: {
+            src: "assets/sfx/small-win.mp3",
+            volume: 0.75
+        },
+
+        jackpot: {
+            src: "assets/sfx/jackpot.mp3",
+            volume: 0.9
+        }
+    }
 },
 
 fx: {
@@ -297,17 +328,20 @@ startScreen: {
         },
 
         {
-            type: "smallWin",
-            balance: 350,
-            balanceDelay: 300,
-            balanceCountDuration: 500,
-            winReels: [0],
-            reels: [
-                "coin:100.00", "s3", "s1",
-                "coin:250.00", "s1", "s1",
-                "s7", "s2", "s1"
-            ]
-        },
+    type: "smallWin",
+    balance: 350,
+    balanceDelay: 300,
+    balanceCountDuration: 500,
+
+    winReels: [0],
+    winSymbols: ["coin:100.00", "coin:250.00"],
+
+    reels: [
+        "coin:100.00", "s3", "s1",
+        "coin:250.00", "s1", "s1",
+        "s7", "s2", "s1"
+    ]
+},
 
         {
     type: "jackpot",

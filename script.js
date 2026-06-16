@@ -76,6 +76,10 @@ function setReels(reels) {
 }
 function showJackpot(outcome) {
 
+    if (window.playSfx) {
+    window.playSfx("jackpot");
+}
+
     if (window.playJackpotFx) {
     window.playJackpotFx();
 }
@@ -114,6 +118,9 @@ function finishSpin(spinAnimation, outcome) {
     animateReelsToResult(outcome);
 }
 function startSpin() {
+    if (window.unlockSfx) {
+    window.unlockSfx();
+}
     spinBtn.classList.remove("spin-idle");
     spinCount = spinCount + 1;
 
@@ -124,6 +131,10 @@ function startSpin() {
     }
 
     const currentOutcome = outcomes[spinCount - 1];
+
+    if (window.playSfx) {
+    window.playSfx("spin");
+}
 
     startSpinVisuals();
 
@@ -165,6 +176,9 @@ function showOutcome(outcome) {
     popSymbols();
 }
 function showSmallWin(outcome) {
+    if (window.playSfx) {
+    window.playSfx("smallWin");
+}
     const winReels = outcome.winReels || [];
 
     if (window.playSmallWinFx) {
@@ -177,10 +191,10 @@ function showSmallWin(outcome) {
         if (gameConfig.effects.reelWinGlowEnabled) {
             highlightReel(reelIndex);
         }
+    }
 
-        if (gameConfig.effects.coinParticlesEnabled) {
-            spawnCoinParticlesFromReel(reelIndex);
-        }
+    if (gameConfig.effects.coinParticlesEnabled) {
+        spawnCoinParticlesFromWinCoins(outcome);
     }
 
     if (gameConfig.effects.slotWinGlowEnabled) {
@@ -191,7 +205,20 @@ function showSmallWin(outcome) {
         }, SMALL_WIN_GLOW_DURATION);
     }
 }
+
 function handleOutcomeType(outcome) {
+    if (outcome.type !== "jackpot" && window.stopSfx) {
+    window.stopSfx("spin", 80);
+}
+    if (outcome.type === "lose") {
+        if (window.playSfx) {
+            window.playSfx("lose");
+        }
+
+        unlockSpinButton();
+        return;
+    }
+
     if (outcome.type === "smallWin") {
         showSmallWin(outcome);
         unlockSpinButton();
@@ -517,19 +544,71 @@ function createCoinParticle(startX, startY) {
         coin.remove();
     }, effects.coinParticleDuration);
 }
+function spawnCoinParticlesFromPoint(startX, startY, count) {
+    const stagger = gameConfig.effects.coinParticleStagger;
+
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            createCoinParticle(startX, startY);
+        }, i * stagger);
+    }
+}
+
 function spawnCoinParticlesFromReel(reelIndex) {
+    if (!gameConfig.effects.coinParticlesFromReelEnabled) {
+        return;
+    }
+
     const reels = document.querySelectorAll(".reel");
-    const reelRect = reels[reelIndex].getBoundingClientRect();
+    const reel = reels[reelIndex];
+
+    if (!reel) {
+        return;
+    }
+
+    const reelRect = reel.getBoundingClientRect();
 
     const startX = reelRect.left + reelRect.width / 2;
     const startY = reelRect.top + reelRect.height / 2;
 
-    const stagger = gameConfig.effects.coinParticleStagger;
+    spawnCoinParticlesFromPoint(startX, startY, COIN_PARTICLE_COUNT);
+}
 
-    for (let i = 0; i < COIN_PARTICLE_COUNT; i++) {
-        setTimeout(() => {
-            createCoinParticle(startX, startY);
-        }, i * stagger);
+function spawnCoinParticlesFromWinCoins(outcome) {
+    if (!gameConfig.effects.coinParticlesFromWinCoinsEnabled) {
+        return;
+    }
+
+    const winSymbols = outcome.winSymbols || [];
+    const particlesPerCoin = gameConfig.effects.coinParticlesPerWinCoin || 6;
+
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        const symbolsInReel = reelStrips[reelIndex].querySelectorAll(".symbol");
+
+        for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
+            const symbolElement = symbolsInReel[rowIndex];
+
+            if (!symbolElement) {
+                continue;
+            }
+
+            const symbolName = symbolElement.dataset.symbol;
+
+            if (!isCoinSymbol(symbolName)) {
+                continue;
+            }
+
+            if (!winSymbols.includes(symbolName)) {
+                continue;
+            }
+
+            const rect = symbolElement.getBoundingClientRect();
+
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            spawnCoinParticlesFromPoint(startX, startY, particlesPerCoin);
+        }
     }
 }
 

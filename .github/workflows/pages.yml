@@ -31,7 +31,7 @@ jobs:
       - name: Prepare static site
         run: |
           mkdir -p _site
-          cp index.html style.css script.js config.js fx.js _site/
+          cp index.html style.css script.js config.js fx.js RESKIN_GUIDE.md sfx.js _site/
           cp -R assets _site/
           touch _site/.nojekyll
 
