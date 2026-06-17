@@ -52,6 +52,7 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
 
     fonts: {
     balancePanel: '"Arial Black", Impact, sans-serif',
+    ctaAmount: '"Arial Black", Impact, sans-serif',
     coinValue: '"Arial Black", Impact, sans-serif',
     coinParticle: '"Arial Black", Impact, sans-serif',
     ctaTitle: '"Arial Black", Impact, sans-serif',

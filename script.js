@@ -847,6 +847,10 @@ function applyGameFonts() {
 
     topWinPanel.style.fontFamily = fonts.balancePanel;
 
+    if (ctaAmount) {
+    ctaAmount.style.fontFamily = fonts.ctaAmount || fonts.balancePanel;
+}
+
     document.documentElement.style.setProperty(
         "--coin-value-font-family",
         fonts.coinValue
