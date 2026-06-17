@@ -56,28 +56,31 @@ body {
 
 
 #spinBtn {
-    width: var(--spin-size);
-    height: var(--spin-size);
-
-    border-radius: 50%;
-    border: none;
-
-    background: radial-gradient(circle, #ffffff 0%, #f0f0f0 55%, #d5d5d5 100%);
+    width: 144px;
+    height: 144px;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
+    position: relative;
+
+    background-image: var(--spin-button-image);
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
+
     cursor: pointer;
 
-    box-shadow:
-        0 8px 18px rgba(0, 0, 0, 0.35),
-        inset 0 4px 10px rgba(255, 255, 255, 0.9),
-        inset 0 -6px 10px rgba(0, 0, 0, 0.18);
+    transform-origin: center center;
+    overflow: visible;
 
-    flex-shrink: 0;
-
-    transition: transform 0.15s, opacity 0.15s;
+    z-index: 20;
 }
 
 #spinText {
@@ -720,13 +723,9 @@ body {
 
 
 
-#spinBtn {
-    width: 86px;
-    height: 86px;
-}
 
 #spinText {
-    font-size: 22px;
+    font-size: 26px;
 }
 
 .coin-value {
@@ -815,13 +814,8 @@ body {
     padding: 8px;
 }
 
-#spinBtn {
-    width: 96px;
-    height: 96px;
-}
-
 #spinText {
-    font-size: 24px;
+    font-size: 30px;
 }
 
 .coin-value {

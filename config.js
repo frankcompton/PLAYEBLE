@@ -68,7 +68,8 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     logo: "assets/logo.webp",
 
      ui: {
-        balancePanel: "assets/ui/balance-panel.webp"
+        balancePanel: "assets/ui/balance-panel.webp",
+        spinButton: "assets/ui/spin-button.webp"
     },
 
     symbols: {

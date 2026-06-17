@@ -802,19 +802,22 @@ function updateCtaText() {
     ctaButton.textContent = gameConfig.cta.buttonText;
 }
 function applyGameAssets() {
-    const theme = gameConfig.theme;
-
+    document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
     gameLogo.src = gameConfig.assets.logo;
 
-    document.documentElement.style.setProperty(
-    "--balance-panel-image",
-    `url("${gameConfig.assets.ui.balancePanel}")`
-);
+    if (gameConfig.assets.ui.balancePanel) {
+        document.documentElement.style.setProperty(
+            "--balance-panel-image",
+            `url("${gameConfig.assets.ui.balancePanel}")`
+        );
+    }
 
-    document.body.style.background = `
-        linear-gradient(${theme.bodyOverlayTop}, ${theme.bodyOverlayBottom}),
-        url("${gameConfig.assets.background}") center center / cover no-repeat
-    `;
+    if (gameConfig.assets.ui.spinButton) {
+        document.documentElement.style.setProperty(
+            "--spin-button-image",
+            `url("${gameConfig.assets.ui.spinButton}")`
+        );
+    }
 }
 function applyGameTheme() {
     const theme = gameConfig.theme;
