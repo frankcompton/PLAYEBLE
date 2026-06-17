@@ -25,6 +25,7 @@ let spinCount = 0;
 let isSpinning = false;
 let isCtaActive = false;
 let currentBalance = 0;
+let currentSpinSfx = null;
 
 // Settings
 const CTA_DELAY = gameConfig.timings.ctaDelay;
@@ -121,9 +122,7 @@ function finishSpin(spinAnimation, outcome) {
     animateReelsToResult(outcome);
 }
 function startSpin() {
-    if (window.unlockSfx) {
-    window.unlockSfx();
-}
+
     spinBtn.classList.remove("spin-idle");
     spinCount = spinCount + 1;
 
@@ -134,6 +133,12 @@ function startSpin() {
     }
 
     const currentOutcome = outcomes[spinCount - 1];
+
+    currentSpinSfx = currentOutcome.spinSfx || null;
+
+if (currentSpinSfx && window.playSfx) {
+    window.playSfx(currentSpinSfx);
+}
 
     if (window.playSfx) {
     window.playSfx("spin");
@@ -210,9 +215,11 @@ function showSmallWin(outcome) {
 }
 
 function handleOutcomeType(outcome) {
-    if (outcome.type !== "jackpot" && window.stopSfx) {
-    window.stopSfx("spin", 80);
-}
+    if (outcome.type !== "jackpot" && currentSpinSfx && window.stopSfx) {
+        window.stopSfx(currentSpinSfx, 80);
+        currentSpinSfx = null;
+    }
+
     if (outcome.type === "lose") {
         if (window.playSfx) {
             window.playSfx("lose");
@@ -229,6 +236,7 @@ function handleOutcomeType(outcome) {
     }
 
     if (outcome.type === "jackpot") {
+        currentSpinSfx = null;
         showJackpot(outcome);
         return;
     }

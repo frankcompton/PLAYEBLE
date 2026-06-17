@@ -166,7 +166,17 @@ sfx: {
     masterVolume: 0.7,
 
     sounds: {
-        spin: {
+        spin1: {
+            src: "assets/sfx/spin-1.mp3",
+            volume: 0.45
+        },
+
+        spin2: {
+            src: "assets/sfx/spin-2.mp3",
+            volume: 0.45
+        },
+
+        spin3: {
             src: "assets/sfx/spin.mp3",
             volume: 0.45
         },
@@ -327,6 +337,7 @@ startScreen: {
     spins: [
         {
             type: "lose",
+            spinSfx: "spin1",
             balance: 0,
             balanceDelay: 0,
             balanceCountDuration: 0,
@@ -339,6 +350,7 @@ startScreen: {
 
         {
     type: "smallWin",
+    spinSfx: "spin2",
     balance: 350,
     balanceDelay: 300,
     balanceCountDuration: 500,
@@ -355,6 +367,7 @@ startScreen: {
 
         {
     type: "jackpot",
+    spinSfx: "spin3",
     balance: 10350,
     balanceDelay: 500,
     balanceCountDuration: 2000,
