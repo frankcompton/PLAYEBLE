@@ -5,6 +5,9 @@
 
 body {
     background: #05051f;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
 
     color: white;
 
@@ -73,6 +76,7 @@ body {
 
     border: none;
     border-radius: 50%;
+    outline: none;
     box-shadow: none;
 
     cursor: pointer;
@@ -166,12 +170,6 @@ body {
     overflow: visible;
     flex-shrink: 0;
     z-index: 1;
-}
-
-.symbol-icon {
-    display: inline-block;
-    font-size: 34px;
-    font-weight: bold;
 }
 
 #ctaPopup {
@@ -286,42 +284,6 @@ body {
     }
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.08);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-
-@keyframes winPop {
-    0% {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-
-    60% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-#slotWin.win-pop {
-    animation: winPop 0.4s;
-}
-
 @keyframes jackpotFlash {
     0% {
         box-shadow: 0 0 0 gold;
@@ -361,35 +323,12 @@ body {
     animation: smallWinGlow 0.5s;
 }
 
-#slotWin.default-win {
-    color: gold;
-    font-size: 48px;
-}
-
-#slotWin.jackpot-win {
-    color: yellow;
-    font-size: 64px;
-}
-
 #slotArea.jackpot-state {
     box-shadow: 0 0 40px gold;
 }
 
-.symbol-icon {
-    display: inline-block;
-}
-
 .symbol.coin-symbol {
     position: relative;
-}
-
-.symbol.win-symbol {
-    z-index: 10;
-}
-
-.symbol.win-symbol .symbol-img {
-    animation: bonusSymbolPop 0.65s ease-out;
-    filter: drop-shadow(0 0 12px rgba(80, 220, 255, 0.9));
 }
 
 .coin-value {
@@ -417,24 +356,6 @@ body {
     z-index: 3;
 }
 
-@keyframes symbolPop {
-    0% {
-        transform: scale(0.7);
-    }
-
-    60% {
-        transform: scale(1.25);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.symbol-icon.pop {
-    animation: symbolPop 0.30s;
-}
-
 #game {
     width: 100vw;
     height: 100dvh;
@@ -451,33 +372,6 @@ body {
 }
 
 
-
-#coinColumn {
-    width: 25%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    padding-right: 8px;
-}
-
-.coinValue {
-    flex: 1;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin: 4px 0;
-
-    background: radial-gradient(circle, #ffe978, #d78b00);
-    border-radius: 50%;
-
-    color: #8b2a00;
-    font-size: 22px;
-    font-weight: bold;
-}
 
 @keyframes reelWinGlow {
     0% {
@@ -655,11 +549,11 @@ body {
 }
 
 #spinBtn.cta-ready {
-    box-shadow:
-        0 0 24px rgba(255, 220, 80, 0.9),
-        0 8px 18px rgba(0, 0, 0, 0.35),
-        inset 0 4px 10px rgba(255, 255, 255, 0.9),
-        inset 0 -6px 10px rgba(0, 0, 0, 0.18);
+    box-shadow: none;
+}
+
+#spinBtn.cta-ready::after {
+    display: none;
 }
 
 #ctaTitle {
@@ -845,6 +739,8 @@ body {
     color: #ffd92f;
     font-size: 34px;
     font-weight: 900;
+    line-height: 1;
+    padding-bottom: 6px;
 
     text-shadow:
         0 3px 0 #8a2500,

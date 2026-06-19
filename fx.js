@@ -1,3 +1,5 @@
+import { gameConfig } from "./config.js";
+
 let fxApp = null;
 let fxLayer = null;
 
@@ -1266,10 +1268,8 @@ window.playSlotShineFx = playSlotShineFx;
 window.playBalanceSparkFx = playBalanceSparkFx;
 window.playCtaFx = playCtaFx;
 window.stopCoinRain = stopCoinRain;
+window.initFx = initFx;
 
-window.addEventListener("load", () => {
-    initFx();
-});
 window.addEventListener("resize", () => {
     if (!fxApp) {
         return;

@@ -1,3 +1,5 @@
+import { gameConfig } from "./config.js";
+
 console.log("JS connected");
 
 // Elements
@@ -5,7 +7,6 @@ const spinBtn = document.getElementById("spinBtn");
 const topWinPanel = document.getElementById("topWinPanel");
 const slotArea = document.getElementById("slotArea");
 const gameLogo = document.getElementById("gameLogo");
-const symbolIcons = document.querySelectorAll(".symbol-icon");
 const ctaPopup = document.getElementById("ctaPopup");
 const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
@@ -32,10 +33,8 @@ const CTA_DELAY = gameConfig.timings.ctaDelay;
 const SHOW_CLASS_DELAY = 10;
 
 const SMALL_WIN_GLOW_DURATION = gameConfig.timings.smallWinGlowDuration;
-const SYMBOL_POP_DURATION = 250;
 
 const VISIBLE_ROWS = gameConfig.grid.rows;
-let currentSymbolHeight = 82;
 const SPIN_FILLER_COUNT = gameConfig.grid.fillerCount;
 
 const REEL_SPIN_BASE_DURATION = gameConfig.timings.reelSpinBaseDuration;
@@ -66,17 +65,6 @@ function lockSpinButton() {
 function unlockSpinButton() {
     spinBtn.classList.remove("disabled");
     isSpinning = false;
-}
-function setReels(reels) {
-    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
-        const iconsInReel = reelStrips[reelIndex].querySelectorAll(".symbol-icon");
-
-        for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
-            const outcomeIndex = rowIndex * reelStrips.length + reelIndex;
-
-            iconsInReel[rowIndex].textContent = reels[outcomeIndex] || "?";
-        }
-    }
 }
 function showJackpot(outcome) {
 
@@ -113,14 +101,6 @@ function getRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-function startSpinAnimation() {
-    return null;
-}
-function finishSpin(spinAnimation, outcome) {
-    prepareReelsForSpin(outcome);
-
-    animateReelsToResult(outcome);
-}
 function startSpin() {
 
     spinBtn.classList.remove("spin-idle");
@@ -146,9 +126,8 @@ if (currentSpinSfx && window.playSfx) {
 
     startSpinVisuals();
 
-    const spinAnimation = startSpinAnimation();
-
-    finishSpin(spinAnimation, currentOutcome);
+    prepareReelsForSpin(currentOutcome);
+    animateReelsToResult(currentOutcome);
 }
 function goToOffer() {
     const offerUrl = gameConfig.offer.url;
@@ -164,25 +143,12 @@ function goToOffer() {
 function startSpinVisuals() {
     lockSpinButton();
 
-    slotArea.classList.remove("result-ready");
-
     if (window.playSpinStartFx) {
         window.playSpinStartFx();
     }
 
-    startReelSpinVisuals();
 }
 
-function stopSpinVisuals(spinAnimation) {
-    clearInterval(spinAnimation);
-
-    stopReelSpinVisuals();
-}
-
-function showOutcome(outcome) {
-    setReels(outcome.reels);
-    popSymbols();
-}
 function showSmallWin(outcome) {
     if (window.playSfx) {
     window.playSfx("smallWin");
@@ -262,6 +228,7 @@ function showOverlayAndPopup() {
 }
 function showCta() {
     spinBtn.classList.add("cta-ready");
+    spinBtn.blur();
 
     if (window.playCtaFx) {
         window.playCtaFx();
@@ -329,50 +296,6 @@ function initGame() {
 }
 
 
-function popSymbols() {
-    const currentSymbolIcons = document.querySelectorAll(".symbol-icon");
-
-    for (let i = 0; i < currentSymbolIcons.length; i++) {
-        currentSymbolIcons[i].classList.remove("pop");
-
-        void currentSymbolIcons[i].offsetWidth;
-
-        currentSymbolIcons[i].classList.add("pop");
-
-        setTimeout(() => {
-            currentSymbolIcons[i].classList.remove("pop");
-        }, SYMBOL_POP_DURATION);
-    }
-}
-function startReelSpinVisuals() {
-    // Теперь рилы запускаются через animateReelsToResult()
-}
-function stopReelSpinVisuals() {
-    // Теперь рилы останавливаются сами через transition
-}
-function setReelResult(reelIndex, reels) {
-    const iconsInReel = reelStrips[reelIndex].querySelectorAll(".symbol-icon");
-
-    for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
-        const outcomeIndex = rowIndex * reelStrips.length + reelIndex;
-
-        iconsInReel[rowIndex].textContent = reels[outcomeIndex] || "?";
-    }
-}
-function stopReelsSequentially(outcome) {
-    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
-        setTimeout(() => {
-            reelStrips[reelIndex].classList.remove("spinning");
-
-            setReelResult(reelIndex, outcome.reels);
-
-            if (reelIndex === reelStrips.length - 1) {
-                popSymbols();
-                handleOutcomeType(outcome);
-            }
-        }, REEL_STOP_DELAY * (reelIndex + 1));
-    }
-}
 function isCoinSymbol(symbol) {
     return symbol.startsWith("coin:");
 }
@@ -742,8 +665,6 @@ function stopBalancePulse() {
 }
 
 function finishOutcome(outcome) {
-    slotArea.classList.add("result-ready");
-
     if (
         gameConfig.fx.slotShineEnabled &&
         window.playSlotShineFx &&
@@ -751,8 +672,6 @@ function finishOutcome(outcome) {
     ) {
         window.playSlotShineFx();
     }
-
-    popSymbols();
 
     handleOutcomeType(outcome);
 
@@ -963,7 +882,7 @@ function hidePreloader() {
     preloader.classList.add("hidden");
 }
 
-function startPreloader() {
+async function startPreloader() {
     if (!preloader) {
         return;
     }
@@ -971,6 +890,8 @@ function startPreloader() {
     const minVisibleTime = 700;
     const startTime = performance.now();
     const imageSources = getPreloadImageSources();
+    const soundSources = getPreloadSoundSources();
+    const totalSources = imageSources.length + soundSources.length;
 
     preloader.style.background = `
         linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
@@ -983,32 +904,77 @@ function startPreloader() {
 
     updatePreloaderProgress(0.06);
 
-    if (imageSources.length === 0) {
-        setTimeout(hidePreloader, minVisibleTime);
+    const soundPromise = soundSources.length > 0 && window.preloadSfx
+        ? window.preloadSfx()
+        : Promise.resolve();
+
+    if (totalSources === 0) {
+        await new Promise((resolve) => {
+            setTimeout(resolve, minVisibleTime);
+        });
         return;
     }
 
     let loadedCount = 0;
 
-    const preloadPromises = imageSources.map((src) => {
-        return preloadImage(src).then(() => {
-            loadedCount += 1;
-            updatePreloaderProgress(loadedCount / imageSources.length);
+    const preloadPromises = [
+        ...imageSources.map((src) => {
+            return preloadImage(src).then(() => {
+                loadedCount += 1;
+                updatePreloaderProgress(loadedCount / totalSources);
+            });
+        }),
+        soundPromise.then(() => {
+            loadedCount += soundSources.length;
+            updatePreloaderProgress(loadedCount / totalSources);
+        })
+    ];
+
+    await Promise.all(preloadPromises);
+
+    const elapsedTime = performance.now() - startTime;
+    const remainingTime = Math.max(0, minVisibleTime - elapsedTime);
+
+    if (remainingTime > 0) {
+        await new Promise((resolve) => {
+            setTimeout(resolve, remainingTime);
         });
-    });
+    }
+}
 
-    const windowLoadedPromise = document.readyState === "complete"
-        ? Promise.resolve()
-        : new Promise((resolve) => {
-            window.addEventListener("load", resolve, { once: true });
-        });
+function getPreloadSoundSources() {
+    const sources = [];
 
-    Promise.all([...preloadPromises, windowLoadedPromise]).then(() => {
-        const elapsedTime = performance.now() - startTime;
-        const remainingTime = Math.max(0, minVisibleTime - elapsedTime);
+    if (!gameConfig.sfx || !gameConfig.sfx.enabled || !gameConfig.sfx.sounds) {
+        return sources;
+    }
 
-        setTimeout(hidePreloader, remainingTime);
-    });
+    for (const soundName in gameConfig.sfx.sounds) {
+        const soundConfig = gameConfig.sfx.sounds[soundName];
+
+        if (soundConfig && soundConfig.src) {
+            sources.push(soundConfig.src);
+        }
+    }
+
+    return [...new Set(sources.filter(Boolean))];
+}
+
+async function bootstrap() {
+    updateGameScale();
+    applyGameAssets();
+    applyGameFonts();
+
+    spinBtn.classList.add("spin-idle");
+
+    await startPreloader();
+
+    if (window.initFx) {
+        await window.initFx();
+    }
+
+    initGame();
+    hidePreloader();
 }
 
 //Events
@@ -1023,5 +989,4 @@ window.addEventListener("orientationchange", () => {
     setTimeout(updateGameScale, 300);
 });
 
-startPreloader();
-initGame();
+bootstrap();
