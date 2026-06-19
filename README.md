@@ -3,8 +3,8 @@
 Автодеплой настроен через GitHub Pages в файле `.github/workflows/pages.yml`.
 
 Workflow запускается при push в ветку `main` и вручную через `workflow_dispatch`.
-Он копирует статические файлы проекта в `_site`, загружает их как Pages artifact
-и публикует сайт через официальный GitHub Pages deploy action.
+Он ставит зависимости, собирает проект через `npm run build`, загружает `dist`
+как Pages artifact и публикует сайт через официальный GitHub Pages deploy action.
 
 После успешного workflow сайт будет доступен на GitHub Pages:
 
