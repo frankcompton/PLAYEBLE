@@ -739,6 +739,8 @@ body {
     color: #ffd92f;
     font-size: 34px;
     font-weight: 900;
+    line-height: 1;
+    padding-bottom: 6px;
 
     text-shadow:
         0 3px 0 #8a2500,
