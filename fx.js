@@ -1,3 +1,5 @@
+import { gameConfig } from "./config.js";
+
 let fxApp = null;
 let fxLayer = null;
 

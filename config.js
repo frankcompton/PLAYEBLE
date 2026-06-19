@@ -1,4 +1,4 @@
-const gameConfig = {
+export const gameConfig = {
     // =========================
     // 1. BASIC GAME SETTINGS
     // =========================
@@ -406,3 +406,5 @@ startScreen: {
         url: "https://google.com"
     }
 };
+
+window.gameConfig = gameConfig;

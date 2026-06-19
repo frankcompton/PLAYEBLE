@@ -1,3 +1,5 @@
+import { gameConfig } from "./config.js";
+
 const sfxPlayers = {};
 const sfxFadeTimers = {};
 

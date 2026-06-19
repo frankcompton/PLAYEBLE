@@ -1,3 +1,5 @@
+import { gameConfig } from "./config.js";
+
 console.log("JS connected");
 
 // Elements
