@@ -882,7 +882,7 @@ function hidePreloader() {
     preloader.classList.add("hidden");
 }
 
-function startPreloader() {
+async function startPreloader() {
     if (!preloader) {
         return;
     }
@@ -890,6 +890,8 @@ function startPreloader() {
     const minVisibleTime = 700;
     const startTime = performance.now();
     const imageSources = getPreloadImageSources();
+    const soundSources = getPreloadSoundSources();
+    const totalSources = imageSources.length + soundSources.length;
 
     preloader.style.background = `
         linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
@@ -902,32 +904,77 @@ function startPreloader() {
 
     updatePreloaderProgress(0.06);
 
-    if (imageSources.length === 0) {
-        setTimeout(hidePreloader, minVisibleTime);
+    const soundPromise = soundSources.length > 0 && window.preloadSfx
+        ? window.preloadSfx()
+        : Promise.resolve();
+
+    if (totalSources === 0) {
+        await new Promise((resolve) => {
+            setTimeout(resolve, minVisibleTime);
+        });
         return;
     }
 
     let loadedCount = 0;
 
-    const preloadPromises = imageSources.map((src) => {
-        return preloadImage(src).then(() => {
-            loadedCount += 1;
-            updatePreloaderProgress(loadedCount / imageSources.length);
+    const preloadPromises = [
+        ...imageSources.map((src) => {
+            return preloadImage(src).then(() => {
+                loadedCount += 1;
+                updatePreloaderProgress(loadedCount / totalSources);
+            });
+        }),
+        soundPromise.then(() => {
+            loadedCount += soundSources.length;
+            updatePreloaderProgress(loadedCount / totalSources);
+        })
+    ];
+
+    await Promise.all(preloadPromises);
+
+    const elapsedTime = performance.now() - startTime;
+    const remainingTime = Math.max(0, minVisibleTime - elapsedTime);
+
+    if (remainingTime > 0) {
+        await new Promise((resolve) => {
+            setTimeout(resolve, remainingTime);
         });
-    });
+    }
+}
 
-    const windowLoadedPromise = document.readyState === "complete"
-        ? Promise.resolve()
-        : new Promise((resolve) => {
-            window.addEventListener("load", resolve, { once: true });
-        });
+function getPreloadSoundSources() {
+    const sources = [];
 
-    Promise.all([...preloadPromises, windowLoadedPromise]).then(() => {
-        const elapsedTime = performance.now() - startTime;
-        const remainingTime = Math.max(0, minVisibleTime - elapsedTime);
+    if (!gameConfig.sfx || !gameConfig.sfx.enabled || !gameConfig.sfx.sounds) {
+        return sources;
+    }
 
-        setTimeout(hidePreloader, remainingTime);
-    });
+    for (const soundName in gameConfig.sfx.sounds) {
+        const soundConfig = gameConfig.sfx.sounds[soundName];
+
+        if (soundConfig && soundConfig.src) {
+            sources.push(soundConfig.src);
+        }
+    }
+
+    return [...new Set(sources.filter(Boolean))];
+}
+
+async function bootstrap() {
+    updateGameScale();
+    applyGameAssets();
+    applyGameFonts();
+
+    spinBtn.classList.add("spin-idle");
+
+    await startPreloader();
+
+    if (window.initFx) {
+        await window.initFx();
+    }
+
+    initGame();
+    hidePreloader();
 }
 
 //Events
@@ -942,5 +989,4 @@ window.addEventListener("orientationchange", () => {
     setTimeout(updateGameScale, 300);
 });
 
-startPreloader();
-initGame();
+bootstrap();
