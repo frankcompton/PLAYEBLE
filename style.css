@@ -168,12 +168,6 @@ body {
     z-index: 1;
 }
 
-.symbol-icon {
-    display: inline-block;
-    font-size: 34px;
-    font-weight: bold;
-}
-
 #ctaPopup {
     width: 86vw;
     max-width: 380px;
@@ -286,42 +280,6 @@ body {
     }
 }
 
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.08);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-
-@keyframes winPop {
-    0% {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-
-    60% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
-
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-#slotWin.win-pop {
-    animation: winPop 0.4s;
-}
-
 @keyframes jackpotFlash {
     0% {
         box-shadow: 0 0 0 gold;
@@ -361,35 +319,12 @@ body {
     animation: smallWinGlow 0.5s;
 }
 
-#slotWin.default-win {
-    color: gold;
-    font-size: 48px;
-}
-
-#slotWin.jackpot-win {
-    color: yellow;
-    font-size: 64px;
-}
-
 #slotArea.jackpot-state {
     box-shadow: 0 0 40px gold;
 }
 
-.symbol-icon {
-    display: inline-block;
-}
-
 .symbol.coin-symbol {
     position: relative;
-}
-
-.symbol.win-symbol {
-    z-index: 10;
-}
-
-.symbol.win-symbol .symbol-img {
-    animation: bonusSymbolPop 0.65s ease-out;
-    filter: drop-shadow(0 0 12px rgba(80, 220, 255, 0.9));
 }
 
 .coin-value {
@@ -417,24 +352,6 @@ body {
     z-index: 3;
 }
 
-@keyframes symbolPop {
-    0% {
-        transform: scale(0.7);
-    }
-
-    60% {
-        transform: scale(1.25);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.symbol-icon.pop {
-    animation: symbolPop 0.30s;
-}
-
 #game {
     width: 100vw;
     height: 100dvh;
@@ -451,33 +368,6 @@ body {
 }
 
 
-
-#coinColumn {
-    width: 25%;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    padding-right: 8px;
-}
-
-.coinValue {
-    flex: 1;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    margin: 4px 0;
-
-    background: radial-gradient(circle, #ffe978, #d78b00);
-    border-radius: 50%;
-
-    color: #8b2a00;
-    font-size: 22px;
-    font-weight: bold;
-}
 
 @keyframes reelWinGlow {
     0% {
