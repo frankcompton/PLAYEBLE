@@ -226,6 +226,7 @@ function showOverlayAndPopup() {
 }
 function showCta() {
     spinBtn.classList.add("cta-ready");
+    spinBtn.blur();
 
     if (window.playCtaFx) {
         window.playCtaFx();

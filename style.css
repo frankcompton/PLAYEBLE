@@ -76,6 +76,7 @@ body {
 
     border: none;
     border-radius: 50%;
+    outline: none;
     box-shadow: none;
 
     cursor: pointer;
@@ -548,11 +549,11 @@ body {
 }
 
 #spinBtn.cta-ready {
-    box-shadow:
-        0 0 24px rgba(255, 220, 80, 0.9),
-        0 8px 18px rgba(0, 0, 0, 0.35),
-        inset 0 4px 10px rgba(255, 255, 255, 0.9),
-        inset 0 -6px 10px rgba(0, 0, 0, 0.18);
+    box-shadow: none;
+}
+
+#spinBtn.cta-ready::after {
+    display: none;
 }
 
 #ctaTitle {
