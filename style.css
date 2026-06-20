@@ -3,12 +3,11 @@
 }
 
 @font-face {
-    font-family: "Archivo Black";
+    font-family: "Arial Black";
     src:
-        url("assets/fonts/archivo-black-latin-400-normal.woff2") format("woff2"),
-        url("assets/fonts/archivo-black-latin-400-normal.woff") format("woff");
+        url("assets/fonts/arial-black.ttf") format("truetype");
     font-style: normal;
-    font-weight: 400;
+    font-weight: 900;
     font-display: swap;
 }
 
