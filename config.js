@@ -168,32 +168,32 @@ export const gameConfig = {
         sounds: {
             spin1: {
                 src: "assets/sfx/spin-1.mp3",
-                volume: 0.45
+                volume: 1
             },
 
             spin2: {
                 src: "assets/sfx/spin-2.mp3",
-                volume: 0.45
+                volume: 1
             },
 
             spin3: {
                 src: "assets/sfx/spin.mp3",
-                volume: 0.45
+                volume: 1
             },
 
             lose: {
                 src: "assets/sfx/lose.mp3",
-                volume: 0.55
+                volume: 1
             },
 
             smallWin: {
                 src: "assets/sfx/small-win.mp3",
-                volume: 0.75
+                volume: 1
             },
 
             jackpot: {
                 src: "assets/sfx/jackpot.mp3",
-                volume: 0.9
+                volume: 1
             }
         }
     },
