@@ -3,6 +3,7 @@ import { gameConfig } from "./config.js";
 // Elements
 const spinBtn = document.getElementById("spinBtn");
 const topWinPanel = document.getElementById("topWinPanel");
+const topWinPanelArt = document.getElementById("topWinPanelArt");
 const slotArea = document.getElementById("slotArea");
 const gameLogo = document.getElementById("gameLogo");
 const ctaPopup = document.getElementById("ctaPopup");
@@ -822,8 +823,11 @@ function startBalancePulse() {
     const animate = (now) => {
         if (!topWinPanel.classList.contains("balance-pulsing")) {
             topWinPanel.style.transform = "";
-            topWinPanel.style.boxShadow = "";
             topWinPanel.style.willChange = "";
+            if (topWinPanelArt) {
+                topWinPanelArt.style.filter = "";
+                topWinPanelArt.style.willChange = "";
+            }
             balancePulseFrameId = null;
             return;
         }
@@ -834,8 +838,11 @@ function startBalancePulse() {
 
         topWinPanel.style.transformOrigin = "center center";
         topWinPanel.style.transform = `scale(${scale})`;
-        topWinPanel.style.boxShadow = `0 0 ${14 + wave * 10}px rgba(255, 220, 80, ${glow})`;
-        topWinPanel.style.willChange = "transform, box-shadow";
+        topWinPanel.style.willChange = "transform";
+        if (topWinPanelArt) {
+            topWinPanelArt.style.filter = `drop-shadow(0 0 ${14 + wave * 10}px rgba(255, 220, 80, ${glow}))`;
+            topWinPanelArt.style.willChange = "filter";
+        }
 
         balancePulseFrameId = requestAnimationFrame(animate);
     };
@@ -852,8 +859,11 @@ function stopBalancePulse() {
     }
 
     topWinPanel.style.transform = "";
-    topWinPanel.style.boxShadow = "";
     topWinPanel.style.willChange = "";
+    if (topWinPanelArt) {
+        topWinPanelArt.style.filter = "";
+        topWinPanelArt.style.willChange = "";
+    }
 }
 
 function finishOutcome(outcome) {
