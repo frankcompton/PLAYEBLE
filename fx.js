@@ -622,7 +622,7 @@ function updateCoinRain() {
         spawnCoinRainDrop();
     }
 }
- 
+
 function createPixiCoin(radius) {
     const coin = new PIXI.Container();
 
@@ -822,12 +822,12 @@ function playSpinStartFx() {
 
     const fx = gameConfig.fx;
     const centerPoint = getScreenPointFromGamePoint(
-    gameConfig.scene.baseWidth / 2,
-    fx.spinStartY
-);
+        gameConfig.scene.baseWidth / 2,
+        fx.spinStartY
+    );
 
-const centerX = centerPoint.x;
-const centerY = centerPoint.y;
+    const centerX = centerPoint.x;
+    const centerY = centerPoint.y;
 
     spawnSparkBurst(centerX, centerY, {
         count: fx.spinStartBurstCount,
@@ -1136,12 +1136,12 @@ function playJackpotBurst() {
     const fx = gameConfig.fx;
 
     const startPoint = getScreenPointFromGamePoint(
-    gameConfig.scene.baseWidth / 2,
-    380
-);
+        gameConfig.scene.baseWidth / 2,
+        380
+    );
 
-const startX = startPoint.x;
-const startY = startPoint.y;
+    const startX = startPoint.x;
+    const startY = startPoint.y;
 
     for (let i = 0; i < fx.jackpotBurstCount; i++) {
         createBurstParticle(startX, startY);
@@ -1155,12 +1155,12 @@ const startY = startPoint.y;
 function playJackpotShockwave() {
     const fx = gameConfig.fx;
     const centerPoint = getScreenPointFromGamePoint(
-    gameConfig.scene.baseWidth / 2,
-    fx.jackpotBurstY
-);
+        gameConfig.scene.baseWidth / 2,
+        fx.jackpotBurstY
+    );
 
-const centerX = centerPoint.x;
-const centerY = centerPoint.y;
+    const centerX = centerPoint.x;
+    const centerY = centerPoint.y;
 
     for (let i = 0; i < 3; i++) {
         setTimeout(() => {
@@ -1270,7 +1270,7 @@ function updateRays() {
 
     const baseScale = raysContainer.baseScale || 1;
 
-raysContainer.scale.set(baseScale * (0.85 + progress * 0.25));
+    raysContainer.scale.set(baseScale * (0.85 + progress * 0.25));
 
     if (raysLife <= 0) {
         raysContainer.alpha = 0;

@@ -9,8 +9,8 @@ export const gameConfig = {
     },
 
     currency: {
-    effectCoinText: "$"
-},
+        effectCoinText: "$"
+    },
 
     scene: {
         baseWidth: 430,
@@ -26,14 +26,14 @@ export const gameConfig = {
         bodyOverlayTop: "rgba(0, 0, 0, 0.10)",
         bodyOverlayBottom: "rgba(0, 0, 0, 0.20)",
 
-balancePanelTop: "#5d6bff",
-balancePanelMiddle: "#2738e8",
-balancePanelBottom: "#0d1684",
-balancePanelBorder: "#ffd92f",
-balanceText: "#ffd92f",
-balanceGlow: "rgba(255, 220, 120, 0.45)",
+        balancePanelTop: "#5d6bff",
+        balancePanelMiddle: "#2738e8",
+        balancePanelBottom: "#0d1684",
+        balancePanelBorder: "#ffd92f",
+        balanceText: "#ffd92f",
+        balanceGlow: "rgba(255, 220, 120, 0.45)",
 
-slotBackground: "rgba(5, 5, 45, 0.92)",
+        slotBackground: "rgba(5, 5, 45, 0.92)",
         slotBorder: "#4cc8ff",
         slotGlow: "rgba(0, 180, 255, 0.7)",
 
@@ -51,13 +51,13 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     },
 
     fonts: {
-    balancePanel: '"Arial Black", Impact, sans-serif',
-    ctaAmount: '"Arial Black", Impact, sans-serif',
-    coinValue: '"Arial Black", Impact, sans-serif',
-    coinParticle: '"Arial Black", Impact, sans-serif',
-    ctaTitle: '"Arial Black", Impact, sans-serif',
-    ctaButton: '"Arial Black", Impact, sans-serif'
-},
+        balancePanel: '"Arial Black", Impact, sans-serif',
+        ctaAmount: '"Arial Black", Impact, sans-serif',
+        coinValue: '"Arial Black", Impact, sans-serif',
+        coinParticle: '"Arial Black", Impact, sans-serif',
+        ctaTitle: '"Arial Black", Impact, sans-serif',
+        ctaButton: '"Arial Black", Impact, sans-serif'
+    },
 
     // =========================
     // 3. ASSETS
@@ -65,27 +65,27 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
 
 
     assets: {
-    background: "assets/background.webp",
-    logo: "assets/logo.webp",
+        background: "assets/background.webp",
+        logo: "assets/logo.webp",
 
-     ui: {
-        balancePanel: "assets/ui/balance-panel.webp",
-        spinButton: "assets/ui/spin-button.webp"
+        ui: {
+            balancePanel: "assets/ui/balance-panel.webp",
+            spinButton: "assets/ui/spin-button.webp"
+        },
+
+        symbols: {
+            s1: "assets/symbols/cherry.webp",
+            s2: "assets/symbols/lemon.webp",
+            s3: "assets/symbols/bar.webp",
+            s4: "assets/symbols/grape.webp",
+            s5: "assets/symbols/melon.webp",
+            s6: "assets/symbols/orange.webp",
+            s7: "assets/symbols/plum.webp",
+
+            coin: "assets/symbols/coin.webp",
+            bonus: "assets/symbols/coin2.webp"
+        }
     },
-
-    symbols: {
-        s1: "assets/symbols/cherry.webp",
-        s2: "assets/symbols/lemon.webp",
-        s3: "assets/symbols/bar.webp",
-        s4: "assets/symbols/grape.webp",
-        s5: "assets/symbols/melon.webp",
-        s6: "assets/symbols/orange.webp",
-        s7: "assets/symbols/plum.webp",
-
-        coin: "assets/symbols/coin.webp",
-        bonus: "assets/symbols/coin2.webp"
-    }
-},
 
 
     // Эти символы используются как случайные filler-символы во время прокрутки рилов.
@@ -104,16 +104,16 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
     ],
 
 
-        // =========================
+    // =========================
     // 4. GAME MECHANICS
     // =========================
 
 
     grid: {
-    columns: 3,
-    rows: 3,
-    fillerCount: 12
-},
+        columns: 3,
+        rows: 3,
+        fillerCount: 12
+    },
 
     timings: {
         reelSpinBaseDuration: 900,
@@ -125,183 +125,183 @@ slotBackground: "rgba(5, 5, 45, 0.92)",
         winSymbolPopDuration: 650
     },
 
-effects: {
-    coinParticlesEnabled: true,
-    coinParticleCount: 16,
-    coinParticleDuration: 1300,
+    effects: {
+        coinParticlesEnabled: true,
+        coinParticleCount: 16,
+        coinParticleDuration: 1300,
 
-    coinParticlesFromReelEnabled: false,
-    coinParticlesFromWinCoinsEnabled: true,
-    coinParticlesPerWinCoin: 8,
+        coinParticlesFromReelEnabled: false,
+        coinParticlesFromWinCoinsEnabled: true,
+        coinParticlesPerWinCoin: 8,
 
-    coinParticleMinSize: 20,
-    coinParticleMaxSize: 34,
+        coinParticleMinSize: 20,
+        coinParticleMaxSize: 34,
 
-    coinParticleSpreadX: 210,
-    coinParticleBurstUpMin: 20,
-    coinParticleBurstUpMax: 90,
-    coinParticleFallMin: 120,
-    coinParticleFallMax: 260,
+        coinParticleSpreadX: 210,
+        coinParticleBurstUpMin: 20,
+        coinParticleBurstUpMax: 90,
+        coinParticleFallMin: 120,
+        coinParticleFallMax: 260,
 
-    coinParticleStartScale: 0.35,
-    coinParticleEndScaleMin: 1.15,
-    coinParticleEndScaleMax: 1.75,
+        coinParticleStartScale: 0.35,
+        coinParticleEndScaleMin: 1.15,
+        coinParticleEndScaleMax: 1.75,
 
-    coinParticleStagger: 18,
+        coinParticleStagger: 18,
 
-slotWinGlowEnabled: true,
-slotShineEnabled: false,
-slotShineDuration: 900,
+        slotWinGlowEnabled: true,
+        slotShineEnabled: false,
+        slotShineDuration: 900,
 
-reelWinGlowEnabled: true,
-anticipationGlowEnabled: true,
-bonusPulseEnabled: true,
+        reelWinGlowEnabled: true,
+        anticipationGlowEnabled: true,
+        bonusPulseEnabled: true,
 
-balancePopEnabled: true,
-balancePopDuration: 620,
-},
+        balancePopEnabled: true,
+        balancePopDuration: 620,
+    },
 
-sfx: {
-    enabled: true,
-    masterVolume: 0.7,
+    sfx: {
+        enabled: true,
+        masterVolume: 0.7,
 
-    sounds: {
-        spin1: {
-            src: "assets/sfx/spin-1.mp3",
-            volume: 0.45
-        },
+        sounds: {
+            spin1: {
+                src: "assets/sfx/spin-1.mp3",
+                volume: 0.45
+            },
 
-        spin2: {
-            src: "assets/sfx/spin-2.mp3",
-            volume: 0.45
-        },
+            spin2: {
+                src: "assets/sfx/spin-2.mp3",
+                volume: 0.45
+            },
 
-        spin3: {
-            src: "assets/sfx/spin.mp3",
-            volume: 0.45
-        },
+            spin3: {
+                src: "assets/sfx/spin.mp3",
+                volume: 0.45
+            },
 
-        lose: {
-            src: "assets/sfx/lose.mp3",
-            volume: 0.55
-        },
+            lose: {
+                src: "assets/sfx/lose.mp3",
+                volume: 0.55
+            },
 
-        smallWin: {
-            src: "assets/sfx/small-win.mp3",
-            volume: 0.75
-        },
+            smallWin: {
+                src: "assets/sfx/small-win.mp3",
+                volume: 0.75
+            },
 
-        jackpot: {
-            src: "assets/sfx/jackpot.mp3",
-            volume: 0.9
+            jackpot: {
+                src: "assets/sfx/jackpot.mp3",
+                volume: 0.9
+            }
         }
-    }
-},
+    },
 
-fx: {
-    idleSparksEnabled: true,
-    idleSparkCount: 40,
-    idleSparkMinSize: 2,
-    idleSparkMaxSize: 5,
-    idleSparkMinSpeedY: 0.25,
-    idleSparkMaxSpeedY: 0.65,
-    idleSparkMaxSpeedX: 0.2,
+    fx: {
+        idleSparksEnabled: true,
+        idleSparkCount: 40,
+        idleSparkMinSize: 2,
+        idleSparkMaxSize: 5,
+        idleSparkMinSpeedY: 0.25,
+        idleSparkMaxSpeedY: 0.65,
+        idleSparkMaxSpeedX: 0.2,
 
-    twinkleStarsEnabled: true,
-    twinkleStarCount: 14,
-    twinkleStarMinSize: 3,
-    twinkleStarMaxSize: 6,
+        twinkleStarsEnabled: true,
+        twinkleStarCount: 14,
+        twinkleStarMinSize: 3,
+        twinkleStarMaxSize: 6,
 
-    ambientGlowEnabled: true,
-    ambientGlowY: 340,
-    ambientGlowRadius: 210,
-    ambientGlowColor: 0x4cc8ff,
-    ambientGlowAlpha: 0.08,
-    ambientGlowPulse: 0.06,
+        ambientGlowEnabled: true,
+        ambientGlowY: 340,
+        ambientGlowRadius: 210,
+        ambientGlowColor: 0x4cc8ff,
+        ambientGlowAlpha: 0.08,
+        ambientGlowPulse: 0.06,
 
-    spinStartFxEnabled: false,
-    spinStartBurstCount: 18,
-    spinStartSpreadX: 120,
-    spinStartDuration: 480,
-    spinStartY: 360,
+        spinStartFxEnabled: false,
+        spinStartBurstCount: 18,
+        spinStartSpreadX: 120,
+        spinStartDuration: 480,
+        spinStartY: 360,
 
-    reelLandFxEnabled: false,
-    reelLandBurstCount: 10,
-    reelLandSpreadX: 70,
-    reelLandDuration: 520,
-    reelLandY: 390,
+        reelLandFxEnabled: false,
+        reelLandBurstCount: 10,
+        reelLandSpreadX: 70,
+        reelLandDuration: 520,
+        reelLandY: 390,
 
-    anticipationParticlesEnabled: false,
-    anticipationParticleCount: 10,
+        anticipationParticlesEnabled: false,
+        anticipationParticleCount: 10,
 
-    smallWinBurstEnabled: false,
-    smallWinBurstCount: 22,
-    smallWinSpreadX: 110,
-    smallWinBurstDuration: 750,
+        smallWinBurstEnabled: false,
+        smallWinBurstCount: 22,
+        smallWinSpreadX: 110,
+        smallWinBurstDuration: 750,
 
-    slotShineEnabled: false,
-    slotShineDuration: 900,
-    slotShineY: 250,
-    slotShineWidth: 90,
-    slotShineHeight: 280,
+        slotShineEnabled: false,
+        slotShineDuration: 900,
+        slotShineY: 250,
+        slotShineWidth: 90,
+        slotShineHeight: 280,
 
-    balanceSparksEnabled: false,
-    balanceSparkCount: 10,
-    balanceSparkSpreadX: 80,
-    balanceSparkDuration: 550,
+        balanceSparksEnabled: false,
+        balanceSparkCount: 10,
+        balanceSparkSpreadX: 80,
+        balanceSparkDuration: 550,
 
-    ctaConfettiEnabled: true,
-    ctaConfettiCount: 72,
-    ctaConfettiDuration: 2700,
+        ctaConfettiEnabled: true,
+        ctaConfettiCount: 72,
+        ctaConfettiDuration: 2700,
 
-    jackpotFlashEnabled: true,
-    jackpotFlashDuration: 520,
+        jackpotFlashEnabled: true,
+        jackpotFlashDuration: 520,
 
-    jackpotRaysEnabled: true,
-    jackpotRaysDuration: 1400,
-    jackpotRaysY: 370,
-    jackpotRayCount: 22,
-    jackpotRayLength: 580,
-    jackpotRayWidth: 36,
-    jackpotRaysRotationSpeed: 0.014,
+        jackpotRaysEnabled: true,
+        jackpotRaysDuration: 1400,
+        jackpotRaysY: 370,
+        jackpotRayCount: 22,
+        jackpotRayLength: 580,
+        jackpotRayWidth: 36,
+        jackpotRaysRotationSpeed: 0.014,
 
-    jackpotBurstEnabled: true,
-    jackpotBurstCount: 72,
-    jackpotStarBurstCount: 18,
-    jackpotBurstDuration: 1500,
-    jackpotBurstY: 380,
+        jackpotBurstEnabled: true,
+        jackpotBurstCount: 72,
+        jackpotStarBurstCount: 18,
+        jackpotBurstDuration: 1500,
+        jackpotBurstY: 380,
 
-    jackpotBurstMinSize: 4,
-    jackpotBurstMaxSize: 11,
+        jackpotBurstMinSize: 4,
+        jackpotBurstMaxSize: 11,
 
-    jackpotBurstSpreadX: 300,
-    jackpotBurstLaunchUpMin: 40,
-    jackpotBurstLaunchUpMax: 150,
+        jackpotBurstSpreadX: 300,
+        jackpotBurstLaunchUpMin: 40,
+        jackpotBurstLaunchUpMax: 150,
 
-    jackpotBurstGravity: 0.12,
-    jackpotBurstRotationMin: 0.03,
-    jackpotBurstRotationMax: 0.12,
+        jackpotBurstGravity: 0.12,
+        jackpotBurstRotationMin: 0.03,
+        jackpotBurstRotationMax: 0.12,
 
-    jackpotShockwaveEnabled: true,
-    jackpotShockwaveDuration: 680,
+        jackpotShockwaveEnabled: true,
+        jackpotShockwaveDuration: 680,
 
-    coinRainEnabled: true,
-    coinRainText: "$",
-    coinRainInterval: 8,
-    coinRainMinSize: 12,
-    coinRainMaxSize: 24,
-    coinRainMinSpeed: 1.8,
-    coinRainMaxSpeed: 3.6,
-    coinRainDropDuration: 2600,
+        coinRainEnabled: true,
+        coinRainText: "$",
+        coinRainInterval: 8,
+        coinRainMinSize: 12,
+        coinRainMaxSize: 24,
+        coinRainMinSpeed: 1.8,
+        coinRainMaxSpeed: 3.6,
+        coinRainDropDuration: 2600,
 
-    softGlowEnabled: true,
-    softGlowDuration: 2200,
-    softGlowColor: 0xffd45a,
-    softGlowRadiusX: 260,
-    softGlowRadiusY: 180,
-    softGlowPeakAlpha: 0.48,
-    softGlowY: 350
-},
+        softGlowEnabled: true,
+        softGlowDuration: 2200,
+        softGlowColor: 0xffd45a,
+        softGlowRadiusX: 260,
+        softGlowRadiusY: 180,
+        softGlowPeakAlpha: 0.48,
+        softGlowY: 350
+    },
 
 
     // =========================
@@ -314,13 +314,13 @@ fx: {
     // [6] [7] [8]
 
 
-startScreen: {
-    reels: [
-        "s6", "s3", "s1",
-        "s4", "s2", "s5",
-        "s7", "s6", "s1"
-    ]
-},
+    startScreen: {
+        reels: [
+            "s6", "s3", "s1",
+            "s4", "s2", "s5",
+            "s7", "s6", "s1"
+        ]
+    },
 
 
     // =========================
@@ -349,48 +349,48 @@ startScreen: {
         },
 
         {
-    type: "smallWin",
-    spinSfx: "spin2",
-    balance: 350,
-    balanceDelay: 300,
-    balanceCountDuration: 500,
+            type: "smallWin",
+            spinSfx: "spin2",
+            balance: 350,
+            balanceDelay: 300,
+            balanceCountDuration: 500,
 
-    winReels: [0],
-    winSymbols: ["coin:100.00", "coin:250.00"],
+            winReels: [0],
+            winSymbols: ["coin:100.00", "coin:250.00"],
 
-    reels: [
-        "coin:100.00", "s3", "s1",
-        "coin:250.00", "s1", "s1",
-        "s7", "s2", "s1"
-    ]
-},
+            reels: [
+                "coin:100.00", "s3", "s1",
+                "coin:250.00", "s1", "s1",
+                "s7", "s2", "s1"
+            ]
+        },
 
         {
-    type: "jackpot",
-    spinSfx: "spin3",
-    balance: 10350,
-    balanceDelay: 500,
-    balanceCountDuration: 2000,
+            type: "jackpot",
+            spinSfx: "spin3",
+            balance: 10350,
+            balanceDelay: 500,
+            balanceCountDuration: 2000,
 
-    balanceEffect: "pulse",
+            balanceEffect: "pulse",
 
-    reelDurations: [900, 1200, 4200],
-    reelFillerCounts: [12, 12, 36],
-    anticipationReel: 2,
-    anticipationDelay: 1300,
+            reelDurations: [900, 1200, 4200],
+            reelFillerCounts: [12, 12, 36],
+            anticipationReel: 2,
+            anticipationDelay: 1300,
 
-    winReels: [0, 1, 2],
-    winSymbols: ["bonus"],
-    reels: [
-        "s6", "s2", "s1",
-        "s4", "bonus", "s3",
-        "bonus", "s7", "bonus"
-    ]
-}
+            winReels: [0, 1, 2],
+            winSymbols: ["bonus"],
+            reels: [
+                "s6", "s2", "s1",
+                "s4", "bonus", "s3",
+                "bonus", "s7", "bonus"
+            ]
+        }
     ],
 
 
-        // =========================
+    // =========================
     // 7. CTA / OFFER
     // =========================
 

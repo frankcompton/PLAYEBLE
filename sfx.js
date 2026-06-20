@@ -107,9 +107,9 @@ function playSfx(soundName) {
     }
 
     if (sfxFadeTimers[soundName]) {
-    clearInterval(sfxFadeTimers[soundName]);
-    sfxFadeTimers[soundName] = null;
-}
+        clearInterval(sfxFadeTimers[soundName]);
+        sfxFadeTimers[soundName] = null;
+    }
 
     audio.pause();
     audio.currentTime = 0;
