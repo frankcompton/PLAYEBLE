@@ -44,47 +44,8 @@ function removeClasses(element, ...classNames) {
     element.classList.remove(...classNames);
 }
 
-function isMobileSafari() {
-    const ua = navigator.userAgent;
-
-    return /iP(hone|ad|od)/.test(ua) && /Safari/.test(ua) && !/(CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Android)/.test(ua);
-}
-
-function isSafariBrowser() {
-    const ua = navigator.userAgent;
-
-    return /Safari/.test(ua) && !/(CriOS|FxiOS|EdgiOS|OPiOS|Chrome|Android)/.test(ua);
-}
-
 function applyPerformanceProfile() {
-    const root = document.documentElement;
-
-    removeClasses(root, "mobile-safari", "safari", "desktop");
-
-    if (!isSafariBrowser()) {
-        addClasses(root, "desktop");
-        return;
-    }
-
-    addClasses(root, isMobileSafari() ? "mobile-safari" : "safari");
-
-    const fx = gameConfig.fx;
-
-    fx.idleSparksEnabled = false;
-    fx.twinkleStarsEnabled = false;
-    fx.ambientGlowEnabled = false;
-    fx.softGlowEnabled = false;
-    fx.slotShineEnabled = false;
-    fx.reelLandFxEnabled = false;
-    fx.anticipationParticlesEnabled = false;
-    fx.smallWinBurstEnabled = false;
-    fx.balanceSparksEnabled = false;
-
-    fx.ctaConfettiCount = Math.min(fx.ctaConfettiCount, 24);
-    fx.jackpotBurstCount = Math.min(fx.jackpotBurstCount, 28);
-    fx.jackpotStarBurstCount = Math.min(fx.jackpotStarBurstCount, 8);
-    fx.jackpotRayCount = Math.min(fx.jackpotRayCount, 12);
-    fx.coinRainInterval = Math.max(fx.coinRainInterval, 16);
+    return;
 }
 
 function updateFxViewportSize() {
@@ -108,8 +69,7 @@ async function initFx() {
     fxApp = new PIXI.Application();
 
     const pixelRatio = window.devicePixelRatio || 1;
-    const isLowPowerSafari = document.documentElement.classList.contains("mobile-safari");
-    const resolution = isLowPowerSafari ? 1 : Math.min(pixelRatio, 1.5);
+    const resolution = Math.min(pixelRatio, 1.5);
 
     await fxApp.init({
         width: fxViewportWidth,
@@ -126,10 +86,6 @@ async function initFx() {
     fxApp.canvas.style.display = "block";
 
     fxLayer.appendChild(fxApp.canvas);
-
-    if (isLowPowerSafari) {
-        fxApp.ticker.maxFPS = 30;
-    }
 
     createAmbientGlow();
     createSoftGlow();

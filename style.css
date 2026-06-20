@@ -344,8 +344,6 @@ body {
     line-height: 1;
     white-space: nowrap;
 
-    -webkit-text-stroke: 0.3px #f2c94c;
-
     text-shadow:
         0 0 1px #fff6b0,
         0 0 3px rgba(255, 245, 180, 0.9),
@@ -609,7 +607,6 @@ body {
 
 body {
     height: 100dvh;
-    min-height: -webkit-fill-available;
     overflow: hidden;
 }
 
@@ -623,8 +620,6 @@ body {
 
 body {
     height: 100dvh;
-    min-height: -webkit-fill-available;
-
     overflow: hidden;
 }
 
@@ -730,6 +725,11 @@ body {
     z-index: 20;
 }
 
+#topWinPanelText {
+    position: relative;
+    z-index: 1;
+}
+
 /* === FINAL COIN VALUE TEXT STYLE === */
 
 .coin-value {
@@ -744,8 +744,6 @@ body {
     font-weight: 900;
     line-height: 1;
     white-space: nowrap;
-
-    -webkit-text-stroke: 0.6px #f2c94c;
 
     text-shadow:
         0 0 1px #fff6b0,
@@ -1003,87 +1001,3 @@ body {
     transition: width 0.18s ease-out;
 }
 
-html.safari #slotArea,
-html.mobile-safari #slotArea,
-html.safari #ctaPopup,
-html.mobile-safari #ctaPopup,
-html.safari #ctaButton,
-html.mobile-safari #ctaButton,
-html.safari #topWinPanel,
-html.mobile-safari #topWinPanel {
-    box-shadow: none;
-}
-
-html.safari #slotArea,
-html.mobile-safari #slotArea {
-    box-shadow: 0 0 12px rgba(0, 180, 255, 0.28);
-}
-
-html.safari #ctaPopup,
-html.mobile-safari #ctaPopup {
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
-}
-
-html.safari #ctaButton,
-html.mobile-safari #ctaButton {
-    animation: none;
-}
-
-html.safari #spinBtn.spin-idle,
-html.mobile-safari #spinBtn.spin-idle,
-html.safari #spinBtn.spin-idle::after,
-html.mobile-safari #spinBtn.spin-idle::after,
-html.safari #topWinPanel.balance-pop,
-html.mobile-safari #topWinPanel.balance-pop,
-html.safari #topWinPanel.balance-pop::after,
-html.mobile-safari #topWinPanel.balance-pop::after,
-html.safari #topWinPanel.balance-pulsing,
-html.mobile-safari #topWinPanel.balance-pulsing,
-html.safari #topWinPanel.balance-pulsing::after,
-html.mobile-safari #topWinPanel.balance-pulsing::after,
-html.safari #slotArea.jackpot-flash,
-html.mobile-safari #slotArea.jackpot-flash,
-html.safari #slotArea.small-win,
-html.mobile-safari #slotArea.small-win,
-html.safari #slotArea.jackpot-state,
-html.mobile-safari #slotArea.jackpot-state,
-html.safari #reels>div.win-reel,
-html.mobile-safari #reels>div.win-reel,
-html.safari #reels>div.anticipation-reel::after,
-html.mobile-safari #reels>div.anticipation-reel::after,
-html.safari .symbol.win-symbol .symbol-img,
-html.mobile-safari .symbol.win-symbol .symbol-img,
-html.safari .symbol.win-symbol.pulsing .symbol-img,
-html.mobile-safari .symbol.win-symbol.pulsing .symbol-img {
-    animation: none !important;
-}
-
-html.safari #spinBtn.spin-idle,
-html.mobile-safari #spinBtn.spin-idle,
-html.safari #spinBtn.spin-idle::after,
-html.mobile-safari #spinBtn.spin-idle::after {
-    transition: none;
-}
-
-html.safari .coin-particle,
-html.mobile-safari .coin-particle {
-    box-shadow: none;
-}
-
-html.safari .coin-particle::before,
-html.mobile-safari .coin-particle::before,
-html.safari #preloaderLogo,
-html.mobile-safari #preloaderLogo {
-    filter: none;
-}
-
-html.safari #slotArea,
-html.desktop #slotArea,
-html.safari #ctaPopup,
-html.desktop #ctaPopup,
-html.safari #ctaButton,
-html.desktop #ctaButton,
-html.safari #topWinPanel,
-html.desktop #topWinPanel {
-    will-change: auto;
-}

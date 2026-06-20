@@ -10,6 +10,7 @@ const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
 const ctaButton = document.getElementById("ctaButton");
 const overlay = document.getElementById("overlay");
+const topWinPanelText = document.getElementById("topWinPanelText");
 const reelElements = Array.from(document.querySelectorAll("#reels > div"));
 const reelStrips = Array.from(document.querySelectorAll("#reels > div > div"));
 const gameScaler = document.getElementById("gameScaler");
@@ -25,6 +26,11 @@ let currentBalance = 0;
 let currentSpinSfx = null;
 const DEFAULT_SYMBOL_HEIGHT = 82;
 let cachedSymbolHeight = DEFAULT_SYMBOL_HEIGHT;
+let balancePopFrameId = null;
+let balancePopTimeoutId = null;
+let balancePulseFrameId = null;
+let anticipationFrameId = null;
+let anticipationPulseReelIndex = null;
 
 // Settings
 const CTA_DELAY = gameConfig.timings.ctaDelay;
@@ -44,22 +50,6 @@ const COIN_PARTICLE_DURATION = gameConfig.effects.coinParticleDuration;
 
 const WIN_SYMBOL_POP_DURATION = gameConfig.timings.winSymbolPopDuration;
 const JACKPOT_FLASH_DURATION = gameConfig.timings.jackpotFlashDuration;
-
-function isSafariProfile() {
-    return document.documentElement.classList.contains("safari") ||
-        document.documentElement.classList.contains("mobile-safari");
-}
-
-function scheduleSafariReveal(callback) {
-    if (!isSafariProfile()) {
-        callback();
-        return;
-    }
-
-    setTimeout(() => {
-        requestAnimationFrame(callback);
-    }, 24);
-}
 
 function addClasses(element, ...classNames) {
     element.classList.add(...classNames);
@@ -110,20 +100,18 @@ function showJackpot(outcome) {
         window.playJackpotFx();
     }
 
-    scheduleSafariReveal(() => {
-        highlightWinReels(outcome);
-        highlightWinSymbols(outcome);
+    highlightWinReels(outcome);
+    highlightWinSymbols(outcome);
 
-        addClasses(slotArea, "jackpot-state", "jackpot-flash");
+    addClasses(slotArea, "jackpot-state", "jackpot-flash");
 
-        setTimeout(() => {
-            removeClasses(slotArea, "jackpot-flash");
-        }, JACKPOT_FLASH_DURATION);
+    setTimeout(() => {
+        removeClasses(slotArea, "jackpot-flash");
+    }, JACKPOT_FLASH_DURATION);
 
-        setTimeout(() => {
-            showCta();
-        }, outcome.balanceDelay + outcome.balanceCountDuration + CTA_DELAY);
-    });
+    setTimeout(() => {
+        showCta();
+    }, outcome.balanceDelay + outcome.balanceCountDuration + CTA_DELAY);
 }
 
 
@@ -186,31 +174,29 @@ function showSmallWin(outcome) {
     }
     const winReels = outcome.winReels || [];
 
-    scheduleSafariReveal(() => {
-        if (window.playSmallWinFx) {
-            window.playSmallWinFx(winReels);
+    if (window.playSmallWinFx) {
+        window.playSmallWinFx(winReels);
+    }
+
+    for (let i = 0; i < winReels.length; i++) {
+        const reelIndex = winReels[i];
+
+        if (gameConfig.effects.reelWinGlowEnabled) {
+            highlightReel(reelIndex);
         }
+    }
 
-        for (let i = 0; i < winReels.length; i++) {
-            const reelIndex = winReels[i];
+    if (gameConfig.effects.coinParticlesEnabled) {
+        spawnCoinParticlesFromWinCoins(outcome);
+    }
 
-            if (gameConfig.effects.reelWinGlowEnabled) {
-                highlightReel(reelIndex);
-            }
-        }
+    if (gameConfig.effects.slotWinGlowEnabled) {
+        addClasses(slotArea, "small-win");
 
-        if (gameConfig.effects.coinParticlesEnabled) {
-            spawnCoinParticlesFromWinCoins(outcome);
-        }
-
-        if (gameConfig.effects.slotWinGlowEnabled) {
-            addClasses(slotArea, "small-win");
-
-            setTimeout(() => {
-                removeClasses(slotArea, "small-win");
-            }, SMALL_WIN_GLOW_DURATION);
-        }
-    });
+        setTimeout(() => {
+            removeClasses(slotArea, "small-win");
+        }, SMALL_WIN_GLOW_DURATION);
+    }
 }
 
 function handleOutcomeType(outcome) {
@@ -273,6 +259,10 @@ function showCta() {
     unlockSpinButton();
 }
 function handleSpinButtonClick() {
+    if (window.unlockSfx) {
+        window.unlockSfx();
+    }
+
     if (isCtaActive === true) {
         goToOffer();
         return;
@@ -424,6 +414,7 @@ function animateReelsToResult(outcome) {
     ) {
         setTimeout(() => {
             addClasses(reelElements[outcome.anticipationReel], "anticipation-reel");
+            startAnticipationFramePulse(outcome.anticipationReel);
 
             if (window.playAnticipationFx) {
                 window.playAnticipationFx(outcome.anticipationReel);
@@ -436,6 +427,7 @@ function animateReelsToResult(outcome) {
     setTimeout(() => {
         if (outcome.anticipationReel !== undefined) {
             removeClasses(reelElements[outcome.anticipationReel], "anticipation-reel");
+            stopAnticipationFramePulse(outcome.anticipationReel);
 
             if (window.stopAnticipationFx) {
                 window.stopAnticipationFx();
@@ -453,6 +445,81 @@ function highlightReel(reelIndex) {
     setTimeout(() => {
         removeClasses(reelElements[reelIndex], "win-reel");
     }, WIN_REEL_GLOW_DURATION);
+}
+
+function startAnticipationFramePulse(reelIndex) {
+    const reel = reelElements[reelIndex];
+
+    if (!reel) {
+        return;
+    }
+
+    if (anticipationFrameId !== null) {
+        cancelAnimationFrame(anticipationFrameId);
+        anticipationFrameId = null;
+    }
+
+    anticipationPulseReelIndex = reelIndex;
+
+    const startTime = performance.now();
+
+    const animate = (now) => {
+        if (anticipationPulseReelIndex !== reelIndex || !reel.classList.contains("anticipation-reel")) {
+            reel.style.transform = "";
+            reel.style.borderColor = "";
+            reel.style.boxShadow = "";
+            anticipationFrameId = null;
+            return;
+        }
+
+        const wave = (Math.sin((now - startTime) * 0.01) + 1) * 0.5;
+        const pulseScale = 1 + wave * 0.012;
+        const glowAlpha = 0.45 + wave * 0.4;
+
+        reel.style.transformOrigin = "center center";
+        reel.style.transform = `scale(${pulseScale})`;
+        reel.style.borderColor = `rgba(255, 216, 74, ${0.75 + wave * 0.2})`;
+        reel.style.boxShadow = `
+            0 0 ${18 + wave * 10}px rgba(255, 216, 74, ${glowAlpha}),
+            inset 0 0 18px rgba(255, 216, 74, ${0.35 + wave * 0.1})
+        `;
+
+        anticipationFrameId = requestAnimationFrame(animate);
+    };
+
+    anticipationFrameId = requestAnimationFrame(animate);
+}
+
+function stopAnticipationFramePulse(reelIndex) {
+    if (reelIndex !== undefined && anticipationPulseReelIndex !== reelIndex) {
+        return;
+    }
+
+    anticipationPulseReelIndex = null;
+
+    if (anticipationFrameId !== null) {
+        cancelAnimationFrame(anticipationFrameId);
+        anticipationFrameId = null;
+    }
+
+    if (reelIndex === undefined) {
+        for (let i = 0; i < reelElements.length; i++) {
+            reelElements[i].style.transform = "";
+            reelElements[i].style.borderColor = "";
+            reelElements[i].style.boxShadow = "";
+        }
+        return;
+    }
+
+    const reel = reelElements[reelIndex];
+
+    if (!reel) {
+        return;
+    }
+
+    reel.style.transform = "";
+    reel.style.borderColor = "";
+    reel.style.boxShadow = "";
 }
 function createCoinParticle(startX, startY) {
     const effects = gameConfig.effects;
@@ -613,7 +680,11 @@ function formatBalance(value) {
 }
 function setBalance(value) {
     currentBalance = value;
-    topWinPanel.textContent = formatBalance(currentBalance);
+    if (topWinPanelText) {
+        topWinPanelText.textContent = formatBalance(currentBalance);
+    } else {
+        topWinPanel.textContent = formatBalance(currentBalance);
+    }
 }
 function animateBalanceTo(targetBalance, duration, outcome) {
     const startBalance = currentBalance;
@@ -641,7 +712,11 @@ function animateBalanceTo(targetBalance, duration, outcome) {
 
         const currentValue = startBalance + difference * progress;
 
-        topWinPanel.textContent = formatBalance(currentValue);
+        if (topWinPanelText) {
+            topWinPanelText.textContent = formatBalance(currentValue);
+        } else {
+            topWinPanel.textContent = formatBalance(currentValue);
+        }
 
         if (difference !== 0 && window.playBalanceSparkFx) {
             const sparkStep = Math.floor(progress * 8);
@@ -667,6 +742,16 @@ function playBalancePop() {
         return;
     }
 
+    if (balancePopFrameId !== null) {
+        cancelAnimationFrame(balancePopFrameId);
+        balancePopFrameId = null;
+    }
+
+    if (balancePopTimeoutId !== null) {
+        clearTimeout(balancePopTimeoutId);
+        balancePopTimeoutId = null;
+    }
+
     topWinPanel.style.setProperty(
         "--balance-pop-duration",
         `${gameConfig.effects.balancePopDuration}ms`
@@ -674,13 +759,55 @@ function playBalancePop() {
 
     removeClasses(topWinPanel, "balance-pop");
 
-    void topWinPanel.offsetWidth;
-
     addClasses(topWinPanel, "balance-pop");
 
-    setTimeout(() => {
+    const duration = gameConfig.effects.balancePopDuration;
+    const startTime = performance.now();
+
+    topWinPanel.style.transformOrigin = "center center";
+    topWinPanel.style.willChange = "transform";
+
+    const animate = (now) => {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const eased = progress < 0.28
+            ? progress / 0.28
+            : progress < 0.55
+                ? 1 - (progress - 0.28) / 0.27 * 0.008
+                : 1 - (progress - 0.55) / 0.45 * 0.0;
+
+        let scale = 1;
+
+        if (progress < 0.28) {
+            scale = 1 + eased * 0.03;
+        } else if (progress < 0.55) {
+            scale = 1.03 - (progress - 0.28) / 0.27 * 0.038;
+        } else {
+            scale = 0.992 + (progress - 0.55) / 0.45 * 0.008;
+        }
+
+        topWinPanel.style.transform = `scale(${scale})`;
+
+        if (progress < 1) {
+            balancePopFrameId = requestAnimationFrame(animate);
+            return;
+        }
+
+        topWinPanel.style.transform = "";
+        topWinPanel.style.willChange = "";
+        balancePopFrameId = null;
+    };
+
+    balancePopFrameId = requestAnimationFrame(animate);
+
+    balancePopTimeoutId = setTimeout(() => {
         removeClasses(topWinPanel, "balance-pop");
-    }, gameConfig.effects.balancePopDuration);
+        if (balancePopFrameId !== null) {
+            cancelAnimationFrame(balancePopFrameId);
+            balancePopFrameId = null;
+        }
+        topWinPanel.style.transform = "";
+        topWinPanel.style.willChange = "";
+    }, duration);
 }
 
 function startBalancePulse() {
@@ -690,10 +817,47 @@ function startBalancePulse() {
 
     removeClasses(topWinPanel, "balance-pop");
     addClasses(topWinPanel, "balance-pulsing");
+
+    if (balancePulseFrameId !== null) {
+        cancelAnimationFrame(balancePulseFrameId);
+        balancePulseFrameId = null;
+    }
+
+    const animate = (now) => {
+        if (!topWinPanel.classList.contains("balance-pulsing")) {
+            topWinPanel.style.transform = "";
+            topWinPanel.style.boxShadow = "";
+            topWinPanel.style.willChange = "";
+            balancePulseFrameId = null;
+            return;
+        }
+
+        const wave = (Math.sin(now * 0.008) + 1) * 0.5;
+        const scale = 1 + wave * 0.018;
+        const glow = 0.22 + wave * 0.18;
+
+        topWinPanel.style.transformOrigin = "center center";
+        topWinPanel.style.transform = `scale(${scale})`;
+        topWinPanel.style.boxShadow = `0 0 ${14 + wave * 10}px rgba(255, 220, 80, ${glow})`;
+        topWinPanel.style.willChange = "transform, box-shadow";
+
+        balancePulseFrameId = requestAnimationFrame(animate);
+    };
+
+    balancePulseFrameId = requestAnimationFrame(animate);
 }
 
 function stopBalancePulse() {
     removeClasses(topWinPanel, "balance-pulsing");
+
+    if (balancePulseFrameId !== null) {
+        cancelAnimationFrame(balancePulseFrameId);
+        balancePulseFrameId = null;
+    }
+
+    topWinPanel.style.transform = "";
+    topWinPanel.style.boxShadow = "";
+    topWinPanel.style.willChange = "";
 }
 
 function finishOutcome(outcome) {
