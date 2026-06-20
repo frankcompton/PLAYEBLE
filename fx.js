@@ -710,7 +710,7 @@ function spawnCoinRainDrop() {
 }
 
 function getReelCenterPoint(reelIndex) {
-    const reels = document.querySelectorAll(".reel");
+    const reels = document.querySelectorAll("#reels > div");
 
     if (!reels[reelIndex]) {
         return getScreenPointFromGamePoint(

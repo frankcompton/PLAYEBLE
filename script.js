@@ -12,7 +12,7 @@ const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
 const ctaButton = document.getElementById("ctaButton");
 const overlay = document.getElementById("overlay");
-const reelStrips = document.querySelectorAll(".reel-strip");
+const reelStrips = document.querySelectorAll("#reels > div > div");
 const game = document.getElementById("game");
 const slotStage = document.getElementById("slotStage");
 const spinText = document.getElementById("spinText");
@@ -85,12 +85,12 @@ function unlockSpinButton() {
 function showJackpot(outcome) {
 
     if (window.playSfx) {
-    window.playSfx("jackpot");
-}
+        window.playSfx("jackpot");
+    }
 
     if (window.playJackpotFx) {
-    window.playJackpotFx();
-}
+        window.playJackpotFx();
+    }
 
     scheduleSafariReveal(() => {
         highlightWinReels(outcome);
@@ -133,13 +133,13 @@ function startSpin() {
 
     currentSpinSfx = currentOutcome.spinSfx || null;
 
-if (currentSpinSfx && window.playSfx) {
-    window.playSfx(currentSpinSfx);
-}
+    if (currentSpinSfx && window.playSfx) {
+        window.playSfx(currentSpinSfx);
+    }
 
     if (window.playSfx) {
-    window.playSfx("spin");
-}
+        window.playSfx("spin");
+    }
 
     startSpinVisuals();
 
@@ -168,8 +168,8 @@ function startSpinVisuals() {
 
 function showSmallWin(outcome) {
     if (window.playSfx) {
-    window.playSfx("smallWin");
-}
+        window.playSfx("smallWin");
+    }
     const winReels = outcome.winReels || [];
 
     scheduleSafariReveal(() => {
@@ -381,7 +381,7 @@ function prepareReelsForSpin(outcome) {
     }
 }
 function animateReelsToResult(outcome) {
-    const reels = document.querySelectorAll(".reel");
+    const reels = document.querySelectorAll("#reels > div");
 
     const reelDurations = outcome.reelDurations || [
         REEL_SPIN_BASE_DURATION,
@@ -438,7 +438,7 @@ function animateReelsToResult(outcome) {
     }, totalDuration + 80);
 }
 function highlightReel(reelIndex) {
-    const reels = document.querySelectorAll(".reel");
+    const reels = document.querySelectorAll("#reels > div");
 
     reels[reelIndex].classList.add("win-reel");
 
@@ -518,7 +518,7 @@ function spawnCoinParticlesFromReel(reelIndex) {
         return;
     }
 
-    const reels = document.querySelectorAll(".reel");
+    const reels = document.querySelectorAll("#reels > div");
     const reel = reels[reelIndex];
 
     if (!reel) {
@@ -783,13 +783,13 @@ function applyGameTheme() {
     ctaButton.style.color = theme.ctaButtonText;
 
 
-    const reels = document.querySelectorAll(".reel");
+    const reels = document.querySelectorAll("#reels > div");
 
     for (let i = 0; i < reels.length; i++) {
         reels[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
         reels[i].style.borderColor = theme.reelBorder;
     }
-topWinPanel.style.color = theme.balanceText;
+    topWinPanel.style.color = theme.balanceText;
 }
 
 function applyGameFonts() {
@@ -798,8 +798,8 @@ function applyGameFonts() {
     topWinPanel.style.fontFamily = fonts.balancePanel;
 
     if (ctaAmount) {
-    ctaAmount.style.fontFamily = fonts.ctaAmount || fonts.balancePanel;
-}
+        ctaAmount.style.fontFamily = fonts.ctaAmount || fonts.balancePanel;
+    }
 
     document.documentElement.style.setProperty(
         "--coin-value-font-family",
