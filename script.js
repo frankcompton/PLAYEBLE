@@ -48,6 +48,22 @@ const COIN_PARTICLE_DURATION = gameConfig.effects.coinParticleDuration;
 const WIN_SYMBOL_POP_DURATION = gameConfig.timings.winSymbolPopDuration;
 const JACKPOT_FLASH_DURATION = gameConfig.timings.jackpotFlashDuration;
 
+function isSafariProfile() {
+    return document.documentElement.classList.contains("safari") ||
+        document.documentElement.classList.contains("mobile-safari");
+}
+
+function scheduleSafariReveal(callback) {
+    if (!isSafariProfile()) {
+        callback();
+        return;
+    }
+
+    setTimeout(() => {
+        requestAnimationFrame(callback);
+    }, 24);
+}
+
 
 // Data
 const startScreenReels = gameConfig.startScreen;
@@ -76,20 +92,21 @@ function showJackpot(outcome) {
     window.playJackpotFx();
 }
 
+    scheduleSafariReveal(() => {
+        highlightWinReels(outcome);
+        highlightWinSymbols(outcome);
 
-    highlightWinReels(outcome);
-    highlightWinSymbols(outcome);
+        slotArea.classList.add("jackpot-state");
+        slotArea.classList.add("jackpot-flash");
 
-    slotArea.classList.add("jackpot-state");
-    slotArea.classList.add("jackpot-flash");
+        setTimeout(() => {
+            slotArea.classList.remove("jackpot-flash");
+        }, JACKPOT_FLASH_DURATION);
 
-    setTimeout(() => {
-        slotArea.classList.remove("jackpot-flash");
-    }, JACKPOT_FLASH_DURATION);
-
-    setTimeout(() => {
-        showCta();
-    }, outcome.balanceDelay + outcome.balanceCountDuration + CTA_DELAY);
+        setTimeout(() => {
+            showCta();
+        }, outcome.balanceDelay + outcome.balanceCountDuration + CTA_DELAY);
+    });
 }
 
 
@@ -155,29 +172,31 @@ function showSmallWin(outcome) {
 }
     const winReels = outcome.winReels || [];
 
-    if (window.playSmallWinFx) {
-        window.playSmallWinFx(winReels);
-    }
-
-    for (let i = 0; i < winReels.length; i++) {
-        const reelIndex = winReels[i];
-
-        if (gameConfig.effects.reelWinGlowEnabled) {
-            highlightReel(reelIndex);
+    scheduleSafariReveal(() => {
+        if (window.playSmallWinFx) {
+            window.playSmallWinFx(winReels);
         }
-    }
 
-    if (gameConfig.effects.coinParticlesEnabled) {
-        spawnCoinParticlesFromWinCoins(outcome);
-    }
+        for (let i = 0; i < winReels.length; i++) {
+            const reelIndex = winReels[i];
 
-    if (gameConfig.effects.slotWinGlowEnabled) {
-        slotArea.classList.add("small-win");
+            if (gameConfig.effects.reelWinGlowEnabled) {
+                highlightReel(reelIndex);
+            }
+        }
 
-        setTimeout(() => {
-            slotArea.classList.remove("small-win");
-        }, SMALL_WIN_GLOW_DURATION);
-    }
+        if (gameConfig.effects.coinParticlesEnabled) {
+            spawnCoinParticlesFromWinCoins(outcome);
+        }
+
+        if (gameConfig.effects.slotWinGlowEnabled) {
+            slotArea.classList.add("small-win");
+
+            setTimeout(() => {
+                slotArea.classList.remove("small-win");
+            }, SMALL_WIN_GLOW_DURATION);
+        }
+    });
 }
 
 function handleOutcomeType(outcome) {
@@ -380,7 +399,11 @@ function animateReelsToResult(outcome) {
 
         setTimeout(() => {
             if (window.playReelStopFx) {
-                window.playReelStopFx(reelIndex);
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        window.playReelStopFx(reelIndex);
+                    });
+                });
             }
         }, duration + 30);
     }
@@ -409,7 +432,9 @@ function animateReelsToResult(outcome) {
             }
         }
 
-        finishOutcome(outcome);
+        requestAnimationFrame(() => {
+            finishOutcome(outcome);
+        });
     }, totalDuration + 80);
 }
 function highlightReel(reelIndex) {
@@ -702,8 +727,6 @@ function highlightWinSymbols(outcome) {
 
             symbolElement.classList.remove("win-symbol");
             symbolElement.classList.remove("pulsing");
-
-            void symbolElement.offsetWidth;
 
             symbolElement.classList.add("win-symbol");
 
