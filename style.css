@@ -575,8 +575,14 @@ body {
 
 #ctaAmount {
     color: gold;
-    font-size: 48px;
     font-weight: 900;
+    line-height: 1;
+    width: 100%;
+    display: block;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    text-align: center;
 
     text-shadow:
         0 3px 0 #8a2500,

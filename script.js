@@ -51,6 +51,8 @@ const COIN_PARTICLE_DURATION = gameConfig.effects.coinParticleDuration;
 
 const WIN_SYMBOL_POP_DURATION = gameConfig.timings.winSymbolPopDuration;
 const JACKPOT_FLASH_DURATION = gameConfig.timings.jackpotFlashDuration;
+const CTA_AMOUNT_FIT_MAX_FONT_SIZE = 200;
+const CTA_AMOUNT_FIT_MIN_FONT_SIZE = 18;
 
 function addClasses(element, ...classNames) {
     element.classList.add(...classNames);
@@ -72,6 +74,61 @@ function refreshCachedSymbolHeight() {
     if (Number.isFinite(symbolHeight) && symbolHeight > 0) {
         cachedSymbolHeight = symbolHeight;
     }
+}
+
+function fitTextToWidth(element, minFontSize, maxFontSize) {
+    if (!element) {
+        return;
+    }
+
+    const parent = element.parentElement;
+    if (!parent) {
+        return;
+    }
+
+    const availableWidth = element.clientWidth || parent.clientWidth;
+    if (availableWidth <= 0) {
+        return;
+    }
+
+    const originalDisplay = element.style.display;
+    const originalWidth = element.style.width;
+    const originalWhiteSpace = element.style.whiteSpace;
+    const originalWordBreak = element.style.wordBreak;
+    const originalOverflowWrap = element.style.overflowWrap;
+
+    element.style.display = "block";
+    element.style.width = "100%";
+    element.style.whiteSpace = "nowrap";
+    element.style.wordBreak = "keep-all";
+    element.style.overflowWrap = "normal";
+
+    let low = minFontSize;
+    let high = maxFontSize;
+    let best = minFontSize;
+
+    while (high - low > 0.25) {
+        const mid = (low + high) / 2;
+        element.style.fontSize = `${mid}px`;
+
+        if (element.scrollWidth <= availableWidth) {
+            best = mid;
+            low = mid;
+        } else {
+            high = mid;
+        }
+    }
+
+    element.style.fontSize = `${best}px`;
+    element.style.display = originalDisplay;
+    element.style.width = originalWidth;
+    element.style.whiteSpace = originalWhiteSpace;
+    element.style.wordBreak = originalWordBreak;
+    element.style.overflowWrap = originalOverflowWrap;
+}
+
+function fitAmountText() {
+    fitTextToWidth(ctaAmount, CTA_AMOUNT_FIT_MIN_FONT_SIZE, CTA_AMOUNT_FIT_MAX_FONT_SIZE);
 }
 
 
@@ -254,6 +311,7 @@ function showCta() {
     }
 
     showOverlayAndPopup();
+    fitAmountText();
 
     isCtaActive = true;
 
@@ -302,6 +360,7 @@ function initGame() {
     removeClasses(ctaPopup, "show");
 
     updateCtaText();
+    fitAmountText();
 
     initReels();
 
@@ -1197,10 +1256,12 @@ ctaButton.addEventListener("click", goToOffer);
 
 window.addEventListener("resize", () => {
     updateGameScale();
+    fitAmountText();
 });
 
 window.addEventListener("orientationchange", () => {
     setTimeout(updateGameScale, 300);
+    setTimeout(fitAmountText, 300);
 });
 
 bootstrap();
