@@ -259,10 +259,6 @@ function showCta() {
     unlockSpinButton();
 }
 function handleSpinButtonClick() {
-    if (window.unlockSfx) {
-        window.unlockSfx();
-    }
-
     if (isCtaActive === true) {
         goToOffer();
         return;
@@ -1155,7 +1151,18 @@ async function bootstrap() {
     hidePreloader();
 }
 
+function unlockSfxOnFirstInteraction() {
+    if (window.unlockSfx) {
+        window.unlockSfx();
+    }
+}
+
 //Events
+window.addEventListener("pointerdown", unlockSfxOnFirstInteraction, {
+    once: true,
+    capture: true,
+    passive: true
+});
 spinBtn.addEventListener("click", handleSpinButtonClick);
 ctaButton.addEventListener("click", goToOffer);
 
