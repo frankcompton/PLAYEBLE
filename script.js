@@ -1157,6 +1157,10 @@ async function bootstrap() {
         await window.initFx();
     }
 
+    if (window.preloadFx) {
+        await window.preloadFx();
+    }
+
     initGame();
     hidePreloader();
 }

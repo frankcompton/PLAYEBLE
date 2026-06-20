@@ -33,6 +33,7 @@ let softGlowMaxLife = 1;
 
 let fxViewportWidth = window.innerWidth;
 let fxViewportHeight = window.innerHeight;
+let fxWarmupArtifacts = [];
 const reelElements = Array.from(document.querySelectorAll("#reels > div"));
 const gameScalerElement = document.getElementById("gameScaler");
 
@@ -102,6 +103,190 @@ async function initFx() {
     }
 
     fxApp.ticker.add(updateFx);
+}
+
+async function preloadFx() {
+    if (!fxApp || !fxApp.canvas) {
+        return;
+    }
+
+    const canvas = fxApp.canvas;
+    const previousVisibility = canvas.style.visibility;
+    const previousOpacity = canvas.style.opacity;
+
+    canvas.style.visibility = "hidden";
+    canvas.style.opacity = "0";
+
+    try {
+        warmupFx();
+        await waitForNextFrame();
+        await waitForNextFrame();
+    } finally {
+        clearFxWarmupArtifacts();
+        resetWarmupFxState();
+
+        canvas.style.visibility = previousVisibility;
+        canvas.style.opacity = previousOpacity;
+    }
+}
+
+function warmupFx() {
+    if (!fxApp) {
+        return;
+    }
+
+    const centerPoint = getScreenPointFromGamePoint(
+        gameConfig.scene.baseWidth / 2,
+        gameConfig.scene.baseHeight / 2
+    );
+
+    const warmupCoin = createPixiCoin(18);
+    warmupCoin.x = centerPoint.x;
+    warmupCoin.y = centerPoint.y;
+    fxApp.stage.addChild(warmupCoin);
+    fxWarmupArtifacts.push(warmupCoin);
+
+    spawnSparkBurst(centerPoint.x, centerPoint.y, {
+        count: 1,
+        spreadX: 24,
+        launchUpMin: 12,
+        launchUpMax: 24,
+        duration: 240,
+        minSize: 2,
+        maxSize: 3,
+        gravity: 0.04,
+        colors: [0xffe27a, 0x7df6ff]
+    });
+
+    spawnShockwaveRing(centerPoint.x, centerPoint.y, {
+        color: 0xffd45a,
+        duration: 240,
+        radius: 18,
+        width: 2,
+        startScale: 0.5,
+        expandScale: 2.2,
+        peakAlpha: 0.4
+    });
+
+    if (gameConfig.fx.ctaConfettiEnabled) {
+        const piece = new PIXI.Graphics();
+
+        piece.rect(-4, -7, 8, 14);
+        piece.fill({ color: 0xffd45a, alpha: 1 });
+        piece.x = centerPoint.x;
+        piece.y = centerPoint.y;
+        piece.vx = 0;
+        piece.vy = 0;
+        piece.gravity = 0;
+        piece.rotationSpeed = 0;
+        piece.life = 0;
+        piece.maxLife = 1;
+
+        fxApp.stage.addChild(piece);
+        confettiPieces.push(piece);
+    }
+
+    if (gameConfig.fx.coinRainEnabled) {
+        const previousCoinRainActive = coinRainActive;
+
+        coinRainActive = true;
+        spawnCoinRainDrop();
+        coinRainActive = previousCoinRainActive;
+    }
+
+    if (gameConfig.fx.softGlowEnabled) {
+        playSoftGlow();
+    }
+
+    if (gameConfig.fx.slotShineEnabled) {
+        playSlotShineFx();
+    }
+
+    if (gameConfig.fx.jackpotFlashEnabled) {
+        playJackpotFlash();
+    }
+
+    if (gameConfig.fx.jackpotRaysEnabled) {
+        playJackpotRays();
+    }
+}
+
+function waitForNextFrame() {
+    return new Promise((resolve) => {
+        requestAnimationFrame(() => resolve());
+    });
+}
+
+function clearFxWarmupArtifacts() {
+    if (!fxApp) {
+        fxWarmupArtifacts = [];
+        return;
+    }
+
+    for (let i = 0; i < fxWarmupArtifacts.length; i++) {
+        const artifact = fxWarmupArtifacts[i];
+        fxApp.stage.removeChild(artifact);
+
+        if (artifact.destroy) {
+            artifact.destroy({ children: true });
+        }
+    }
+
+    fxWarmupArtifacts = [];
+}
+
+function resetWarmupFxState() {
+    for (let i = burstParticles.length - 1; i >= 0; i--) {
+        fxApp.stage.removeChild(burstParticles[i]);
+    }
+
+    for (let i = activeParticles.length - 1; i >= 0; i--) {
+        fxApp.stage.removeChild(activeParticles[i]);
+    }
+
+    for (let i = shockwaveRings.length - 1; i >= 0; i--) {
+        fxApp.stage.removeChild(shockwaveRings[i]);
+    }
+
+    for (let i = confettiPieces.length - 1; i >= 0; i--) {
+        fxApp.stage.removeChild(confettiPieces[i]);
+    }
+
+    burstParticles = [];
+    activeParticles = [];
+    shockwaveRings = [];
+    confettiPieces = [];
+
+    flashLife = 0;
+    flashMaxLife = 1;
+    raysLife = 0;
+    raysMaxLife = 1;
+    slotShineLife = 0;
+    slotShineMaxLife = 0;
+    softGlowLife = 0;
+    softGlowMaxLife = 1;
+    coinRainActive = false;
+    coinRainTimer = 0;
+
+    if (flashOverlay) {
+        flashOverlay.alpha = 0;
+    }
+
+    if (raysContainer) {
+        raysContainer.alpha = 0;
+        raysContainer.visible = false;
+        raysContainer.rotation = 0;
+    }
+
+    if (slotShine) {
+        slotShine.alpha = 0;
+        slotShine.visible = false;
+    }
+
+    if (softGlowContainer) {
+        softGlowContainer.alpha = 0;
+        softGlowContainer.visible = false;
+    }
 }
 
 function createAmbientGlow() {
@@ -1281,6 +1466,7 @@ window.playBalanceSparkFx = playBalanceSparkFx;
 window.playCtaFx = playCtaFx;
 window.stopCoinRain = stopCoinRain;
 window.initFx = initFx;
+window.preloadFx = preloadFx;
 
 window.addEventListener("resize", () => {
     if (!fxApp) {
