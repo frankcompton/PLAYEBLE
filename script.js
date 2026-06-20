@@ -992,6 +992,19 @@ function applyGameFonts() {
     }
 }
 
+async function ensureLocalFontsLoaded() {
+    if (!document.fonts || typeof document.fonts.load !== "function") {
+        return;
+    }
+
+    try {
+        await document.fonts.load(`16px ${gameConfig.fonts.balancePanel}`);
+        await document.fonts.ready;
+    } catch {
+        // If the font loader fails, the app can still fall back to system fonts.
+    }
+}
+
 function getCurrentSymbolHeight() {
     return cachedSymbolHeight;
 }
@@ -1145,6 +1158,8 @@ function getPreloadSoundSources() {
 }
 
 async function bootstrap() {
+    await ensureLocalFontsLoaded();
+
     updateGameScale();
     applyGameAssets();
     applyGameFonts();

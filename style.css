@@ -2,6 +2,16 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: "Archivo Black";
+    src:
+        url("assets/fonts/archivo-black-latin-400-normal.woff2") format("woff2"),
+        url("assets/fonts/archivo-black-latin-400-normal.woff") format("woff");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+}
+
 
 body {
     background: #05051f;

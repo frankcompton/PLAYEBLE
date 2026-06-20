@@ -51,12 +51,12 @@ export const gameConfig = {
     },
 
     fonts: {
-        balancePanel: '"Arial Black", Impact, sans-serif',
-        ctaAmount: '"Arial Black", Impact, sans-serif',
-        coinValue: '"Arial Black", Impact, sans-serif',
-        coinParticle: '"Arial Black", Impact, sans-serif',
-        ctaTitle: '"Arial Black", Impact, sans-serif',
-        ctaButton: '"Arial Black", Impact, sans-serif'
+        balancePanel: '"Archivo Black", sans-serif',
+        ctaAmount: '"Archivo Black", sans-serif',
+        coinValue: '"Archivo Black", sans-serif',
+        coinParticle: '"Archivo Black", sans-serif',
+        ctaTitle: '"Archivo Black", sans-serif',
+        ctaButton: '"Archivo Black", sans-serif'
     },
 
     // =========================
