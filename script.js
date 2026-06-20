@@ -1,7 +1,5 @@
 import { gameConfig } from "./config.js";
 
-console.log("JS connected");
-
 // Elements
 const spinBtn = document.getElementById("spinBtn");
 const topWinPanel = document.getElementById("topWinPanel");
@@ -12,10 +10,8 @@ const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
 const ctaButton = document.getElementById("ctaButton");
 const overlay = document.getElementById("overlay");
-const reelStrips = document.querySelectorAll("#reels > div > div");
-const game = document.getElementById("game");
-const slotStage = document.getElementById("slotStage");
-const spinText = document.getElementById("spinText");
+const reelElements = Array.from(document.querySelectorAll("#reels > div"));
+const reelStrips = Array.from(document.querySelectorAll("#reels > div > div"));
 const gameScaler = document.getElementById("gameScaler");
 const preloader = document.getElementById("preloader");
 const preloaderLogo = document.getElementById("preloaderLogo");
@@ -27,10 +23,11 @@ let isSpinning = false;
 let isCtaActive = false;
 let currentBalance = 0;
 let currentSpinSfx = null;
+const DEFAULT_SYMBOL_HEIGHT = 82;
+let cachedSymbolHeight = DEFAULT_SYMBOL_HEIGHT;
 
 // Settings
 const CTA_DELAY = gameConfig.timings.ctaDelay;
-const SHOW_CLASS_DELAY = 10;
 
 const SMALL_WIN_GLOW_DURATION = gameConfig.timings.smallWinGlowDuration;
 
@@ -64,22 +61,43 @@ function scheduleSafariReveal(callback) {
     }, 24);
 }
 
+function addClasses(element, ...classNames) {
+    element.classList.add(...classNames);
+}
+
+function removeClasses(element, ...classNames) {
+    element.classList.remove(...classNames);
+}
+
+function setDisplayed(element, display) {
+    element.style.display = display;
+}
+
+function refreshCachedSymbolHeight() {
+    const symbolHeight = parseFloat(
+        getComputedStyle(slotArea).getPropertyValue("--symbol-height")
+    );
+
+    if (Number.isFinite(symbolHeight) && symbolHeight > 0) {
+        cachedSymbolHeight = symbolHeight;
+    }
+}
+
 
 // Data
 const startScreenReels = gameConfig.startScreen;
 const outcomes = gameConfig.spins;
 const symbolMap = gameConfig.assets.symbols;
 const reelSymbols = gameConfig.reelSymbols;
-console.log(spinBtn);
 
 // Functions
 function lockSpinButton() {
     isSpinning = true;
-    spinBtn.classList.add("disabled");
+    addClasses(spinBtn, "disabled");
 }
 
 function unlockSpinButton() {
-    spinBtn.classList.remove("disabled");
+    removeClasses(spinBtn, "disabled");
     isSpinning = false;
 }
 function showJackpot(outcome) {
@@ -96,11 +114,10 @@ function showJackpot(outcome) {
         highlightWinReels(outcome);
         highlightWinSymbols(outcome);
 
-        slotArea.classList.add("jackpot-state");
-        slotArea.classList.add("jackpot-flash");
+        addClasses(slotArea, "jackpot-state", "jackpot-flash");
 
         setTimeout(() => {
-            slotArea.classList.remove("jackpot-flash");
+            removeClasses(slotArea, "jackpot-flash");
         }, JACKPOT_FLASH_DURATION);
 
         setTimeout(() => {
@@ -119,13 +136,11 @@ function getRandomNumber(min, max) {
 }
 
 function startSpin() {
-
-    spinBtn.classList.remove("spin-idle");
+    removeClasses(spinBtn, "spin-idle");
     spinCount = spinCount + 1;
 
     if (spinCount > outcomes.length) {
         spinCount = outcomes.length;
-        console.log("No more outcomes");
         return;
     }
 
@@ -150,7 +165,6 @@ function goToOffer() {
     const offerUrl = gameConfig.offer.url;
 
     if (!offerUrl) {
-        console.log("Offer URL is empty");
         return;
     }
 
@@ -190,10 +204,10 @@ function showSmallWin(outcome) {
         }
 
         if (gameConfig.effects.slotWinGlowEnabled) {
-            slotArea.classList.add("small-win");
+            addClasses(slotArea, "small-win");
 
             setTimeout(() => {
-                slotArea.classList.remove("small-win");
+                removeClasses(slotArea, "small-win");
             }, SMALL_WIN_GLOW_DURATION);
         }
     });
@@ -229,24 +243,23 @@ function handleOutcomeType(outcome) {
     unlockSpinButton();
 }
 function showOverlayAndPopup() {
-    overlay.classList.remove("show");
-    ctaPopup.classList.remove("show");
-
-    overlay.style.display = "block";
-    ctaPopup.style.display = "flex";
+    removeClasses(overlay, "show");
+    removeClasses(ctaPopup, "show");
+    setDisplayed(overlay, "block");
+    setDisplayed(ctaPopup, "flex");
 
     overlay.offsetHeight;
     ctaPopup.offsetHeight;
 
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-            overlay.classList.add("show");
-            ctaPopup.classList.add("show");
+            addClasses(overlay, "show");
+            addClasses(ctaPopup, "show");
         });
     });
 }
 function showCta() {
-    spinBtn.classList.add("cta-ready");
+    addClasses(spinBtn, "cta-ready");
     spinBtn.blur();
 
     if (window.playCtaFx) {
@@ -275,18 +288,17 @@ function initGame() {
     updateGameScale();
     applyGameAssets();
     applyGameFonts();
+    refreshCachedSymbolHeight();
 
-    spinBtn.classList.add("spin-idle");
+    addClasses(spinBtn, "spin-idle");
 
     spinCount = 0;
     isSpinning = false;
     isCtaActive = false;
 
-    spinBtn.classList.remove("cta-ready");
+    removeClasses(spinBtn, "cta-ready");
 
-    slotArea.classList.remove("jackpot-state");
-    slotArea.classList.remove("jackpot-flash");
-    slotArea.classList.remove("small-win");
+    removeClasses(slotArea, "jackpot-state", "jackpot-flash", "small-win");
 
     if (window.stopCoinRain) {
         window.stopCoinRain();
@@ -296,11 +308,11 @@ function initGame() {
         window.stopAnticipationFx();
     }
 
-    overlay.style.display = "none";
-    overlay.classList.remove("show");
+    setDisplayed(overlay, "none");
+    removeClasses(overlay, "show");
 
-    ctaPopup.style.display = "none";
-    ctaPopup.classList.remove("show");
+    setDisplayed(ctaPopup, "none");
+    removeClasses(ctaPopup, "show");
 
     updateCtaText();
 
@@ -381,8 +393,6 @@ function prepareReelsForSpin(outcome) {
     }
 }
 function animateReelsToResult(outcome) {
-    const reels = document.querySelectorAll("#reels > div");
-
     const reelDurations = outcome.reelDurations || [
         REEL_SPIN_BASE_DURATION,
         REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION,
@@ -413,7 +423,7 @@ function animateReelsToResult(outcome) {
         gameConfig.effects.anticipationGlowEnabled
     ) {
         setTimeout(() => {
-            reels[outcome.anticipationReel].classList.add("anticipation-reel");
+            addClasses(reelElements[outcome.anticipationReel], "anticipation-reel");
 
             if (window.playAnticipationFx) {
                 window.playAnticipationFx(outcome.anticipationReel);
@@ -425,7 +435,7 @@ function animateReelsToResult(outcome) {
 
     setTimeout(() => {
         if (outcome.anticipationReel !== undefined) {
-            reels[outcome.anticipationReel].classList.remove("anticipation-reel");
+            removeClasses(reelElements[outcome.anticipationReel], "anticipation-reel");
 
             if (window.stopAnticipationFx) {
                 window.stopAnticipationFx();
@@ -438,12 +448,10 @@ function animateReelsToResult(outcome) {
     }, totalDuration + 80);
 }
 function highlightReel(reelIndex) {
-    const reels = document.querySelectorAll("#reels > div");
-
-    reels[reelIndex].classList.add("win-reel");
+    addClasses(reelElements[reelIndex], "win-reel");
 
     setTimeout(() => {
-        reels[reelIndex].classList.remove("win-reel");
+        removeClasses(reelElements[reelIndex], "win-reel");
     }, WIN_REEL_GLOW_DURATION);
 }
 function createCoinParticle(startX, startY) {
@@ -451,7 +459,7 @@ function createCoinParticle(startX, startY) {
 
     const coin = document.createElement("div");
 
-    coin.classList.add("coin-particle");
+    addClasses(coin, "coin-particle");
     coin.textContent = gameConfig.currency.effectCoinText || "$";
 
     coin.style.left = `${startX}px`;
@@ -518,8 +526,7 @@ function spawnCoinParticlesFromReel(reelIndex) {
         return;
     }
 
-    const reels = document.querySelectorAll("#reels > div");
-    const reel = reels[reelIndex];
+    const reel = reelElements[reelIndex];
 
     if (!reel) {
         return;
@@ -538,11 +545,11 @@ function spawnCoinParticlesFromWinCoins(outcome) {
         return;
     }
 
-    const winSymbols = outcome.winSymbols || [];
+    const winSymbols = new Set(outcome.winSymbols || []);
     const particlesPerCoin = gameConfig.effects.coinParticlesPerWinCoin || 6;
 
     for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
-        const symbolsInReel = reelStrips[reelIndex].querySelectorAll(".symbol");
+        const symbolsInReel = reelStrips[reelIndex].children;
 
         for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
             const symbolElement = symbolsInReel[rowIndex];
@@ -557,7 +564,7 @@ function spawnCoinParticlesFromWinCoins(outcome) {
                 continue;
             }
 
-            if (!winSymbols.includes(symbolName)) {
+            if (!winSymbols.has(symbolName)) {
                 continue;
             }
 
@@ -665,14 +672,14 @@ function playBalancePop() {
         `${gameConfig.effects.balancePopDuration}ms`
     );
 
-    topWinPanel.classList.remove("balance-pop");
+    removeClasses(topWinPanel, "balance-pop");
 
     void topWinPanel.offsetWidth;
 
-    topWinPanel.classList.add("balance-pop");
+    addClasses(topWinPanel, "balance-pop");
 
     setTimeout(() => {
-        topWinPanel.classList.remove("balance-pop");
+        removeClasses(topWinPanel, "balance-pop");
     }, gameConfig.effects.balancePopDuration);
 }
 
@@ -681,12 +688,12 @@ function startBalancePulse() {
         return;
     }
 
-    topWinPanel.classList.remove("balance-pop");
-    topWinPanel.classList.add("balance-pulsing");
+    removeClasses(topWinPanel, "balance-pop");
+    addClasses(topWinPanel, "balance-pulsing");
 }
 
 function stopBalancePulse() {
-    topWinPanel.classList.remove("balance-pulsing");
+    removeClasses(topWinPanel, "balance-pulsing");
 }
 
 function finishOutcome(outcome) {
@@ -707,10 +714,10 @@ function finishOutcome(outcome) {
     }, delay);
 }
 function highlightWinSymbols(outcome) {
-    const winSymbols = outcome.winSymbols || [];
+    const winSymbols = new Set(outcome.winSymbols || []);
 
     for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
-        const symbolsInReel = reelStrips[reelIndex].querySelectorAll(".symbol");
+        const symbolsInReel = reelStrips[reelIndex].children;
 
         for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
             const symbolElement = symbolsInReel[rowIndex];
@@ -721,18 +728,17 @@ function highlightWinSymbols(outcome) {
 
             const symbolName = symbolElement.dataset.symbol;
 
-            if (!winSymbols.includes(symbolName)) {
+            if (!winSymbols.has(symbolName)) {
                 continue;
             }
 
-            symbolElement.classList.remove("win-symbol");
-            symbolElement.classList.remove("pulsing");
+            removeClasses(symbolElement, "win-symbol", "pulsing");
 
-            symbolElement.classList.add("win-symbol");
+            addClasses(symbolElement, "win-symbol");
 
             if (gameConfig.effects.bonusPulseEnabled) {
                 setTimeout(() => {
-                    symbolElement.classList.add("pulsing");
+                    addClasses(symbolElement, "pulsing");
                 }, WIN_SYMBOL_POP_DURATION);
             }
         }
@@ -742,8 +748,7 @@ function clearWinSymbols() {
     const winSymbols = document.querySelectorAll(".win-symbol");
 
     for (let i = 0; i < winSymbols.length; i++) {
-        winSymbols[i].classList.remove("win-symbol");
-        winSymbols[i].classList.remove("pulsing");
+        removeClasses(winSymbols[i], "win-symbol", "pulsing");
     }
 }
 function updateCtaText() {
@@ -782,12 +787,9 @@ function applyGameTheme() {
     ctaButton.style.background = `linear-gradient(${theme.ctaButtonTop}, ${theme.ctaButtonBottom})`;
     ctaButton.style.color = theme.ctaButtonText;
 
-
-    const reels = document.querySelectorAll("#reels > div");
-
-    for (let i = 0; i < reels.length; i++) {
-        reels[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
-        reels[i].style.borderColor = theme.reelBorder;
+    for (let i = 0; i < reelElements.length; i++) {
+        reelElements[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
+        reelElements[i].style.borderColor = theme.reelBorder;
     }
     topWinPanel.style.color = theme.balanceText;
 }
@@ -821,18 +823,7 @@ function applyGameFonts() {
 }
 
 function getCurrentSymbolHeight() {
-    const firstSymbol = reelStrips[0]?.querySelector(".symbol");
-
-    if (firstSymbol) {
-        return firstSymbol.getBoundingClientRect().height / getCurrentScale();
-    }
-
-    return 82;
-}
-function getCurrentScale() {
-    const scaleValue = getComputedStyle(gameScaler).getPropertyValue("--game-scale");
-
-    return parseFloat(scaleValue) || 1;
+    return cachedSymbolHeight;
 }
 function updateGameScale() {
     const baseWidth = gameConfig.scene.baseWidth;
@@ -902,7 +893,7 @@ function hidePreloader() {
     }
 
     updatePreloaderProgress(1);
-    preloader.classList.add("hidden");
+    addClasses(preloader, "hidden");
 }
 
 async function startPreloader() {
@@ -988,7 +979,7 @@ async function bootstrap() {
     applyGameAssets();
     applyGameFonts();
 
-    spinBtn.classList.add("spin-idle");
+    addClasses(spinBtn, "spin-idle");
 
     await startPreloader();
 

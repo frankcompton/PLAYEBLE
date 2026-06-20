@@ -33,6 +33,16 @@ let softGlowMaxLife = 1;
 
 let fxViewportWidth = window.innerWidth;
 let fxViewportHeight = window.innerHeight;
+const reelElements = Array.from(document.querySelectorAll("#reels > div"));
+const gameScalerElement = document.getElementById("gameScaler");
+
+function addClasses(element, ...classNames) {
+    element.classList.add(...classNames);
+}
+
+function removeClasses(element, ...classNames) {
+    element.classList.remove(...classNames);
+}
 
 function isMobileSafari() {
     const ua = navigator.userAgent;
@@ -49,14 +59,14 @@ function isSafariBrowser() {
 function applyPerformanceProfile() {
     const root = document.documentElement;
 
-    root.classList.remove("mobile-safari", "safari", "desktop");
+    removeClasses(root, "mobile-safari", "safari", "desktop");
 
     if (!isSafariBrowser()) {
-        root.classList.add("desktop");
+        addClasses(root, "desktop");
         return;
     }
 
-    root.classList.add(isMobileSafari() ? "mobile-safari" : "safari");
+    addClasses(root, isMobileSafari() ? "mobile-safari" : "safari");
 
     const fx = gameConfig.fx;
 
@@ -86,7 +96,6 @@ async function initFx() {
     fxLayer = document.getElementById("fxLayer");
 
     if (!fxLayer) {
-        console.log("FX layer not found");
         return;
     }
 
@@ -710,16 +719,14 @@ function spawnCoinRainDrop() {
 }
 
 function getReelCenterPoint(reelIndex) {
-    const reels = document.querySelectorAll("#reels > div");
-
-    if (!reels[reelIndex]) {
+    if (!reelElements[reelIndex]) {
         return getScreenPointFromGamePoint(
             gameConfig.scene.baseWidth / 2,
             gameConfig.fx.reelLandY
         );
     }
 
-    const rect = reels[reelIndex].getBoundingClientRect();
+    const rect = reelElements[reelIndex].getBoundingClientRect();
 
     return {
         x: rect.left + rect.width / 2,
@@ -1279,16 +1286,14 @@ function updateRays() {
 }
 
 function getScreenPointFromGamePoint(gameX, gameY) {
-    const gameScaler = document.getElementById("gameScaler");
-
-    if (!gameScaler) {
+    if (!gameScalerElement) {
         return {
             x: gameX,
             y: gameY
         };
     }
 
-    const rect = gameScaler.getBoundingClientRect();
+    const rect = gameScalerElement.getBoundingClientRect();
 
     const scaleX = rect.width / gameConfig.scene.baseWidth;
     const scaleY = rect.height / gameConfig.scene.baseHeight;
@@ -1300,13 +1305,11 @@ function getScreenPointFromGamePoint(gameX, gameY) {
 }
 
 function getGameScreenScale() {
-    const gameScaler = document.getElementById("gameScaler");
-
-    if (!gameScaler) {
+    if (!gameScalerElement) {
         return 1;
     }
 
-    const rect = gameScaler.getBoundingClientRect();
+    const rect = gameScalerElement.getBoundingClientRect();
 
     return rect.width / gameConfig.scene.baseWidth;
 }
