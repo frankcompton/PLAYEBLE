@@ -2,6 +2,8 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 const workflow = "vps.yml";
+loadLocalEnv();
+
 const host = process.env.VPS_HOST || "132.243.19.25";
 const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
 const dryRun = process.argv.includes("--dry-run");
@@ -9,8 +11,7 @@ const forceTrigger = process.argv.includes("--force-trigger");
 const branch = getCurrentBranch();
 
 if (!branch) {
-    console.error("Could not detect the current git branch.");
-    process.exit(1);
+    fail("Could not detect the current git branch.");
 }
 
 const url = getDeployUrl(branch);
@@ -27,7 +28,8 @@ warnAboutUncommittedChanges();
 const pushResult = run("git", ["push", "-u", "origin", branch]);
 
 if (pushResult.status !== 0) {
-    process.exit(pushResult.status ?? 1);
+    process.exitCode = pushResult.status ?? 1;
+    throw new Error("Git push failed.");
 }
 
 const pushOutput = `${pushResult.stdout}\n${pushResult.stderr}`;
@@ -75,8 +77,7 @@ function getRepoSlug() {
     const match = remote.match(/github\.com[:/](.+?)(?:\.git)?$/);
 
     if (!match) {
-        console.error(`Could not detect GitHub repository from origin: ${remote}`);
-        process.exit(1);
+        fail(`Could not detect GitHub repository from origin: ${remote}`);
     }
 
     return match[1];
@@ -113,11 +114,41 @@ async function triggerWorkflow(branchName) {
 
     if (!token) {
         console.error("Push is up to date, so a manual workflow trigger is needed.");
-        console.error("Install and login to GitHub CLI with `gh auth login`, or set GH_TOKEN/GITHUB_TOKEN.");
-        process.exit(1);
+        fail("Create .env.local with GH_TOKEN=your_github_token, or set GH_TOKEN/GITHUB_TOKEN in the terminal.");
     }
 
     await triggerWorkflowWithApi(getRepoSlug(), branchName, token);
+}
+
+function loadLocalEnv() {
+    let envFile = "";
+
+    try {
+        envFile = readFileSync(".env.local", "utf8");
+    } catch {
+        return;
+    }
+
+    for (const line of envFile.split(/\r?\n/)) {
+        const trimmed = line.trim();
+
+        if (!trimmed || trimmed.startsWith("#")) {
+            continue;
+        }
+
+        const separator = trimmed.indexOf("=");
+
+        if (separator === -1) {
+            continue;
+        }
+
+        const key = trimmed.slice(0, separator).trim();
+        const value = trimmed.slice(separator + 1).trim().replace(/^["']|["']$/g, "");
+
+        if (key && !process.env[key]) {
+            process.env[key] = value;
+        }
+    }
 }
 
 async function triggerWorkflowWithApi(repoSlug, branchName, authToken) {
@@ -134,10 +165,28 @@ async function triggerWorkflowWithApi(repoSlug, branchName, authToken) {
         }
     );
 
-    if (response.status !== 204) {
-        console.error(`GitHub API returned ${response.status}: ${await response.text()}`);
-        process.exit(1);
+    if (response.status === 200 || response.status === 204) {
+        return;
     }
+
+    const body = await response.text();
+
+    if (response.status === 403) {
+        console.error("GitHub refused the token with 403.");
+        console.error("For a fine-grained personal access token, select this repository and set:");
+        console.error("- Actions: Read and write");
+        console.error("- Contents: Read-only");
+        console.error("- Metadata: Read-only");
+        console.error("Then replace GH_TOKEN in .env.local with the new token.");
+        fail(`GitHub response: ${body}`);
+    }
+
+    if (response.status === 404) {
+        console.error(`GitHub could not find workflow ${workflow}. Make sure .github/workflows/${workflow} exists on the branch you are deploying.`);
+        fail(`GitHub response: ${body}`);
+    }
+
+    fail(`GitHub API returned ${response.status}: ${body}`);
 }
 
 function run(command, args, options = {}) {
@@ -155,4 +204,10 @@ function run(command, args, options = {}) {
     }
 
     return result;
+}
+
+function fail(message) {
+    console.error(message);
+    process.exitCode = 1;
+    throw new Error(message);
 }
