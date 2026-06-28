@@ -1,0 +1,86 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+concurrency:
+  group: vps-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Resolve branch target
+        id: branch
+        shell: bash
+        run: |
+          safe_branch="$(printf '%s' "$GITHUB_REF_NAME" | sed -E 's#[^A-Za-z0-9._-]+#-#g; s#^-+##; s#-+$##')"
+          if [ -z "$safe_branch" ]; then
+            echo "Could not resolve a safe deploy path for branch: $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            deploy_url="http://${{ secrets.VPS_HOST }}/"
+          else
+            deploy_url="http://${{ secrets.VPS_HOST }}/${safe_branch}/"
+          fi
+
+          echo "safe_branch=$safe_branch" >> "$GITHUB_OUTPUT"
+          echo "deploy_url=$deploy_url" >> "$GITHUB_OUTPUT"
+
+      - name: Upload build to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          source: "dist/*"
+          target: "/tmp/playeble-${{ github.run_id }}"
+          strip_components: 1
+          rm: true
+
+      - name: Publish branch on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            source_dir="/tmp/playeble-${{ github.run_id }}"
+            target_dir="/var/www/playeble/${{ steps.branch.outputs.safe_branch }}"
+            tmp_dir="${target_dir}.tmp"
+
+            rm -rf "$tmp_dir"
+            mkdir -p "$tmp_dir"
+            cp -a "$source_dir/." "$tmp_dir/"
+            rm -rf "$target_dir"
+            mv "$tmp_dir" "$target_dir"
+            rm -rf "$source_dir"
+            chown -R www-data:www-data "$target_dir"
+
+      - name: Deployment URL
+        run: echo "${{ steps.branch.outputs.deploy_url }}"
