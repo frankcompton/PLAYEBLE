@@ -110,7 +110,7 @@ export const gameConfig = {
 
 
     grid: {
-        columns: 3,
+        columns: 5,
         rows: 3,
         fillerCount: 12
     },
@@ -309,16 +309,16 @@ export const gameConfig = {
     // =========================
 
     // Порядок символов:
-    // [0] [1] [2]
-    // [3] [4] [5]
-    // [6] [7] [8]
+    // [0]  [1]  [2]  [3]  [4]
+    // [5]  [6]  [7]  [8]  [9]
+    // [10] [11] [12] [13] [14]
 
 
     startScreen: {
         reels: [
-            "s6", "s3", "s1",
-            "s4", "s2", "s5",
-            "s7", "s6", "s1"
+            "s6", "s3", "s1", "s4", "s7",
+            "s4", "s2", "s5", "s6", "s1",
+            "s7", "s6", "s1", "s3", "s5"
         ]
     },
 
@@ -329,9 +329,9 @@ export const gameConfig = {
 
     // Каждый объект = один клик по SPIN.
     // reels задаются в таком порядке:
-    // [0] [1] [2]
-    // [3] [4] [5]
-    // [6] [7] [8]
+    // [0]  [1]  [2]  [3]  [4]
+    // [5]  [6]  [7]  [8]  [9]
+    // [10] [11] [12] [13] [14]
 
 
     spins: [
@@ -342,9 +342,9 @@ export const gameConfig = {
             balanceDelay: 0,
             balanceCountDuration: 0,
             reels: [
-                "s6", "s6", "s2",
-                "s6", "s3", "s1",
-                "s5", "s5", "s1"
+                "s6", "s6", "s2", "s4", "s7",
+                "s6", "s3", "s1", "s5", "s2",
+                "s5", "s5", "s1", "s3", "s6"
             ]
         },
 
@@ -359,9 +359,9 @@ export const gameConfig = {
             winSymbols: ["coin:100.00", "coin:250.00"],
 
             reels: [
-                "coin:100.00", "s3", "s1",
-                "coin:250.00", "s1", "s1",
-                "s7", "s2", "s1"
+                "coin:100.00", "s3", "s1", "s4", "s7",
+                "coin:250.00", "s1", "s1", "s5", "s2",
+                "s7", "s2", "s1", "s6", "s3"
             ]
         },
 
@@ -374,17 +374,17 @@ export const gameConfig = {
 
             balanceEffect: "pulse",
 
-            reelDurations: [900, 1200, 4200],
-            reelFillerCounts: [12, 12, 36],
-            anticipationReel: 2,
+            reelDurations: [900, 1200, 1500, 1800, 4200],
+            reelFillerCounts: [12, 12, 12, 12, 36],
+            anticipationReel: 4,
             anticipationDelay: 1300,
 
-            winReels: [0, 1, 2],
+            winReels: [0, 2, 4],
             winSymbols: ["bonus"],
             reels: [
-                "s6", "s2", "s1",
-                "s4", "bonus", "s3",
-                "bonus", "s7", "bonus"
+                "bonus", "s2", "bonus", "s1", "bonus",
+                "s4", "bonus", "s3", "s7", "bonus",
+                "bonus", "s7", "bonus", "s5", "bonus"
             ]
         }
     ],
@@ -399,7 +399,9 @@ export const gameConfig = {
     cta: {
         title: "BIG WIN!",
         amount: "10 350 A$",
-        buttonText: "CLAIM!"
+        buttonText: "CLAIM!",
+        countdownLabel: "OFFER ENDS IN",
+        countdownMinutes: 30
     },
 
     offer: {
