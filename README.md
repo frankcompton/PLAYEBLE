@@ -1,24 +1,33 @@
 ## Deploy
 
-Автодеплой настроен через GitHub Pages в файле `.github/workflows/pages.yml`.
+Автодеплой настроен на VPS через `.github/workflows/vps.yml`.
 
-Workflow запускается при push в ветку `main` и вручную через `workflow_dispatch`.
+Workflow запускается при push в любую ветку и вручную через `workflow_dispatch`.
 Он ставит зависимости, собирает проект через `npm run build`, загружает `dist`
-как Pages artifact и публикует сайт через официальный GitHub Pages deploy action.
+на сервер и публикует ветку в отдельную папку.
 
-После успешного workflow сайт будет доступен на GitHub Pages:
+URL после деплоя:
 
-`https://frankcompton.github.io/PLAYEBLE/`
+- `main` -> `http://132.243.19.25/`
+- `dev` -> `http://132.243.19.25/dev/`
+- `dev-deploy` -> `http://132.243.19.25/dev-deploy/`
+- любая другая ветка -> `http://132.243.19.25/<branch-name>/`
 
-В настройках репозитория нужно выбрать источник деплоя:
+В GitHub нужно один раз добавить repository secrets:
 
-`Settings > Pages > Build and deployment > Source > GitHub Actions`
+- `VPS_HOST`
+- `VPS_USER`
+- `VPS_PASSWORD`
 
 Для деплоя достаточно закоммитить изменения и отправить их в GitHub:
 
 ```bash
 git push
 ```
+
+Чтобы запустить деплой без нового коммита:
+
+`Actions -> Deploy to VPS -> Run workflow`
 
 ## Structure
 
