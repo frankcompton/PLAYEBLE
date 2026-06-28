@@ -125,7 +125,7 @@ body {
     height: 100%;
 
     display: flex;
-    gap: 6px;
+    gap: 0px;
 }
 
 #reels>div {
@@ -185,7 +185,7 @@ body {
     width: 86vw;
     max-width: 380px;
 
-    min-height: 260px;
+    min-height: 310px;
 
     position: fixed;
     top: 50%;
@@ -277,6 +277,43 @@ body {
         0 0 24px rgba(255, 220, 80, 0.8);
 
     animation: ctaPulse 1s infinite;
+}
+
+#ctaCountdown {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 2px;
+
+    color: #ffffff;
+    text-align: center;
+    line-height: 1;
+
+    text-shadow:
+        0 2px 0 rgba(0, 0, 0, 0.55),
+        0 0 12px rgba(255, 220, 80, 0.7);
+}
+
+#ctaCountdownLabel {
+    margin-bottom: 6px;
+
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.6px;
+}
+
+#ctaCountdownTime {
+    color: #ffd92f;
+    font-size: 34px;
+    font-weight: 900;
+    letter-spacing: 1px;
+
+    text-shadow:
+        0 3px 0 #8a2500,
+        0 0 16px rgba(255, 220, 80, 0.95);
 }
 
 @keyframes ctaPulse {

@@ -10,6 +10,8 @@ const ctaPopup = document.getElementById("ctaPopup");
 const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
 const ctaButton = document.getElementById("ctaButton");
+const ctaCountdownLabel = document.getElementById("ctaCountdownLabel");
+const ctaCountdownTime = document.getElementById("ctaCountdownTime");
 const overlay = document.getElementById("overlay");
 const topWinPanelText = document.getElementById("topWinPanelText");
 const reelElements = Array.from(document.querySelectorAll("#reels > div"));
@@ -25,6 +27,8 @@ let isSpinning = false;
 let isCtaActive = false;
 let currentBalance = 0;
 let currentSpinSfx = null;
+let ctaCountdownIntervalId = null;
+let ctaCountdownEndTime = 0;
 const DEFAULT_SYMBOL_HEIGHT = 82;
 let cachedSymbolHeight = DEFAULT_SYMBOL_HEIGHT;
 let balancePopFrameId = null;
@@ -38,6 +42,7 @@ const CTA_DELAY = gameConfig.timings.ctaDelay;
 
 const SMALL_WIN_GLOW_DURATION = gameConfig.timings.smallWinGlowDuration;
 
+const GRID_COLUMNS = gameConfig.grid.columns;
 const VISIBLE_ROWS = gameConfig.grid.rows;
 const SPIN_FILLER_COUNT = gameConfig.grid.fillerCount;
 
@@ -310,6 +315,8 @@ function showCta() {
         window.playCtaFx();
     }
 
+    startCtaCountdown();
+
     showOverlayAndPopup();
     fitAmountText();
 
@@ -359,6 +366,7 @@ function initGame() {
     setDisplayed(ctaPopup, "none");
     removeClasses(ctaPopup, "show");
 
+    stopCtaCountdown();
     updateCtaText();
     fitAmountText();
 
@@ -398,11 +406,13 @@ function createSymbolHtml(symbol) {
     `;
 }
 function getOutcomeColumn(outcome, reelIndex) {
-    return [
-        outcome.reels[reelIndex],
-        outcome.reels[reelIndex + 3],
-        outcome.reels[reelIndex + 6]
-    ];
+    const columnSymbols = [];
+
+    for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
+        columnSymbols.push(outcome.reels[rowIndex * GRID_COLUMNS + reelIndex]);
+    }
+
+    return columnSymbols;
 }
 function createFillerSymbols(count) {
     const fillerSymbols = [];
@@ -439,14 +449,17 @@ function prepareReelsForSpin(outcome) {
     }
 }
 function animateReelsToResult(outcome) {
-    const reelDurations = outcome.reelDurations || [
-        REEL_SPIN_BASE_DURATION,
-        REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION,
-        REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * 2
-    ];
+    const reelDurations = outcome.reelDurations || Array.from(
+        { length: reelStrips.length },
+        (_, reelIndex) => REEL_SPIN_BASE_DURATION + REEL_SPIN_STEP_DURATION * reelIndex
+    );
+    const effectiveReelDurations = Array.from(
+        { length: reelStrips.length },
+        (_, reelIndex) => reelDurations[reelIndex] ?? reelDurations[reelDurations.length - 1]
+    );
 
     for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
-        const duration = reelDurations[reelIndex];
+        const duration = effectiveReelDurations[reelIndex];
 
         setTimeout(() => {
             reelStrips[reelIndex].style.transitionDuration = `${duration}ms`;
@@ -478,7 +491,7 @@ function animateReelsToResult(outcome) {
         }, outcome.anticipationDelay);
     }
 
-    const totalDuration = Math.max(...reelDurations);
+    const totalDuration = Math.max(...effectiveReelDurations);
 
     setTimeout(() => {
         if (outcome.anticipationReel !== undefined) {
@@ -980,10 +993,67 @@ function clearWinSymbols() {
         removeClasses(winSymbols[i], "win-symbol", "pulsing");
     }
 }
+function formatCtaCountdown(milliseconds) {
+    const safeMilliseconds = Math.max(0, milliseconds);
+    const totalSeconds = Math.ceil(safeMilliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function updateCtaCountdownDisplay() {
+    if (!ctaCountdownTime) {
+        return;
+    }
+
+    const remainingTime = ctaCountdownEndTime - Date.now();
+
+    ctaCountdownTime.textContent = formatCtaCountdown(remainingTime);
+
+    if (remainingTime <= 0 && ctaCountdownIntervalId) {
+        clearInterval(ctaCountdownIntervalId);
+        ctaCountdownIntervalId = null;
+    }
+}
+
+function stopCtaCountdown() {
+    if (ctaCountdownIntervalId) {
+        clearInterval(ctaCountdownIntervalId);
+        ctaCountdownIntervalId = null;
+    }
+}
+
+function resetCtaCountdownDisplay() {
+    if (!ctaCountdownTime) {
+        return;
+    }
+
+    const countdownMinutes = gameConfig.cta.countdownMinutes || 30;
+    ctaCountdownTime.textContent = formatCtaCountdown(countdownMinutes * 60 * 1000);
+}
+
+function startCtaCountdown() {
+    stopCtaCountdown();
+
+    const countdownMinutes = gameConfig.cta.countdownMinutes || 30;
+    ctaCountdownEndTime = Date.now() + countdownMinutes * 60 * 1000;
+
+    updateCtaCountdownDisplay();
+
+    ctaCountdownIntervalId = setInterval(updateCtaCountdownDisplay, 1000);
+}
+
 function updateCtaText() {
     ctaTitle.textContent = gameConfig.cta.title;
     ctaAmount.textContent = gameConfig.cta.amount;
     ctaButton.textContent = gameConfig.cta.buttonText;
+
+    if (ctaCountdownLabel) {
+        ctaCountdownLabel.textContent = gameConfig.cta.countdownLabel || "OFFER ENDS IN";
+    }
+
+    resetCtaCountdownDisplay();
 }
 function applyGameAssets() {
     document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
@@ -1048,6 +1118,14 @@ function applyGameFonts() {
 
     if (ctaButton) {
         ctaButton.style.fontFamily = fonts.ctaButton;
+    }
+
+    if (ctaCountdownLabel) {
+        ctaCountdownLabel.style.fontFamily = fonts.ctaButton;
+    }
+
+    if (ctaCountdownTime) {
+        ctaCountdownTime.style.fontFamily = fonts.ctaAmount || fonts.balancePanel;
     }
 }
 
