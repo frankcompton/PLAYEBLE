@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "node build.mjs",
+        "handoff": "node handoff.mjs",
         "deploy": "node deploy.mjs",
         "preview": "vite preview"
     },
