@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "node build.mjs",
-        "deploy": "node deploy-url.mjs",
+        "deploy": "node deploy.mjs",
         "preview": "vite preview"
     },
     "devDependencies": {
