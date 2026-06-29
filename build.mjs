@@ -11,10 +11,6 @@ async function main() {
     await mkdir(distDir, { recursive: true });
 
     await cp(path.join(rootDir, "assets"), assetsDir, { recursive: true });
-    await cp(
-        path.join(rootDir, "public", "assets", "pixi.min.js"),
-        path.join(assetsDir, "pixi.min.js")
-    );
 
     await removeDsStoreFiles(distDir);
 

@@ -40,7 +40,6 @@ npm run deploy
 - `main.js`
 - `build.mjs`
 - `assets/`
-- `public/assets/pixi.min.js`
 
 `dist/` создается сборкой и вручную не правится.
 
@@ -71,7 +70,7 @@ npm run deploy
 
 - картинки и UI: `assets/`
 - звук: `assets/sfx/`
-- PixiJS: `public/assets/pixi.min.js`
+- PixiJS: `assets/pixi.min.js`
 
 После сборки все нужное попадает в `dist/assets/`.
 

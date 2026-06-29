@@ -209,6 +209,14 @@ function warmupFx() {
     if (gameConfig.fx.jackpotRaysEnabled) {
         playJackpotRays();
     }
+
+    if (gameConfig.fx.jackpotBurstEnabled) {
+        playJackpotBurst();
+    }
+
+    if (gameConfig.fx.jackpotShockwaveEnabled) {
+        playJackpotShockwave();
+    }
 }
 
 function waitForNextFrame() {

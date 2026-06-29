@@ -110,7 +110,6 @@ async function main() {
             "- `build.mjs`",
             "- `package.json`",
             "- `assets/`",
-            "- `public/assets/pixi.min.js`",
             "- `node_modules/`",
             "- `assets/app.js` is a readable, non-minified browser bundle used by `index.html`.",
             "",
