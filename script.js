@@ -58,6 +58,7 @@ function applySceneAssets() {
     scratchInfoPanelArt.src = scratchAssets.infoPanel;
 
     scratchAmount.textContent = scratchConfig.topAmount;
+    scratchAmount.dataset.text = scratchConfig.topAmount;
     scratchSubtitle.textContent = scratchConfig.subtitle;
     scratchInfoNumber.textContent = scratchConfig.infoNumber;
     scratchInfoLabel.textContent = scratchConfig.infoText;
