@@ -7,7 +7,7 @@
     src: url("assets/fonts/arial-black.ttf") format("truetype");
     font-style: normal;
     font-weight: 900;
-    font-display: swap;
+    font-display: block;
 }
 
 html,
@@ -304,21 +304,31 @@ body::after {
 
 .scratch-card-label {
     position: absolute;
-    left: 8%;
-    right: 8%;
+    left: 9%;
+    right: 9%;
     bottom: 14px;
     z-index: 4;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.scratch-card-label-text {
+    display: block;
+    max-width: 100%;
     color: #fff8e0;
-    font-family: Impact, "Arial Black", sans-serif;
-    font-size: 22px;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 20px;
     letter-spacing: 0;
     line-height: 1;
     text-align: center;
-    -webkit-text-stroke: 1.2px #050505;
+    white-space: nowrap;
+    -webkit-text-stroke: 1.15px #050505;
     text-shadow:
         0 2px 0 #000,
         0 4px 4px rgba(0, 0, 0, 0.65);
-    pointer-events: none;
 }
 
 .scratch-card.revealed {
@@ -559,28 +569,20 @@ body::after {
     font-family: "Arial Black", Impact, sans-serif;
     font-weight: 900;
     line-height: 1;
-    text-shadow: 0 1px 0 rgba(255, 242, 160, 0.8);
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.68),
-        inset 0 -2px 4px rgba(90, 35, 0, 0.48),
-        0 0 12px rgba(255, 202, 50, 0.78);
+    text-shadow: 0 1px 0 rgba(255, 242, 160, 0.65);
+    box-shadow: 0 0 5px rgba(255, 202, 50, 0.55);
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.7);
-    animation: scratchCoinBurst 1.28s cubic-bezier(0.12, 0.72, 0.2, 1) forwards;
-}
-
-.scratch-fx-coin::before {
-    content: "";
-    position: absolute;
-    inset: 22%;
-    border: 1px solid rgba(112, 60, 0, 0.45);
-    border-radius: 50%;
+    contain: layout paint style;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+    transform: translate3d(-50%, -50%, 0) scale(0.7);
+    animation: scratchCoinBurst 1s cubic-bezier(0.12, 0.72, 0.2, 1) forwards;
 }
 
 @keyframes scratchCoinBurst {
     0% {
         opacity: 0;
-        transform: translate(-50%, -50%) translate(0, 0) scale(0.55) rotate(0deg);
+        transform: translate3d(-50%, -50%, 0) translate3d(0, 0, 0) scale(0.55) rotate(0deg);
     }
 
     10% {
@@ -590,8 +592,8 @@ body::after {
     46% {
         opacity: 1;
         transform:
-            translate(-50%, -50%)
-            translate(var(--coin-fly-x), var(--coin-fly-y))
+            translate3d(-50%, -50%, 0)
+            translate3d(var(--coin-fly-x), var(--coin-fly-y), 0)
             scale(1.1)
             rotate(var(--coin-rotate));
     }
@@ -599,8 +601,8 @@ body::after {
     100% {
         opacity: 0;
         transform:
-            translate(-50%, -50%)
-            translate(calc(var(--coin-fly-x) * 1.18), var(--coin-fall-y))
+            translate3d(-50%, -50%, 0)
+            translate3d(calc(var(--coin-fly-x) * 1.18), var(--coin-fall-y), 0)
             scale(0.82)
             rotate(var(--coin-rotate-end));
     }

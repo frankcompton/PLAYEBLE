@@ -43,7 +43,7 @@ function init() {
     setupCta();
     createScratchCards();
     resizeGame();
-    window.addEventListener("resize", resizeGame);
+    window.addEventListener("resize", handleResize);
 
     preloadAssets().then(() => {
         preloader.classList.add("hidden");
@@ -102,7 +102,9 @@ function createScratchCards() {
                 </div>
             </div>
             <canvas class="scratch-cover" width="300" height="420"></canvas>
-            <div class="scratch-card-label">${scratchConfig.cardLabel}</div>
+            <div class="scratch-card-label">
+                <span class="scratch-card-label-text">${scratchConfig.cardLabel}</span>
+            </div>
         `;
 
         scratchCards.appendChild(card);
@@ -122,6 +124,55 @@ function createScratchCards() {
         initScratchCover(state);
         bindScratchEvents(state);
     }
+
+    fitScratchCardLabels();
+}
+
+function handleResize() {
+    resizeGame();
+    fitScratchCardLabels();
+}
+
+function fitScratchCardLabels() {
+    const labels = Array.from(document.querySelectorAll(".scratch-card-label-text"));
+
+    for (let index = 0; index < labels.length; index++) {
+        fitTextInside(labels[index], 13, 20);
+    }
+}
+
+function fitTextInside(element, minFontSize, maxFontSize) {
+    const parent = element.parentElement;
+
+    if (!parent) {
+        return;
+    }
+
+    element.style.fontSize = `${maxFontSize}px`;
+
+    const availableWidth = parent.clientWidth;
+
+    if (availableWidth <= 0 || element.scrollWidth <= availableWidth) {
+        return;
+    }
+
+    let low = minFontSize;
+    let high = maxFontSize;
+    let best = minFontSize;
+
+    while (high - low > 0.25) {
+        const mid = (low + high) / 2;
+        element.style.fontSize = `${mid}px`;
+
+        if (element.scrollWidth <= availableWidth) {
+            best = mid;
+            low = mid;
+        } else {
+            high = mid;
+        }
+    }
+
+    element.style.fontSize = `${best}px`;
 }
 
 function initScratchCover(state) {
@@ -224,10 +275,6 @@ function revealCard(state) {
 
     playCardWinSound();
 
-    if (window.playScratchCardCoinFx) {
-        window.playScratchCardCoinFx(state.card.getBoundingClientRect());
-    }
-
     playDomCoinBurst(state.card);
 
     if (revealedCards >= scratchConfig.cardsToReveal) {
@@ -257,19 +304,19 @@ function playCardWinSound() {
 
 function playDomCoinBurst(card) {
     const rect = card.getBoundingClientRect();
-    const count = 20;
+    const count = 10;
 
     for (let index = 0; index < count; index++) {
         const coin = document.createElement("div");
         const angle = -Math.PI + Math.random() * Math.PI;
-        const distance = 70 + Math.random() * 105;
+        const distance = 58 + Math.random() * 82;
         const flyX = Math.cos(angle) * distance;
         const flyY = Math.sin(angle) * distance - Math.random() * 34;
-        const fallY = 70 + Math.random() * 120;
-        const size = 16 + Math.random() * 10;
+        const fallY = 56 + Math.random() * 82;
+        const size = 22 + Math.random() * 9;
 
         coin.className = "scratch-fx-coin";
-        coin.textContent = "€";
+        coin.textContent = gameConfig.currency.effectCoinText;
         coin.style.left = `${rect.left + rect.width / 2 + (Math.random() - 0.5) * rect.width * 0.36}px`;
         coin.style.top = `${rect.top + rect.height * 0.42 + (Math.random() - 0.5) * rect.height * 0.28}px`;
         coin.style.width = `${size}px`;
@@ -281,7 +328,7 @@ function playDomCoinBurst(card) {
         const rotation = Math.random() * 520 - 260;
         coin.style.setProperty("--coin-rotate", `${rotation}deg`);
         coin.style.setProperty("--coin-rotate-end", `${rotation * 1.7}deg`);
-        coin.style.animationDelay = `${index * 14}ms`;
+        coin.style.animationDelay = `${index * 8}ms`;
 
         document.body.appendChild(coin);
         coin.addEventListener("animationend", () => coin.remove(), { once: true });
