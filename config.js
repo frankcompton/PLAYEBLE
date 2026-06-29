@@ -5,11 +5,11 @@ export const gameConfig = {
 
     balance: {
         startValue: 0,
-        currency: "A$"
+        currency: "€"
     },
 
     currency: {
-        effectCoinText: "$"
+        effectCoinText: "€"
     },
 
     scene: {
@@ -67,6 +67,15 @@ export const gameConfig = {
     assets: {
         background: "assets/background.webp",
         logo: "assets/logo.webp",
+
+        scratch: {
+            background: "assets/strach/scratch-bg.webp",
+            logo: "assets/strach/scratch-logo.webp",
+            character: "assets/strach/scratch-character.webp",
+            infoPanel: "assets/strach/scratch-info-panel.webp",
+            cardCover: "assets/strach/scratch-card-cover.webp",
+            cardWin: "assets/strach/scratch-card-win.webp"
+        },
 
         ui: {
             balancePanel: "assets/ui/balance-panel.webp",
@@ -126,6 +135,7 @@ export const gameConfig = {
     },
 
     effects: {
+        scratchFxEnabled: false,
         coinParticlesEnabled: true,
         coinParticleCount: 16,
         coinParticleDuration: 1300,
@@ -159,6 +169,20 @@ export const gameConfig = {
 
         balancePopEnabled: true,
         balancePopDuration: 620,
+    },
+
+    scratch: {
+        cardsToReveal: 3,
+        bigWinDelay: 450,
+        ctaDelay: 2600,
+        prizeLine2: "250 Freispiele",
+        prizeLine1: "2.500 €",
+        subtitle: "SPITZENGEWINN",
+        topAmount: "25.000€",
+        infoNumber: "6",
+        infoText: "GEWINN-CHANCE",
+        cardLabel: "GEWINN",
+        instruction: "Rubbel die Vase!"
     },
 
     sfx: {
@@ -286,7 +310,7 @@ export const gameConfig = {
         jackpotShockwaveDuration: 680,
 
         coinRainEnabled: true,
-        coinRainText: "$",
+        coinRainText: "€",
         coinRainInterval: 8,
         coinRainMinSize: 12,
         coinRainMaxSize: 24,
@@ -397,11 +421,14 @@ export const gameConfig = {
 
 
     cta: {
-        title: "BIG WIN!",
-        amount: "10 350 A$",
-        buttonText: "CLAIM!",
+        title: "Herzlichen Glückwunsch!",
+        amount: "",
+        description: "Du hast 2.500 € und 250 Freispiele.",
+        hint: "Klicke auf den Button, um deinen Gewinn abzuholen.",
+        buttonText: "Gewinn abholen",
         countdownLabel: "OFFER ENDS IN",
-        countdownMinutes: 30
+        countdownMinutes: 30,
+        countdownEnabled: false
     },
 
     offer: {

@@ -800,7 +800,7 @@ function createPixiCoin(radius) {
     });
 
     const label = new PIXI.Text({
-        text: gameConfig.currency.effectCoinText || "$",
+        text: gameConfig.currency.effectCoinText || "€",
         style: {
             fontFamily: "Arial Black, Impact, sans-serif",
             fontSize: Math.round(radius * getCoinTextScale()),
@@ -824,7 +824,7 @@ function createPixiCoin(radius) {
 }
 
 function getCoinTextScale() {
-    const text = gameConfig.currency.effectCoinText || "$";
+    const text = gameConfig.currency.effectCoinText || "€";
 
     if (text.length >= 2) {
         return 0.62;
@@ -857,6 +857,39 @@ function spawnCoinRainDrop() {
 
     fxApp.stage.addChild(particle);
     activeParticles.push(particle);
+}
+
+function playScratchCardCoinFx(rect) {
+    if (!fxApp || !rect) {
+        return;
+    }
+
+    const fx = gameConfig.fx;
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const count = Math.max(18, (fx.coinParticlesPerWinCoin || fx.coinParticleCount || 12) * 2);
+
+    for (let i = 0; i < count; i++) {
+        const size = getRandomNumber(fx.coinParticleMinSize, fx.coinParticleMaxSize) * 0.72;
+        const particle = createPixiCoin(size);
+        const angle = getRandomNumber(-Math.PI * 0.95, -Math.PI * 0.05);
+        const speed = getRandomNumber(5.2, 10.8);
+
+        particle.x = centerX + getRandomNumber(-rect.width * 0.18, rect.width * 0.18);
+        particle.y = centerY + getRandomNumber(-rect.height * 0.2, rect.height * 0.1);
+        particle.vx = Math.cos(angle) * speed;
+        particle.vy = Math.sin(angle) * speed;
+        particle.gravity = 0.22;
+        particle.rotationSpeed = getRandomNumber(-0.22, 0.22);
+        particle.life = 0;
+        particle.maxLife = Math.max(1, Math.round(((fx.coinParticleDuration || 1100) + 350) / 16));
+        particle.fadeStart = 0.62;
+        particle.peakAlpha = 1;
+        particle.scale.set(getRandomNumber(0.92, 1.28));
+
+        fxApp.stage.addChild(particle);
+        activeParticles.push(particle);
+    }
 }
 
 function getReelCenterPoint(reelIndex) {
@@ -1465,6 +1498,7 @@ window.playSlotShineFx = playSlotShineFx;
 window.playBalanceSparkFx = playBalanceSparkFx;
 window.playCtaFx = playCtaFx;
 window.stopCoinRain = stopCoinRain;
+window.playScratchCardCoinFx = playScratchCardCoinFx;
 window.initFx = initFx;
 window.preloadFx = preloadFx;
 

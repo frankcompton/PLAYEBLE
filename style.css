@@ -4,862 +4,291 @@
 
 @font-face {
     font-family: "Arial Black";
-    src:
-        url("assets/fonts/arial-black.ttf") format("truetype");
+    src: url("assets/fonts/arial-black.ttf") format("truetype");
     font-style: normal;
     font-weight: 900;
     font-display: swap;
 }
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
 
 body {
-    background: #05051f;
+    margin: 0;
+    overflow: hidden;
+    background-color: #1a0700;
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-
-    color: white;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    height: 100vh;
-    margin: 0;
-
-    overflow: hidden;
+    color: #fff;
+    font-family: "Arial Black", Impact, sans-serif;
+    user-select: none;
 }
 
-#logo {
-    color: white;
-    font-size: 42px;
-    font-weight: bold;
-    text-shadow: 0 3px 0 #003e9c;
-    margin-bottom: -18px;
-    z-index: 2;
-}
-
-#slotArea {
-    --symbol-height: 100px;
-
-    width: 100%;
-    max-width: 620px;
-    height: 330px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: rgba(5, 5, 45, 0.92);
-    border: 4px solid #4cc8ff;
-    border-radius: 12px;
-
-    padding: 12px;
-
-    box-shadow: 0 0 24px rgba(0, 180, 255, 0.7);
-
-    position: relative;
-    z-index: 1;
-
-    overflow: visible;
-}
-
-
-
-#spinBtn {
-    width: 144px;
-    height: 144px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: relative;
-
-    background-image: var(--spin-button-image);
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: transparent;
-
-    border: none;
-    border-radius: 50%;
-    outline: none;
-    box-shadow: none;
-
-    cursor: pointer;
-
-    transform-origin: center center;
-    overflow: visible;
-
-    z-index: 20;
-}
-
-#spinText {
-    font-size: var(--spin-font-size);
-    font-weight: 900;
-    color: #111;
-
-    letter-spacing: 1px;
-    line-height: 1;
-}
-
-#spinBtn:not(.disabled):hover {
-    transform: scale(1.04);
-}
-
-#spinBtn:not(.disabled):active {
-    transform: scale(0.96);
-}
-
-#spinBtn.disabled {
-    opacity: 0.55;
-    transform: scale(0.94);
-    cursor: default;
-    pointer-events: none;
-}
-
-#reels {
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    gap: 0px;
-}
-
-#reels>div {
-    flex: 1;
-    height: 100%;
-
-    position: relative;
-    overflow: hidden;
-    contain: paint;
-
-    background: linear-gradient(#101049, #05051f);
-    border: 1px solid rgba(120, 220, 255, 0.45);
-}
-
-#reels>div::after {
+body::after {
     content: "";
-    position: absolute;
-    inset: -1px;
-    pointer-events: none;
-
-    border: 1px solid rgba(255, 216, 74, 0.75);
-    box-shadow:
-        0 0 22px rgba(255, 216, 74, 0.95),
-        inset 0 0 18px rgba(255, 216, 74, 0.35);
-
-    opacity: 0;
-    transform: translate3d(0, 0, 0) scale(0.985);
-    will-change: opacity, transform;
-}
-
-#reels>div>div {
-    display: flex;
-    flex-direction: column;
-
-    transform: translate3d(0, 0, 0);
-    will-change: transform;
-    transition-property: transform;
-    transition-timing-function: cubic-bezier(0.12, 0.75, 0.25, 1);
-
-    overflow: visible;
-}
-
-.symbol {
-    height: var(--symbol-height);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: relative;
-    overflow: visible;
-    flex-shrink: 0;
-    z-index: 1;
-}
-
-#ctaPopup {
-    width: 86vw;
-    max-width: 380px;
-
-    min-height: 310px;
-
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.75);
-
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 18px;
-
-    padding: 28px 22px;
-
-    background: linear-gradient(#233dff, #07075f);
-    border: 4px solid gold;
-    border-radius: 22px;
-
-    box-shadow:
-        0 0 40px rgba(255, 215, 0, 0.8),
-        0 18px 40px rgba(0, 0, 0, 0.55);
-
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-
-    z-index: 51;
-}
-
-#ctaPopup:hover {
-    transform: translate(-50%, -50%) scale(1.05);
-}
-
-#ctaPopup.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-#overlay {
-    position: fixed;
-
-    top: 0;
-    left: 0;
-
-    width: 100%;
-    height: 100%;
-
-    background: rgba(0, 0, 0, 0.45);
-
-    display: none;
-
-    opacity: 0;
-    transition: 0.3s;
-
-    z-index: 50;
-}
-
-#overlay.show {
-    opacity: 1;
-}
-
-#ctaTitle {
-    font-size: 34px;
-    font-weight: bold;
-}
-
-#ctaAmount {
-    font-size: 42px;
-    font-weight: bold;
-    color: #7a0000;
-}
-
-#ctaButton {
-    min-width: 230px;
-    height: 62px;
-
-    border: none;
-    border-radius: 999px;
-
-    background: linear-gradient(#ffe978, #e19a00);
-
-    color: #5c2200;
-    font-size: 22px;
-    font-weight: 900;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 8px 0 #8a4a00,
-        0 0 24px rgba(255, 220, 80, 0.8);
-
-    animation: ctaPulse 1s infinite;
-}
-
-#ctaCountdown {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    margin-top: 2px;
-
-    color: #ffffff;
-    text-align: center;
-    line-height: 1;
-
-    text-shadow:
-        0 2px 0 rgba(0, 0, 0, 0.55),
-        0 0 12px rgba(255, 220, 80, 0.7);
-}
-
-#ctaCountdownLabel {
-    margin-bottom: 6px;
-
-    color: rgba(255, 255, 255, 0.88);
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 1.6px;
-}
-
-#ctaCountdownTime {
-    color: #ffd92f;
-    font-size: 34px;
-    font-weight: 900;
-    letter-spacing: 1px;
-
-    text-shadow:
-        0 3px 0 #8a2500,
-        0 0 16px rgba(255, 220, 80, 0.95);
-}
-
-@keyframes ctaPulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.06);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes jackpotFlash {
-    0% {
-        box-shadow: 0 0 0 gold;
-        transform: scale(1);
-    }
-
-    50% {
-        box-shadow: 0 0 80px gold;
-        transform: scale(1.08);
-    }
-
-    100% {
-        box-shadow: 0 0 40px gold;
-        transform: scale(1);
-    }
-}
-
-#slotArea.jackpot-flash {
-    animation: jackpotFlash 0.6s;
-}
-
-@keyframes smallWinGlow {
-    0% {
-        box-shadow: 0 0 0 gold;
-    }
-
-    50% {
-        box-shadow: 0 0 30px gold;
-    }
-
-    100% {
-        box-shadow: 0 0 0 gold;
-    }
-}
-
-#slotArea.small-win {
-    animation: smallWinGlow 0.5s;
-}
-
-#slotArea.jackpot-state {
-    box-shadow: 0 0 40px gold;
-}
-
-.symbol.coin-symbol {
-    position: relative;
-}
-
-.coin-value {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    color: #b51212;
-    font-family: var(--coin-value-font-family, "Arial Black", Impact, sans-serif);
-    font-size: 16px;
-    font-weight: 900;
-    line-height: 1;
-    white-space: nowrap;
-
-    text-shadow:
-        0 0 1px #fff6b0,
-        0 0 3px rgba(255, 245, 180, 0.9),
-        0 1px 0 #8a1a00,
-        0 2px 0 rgba(120, 30, 0, 0.55);
-
-    pointer-events: none;
-    z-index: 3;
-}
-
-#game {
-    width: 100vw;
-    height: 100dvh;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    gap: var(--game-gap);
-    padding: 10px;
-
-    position: relative;
-}
-
-
-
-@keyframes reelWinGlow {
-    0% {
-        box-shadow: 0 0 0 rgba(80, 230, 255, 0);
-        transform: scale(1);
-    }
-
-    50% {
-        box-shadow: 0 0 35px rgba(80, 230, 255, 1);
-        transform: scale(1.03);
-    }
-
-    100% {
-        box-shadow: 0 0 18px rgba(80, 230, 255, 0.8);
-        transform: scale(1);
-    }
-}
-
-#reels>div.win-reel {
-    box-shadow: 0 0 18px rgba(80, 230, 255, 0.8);
-    border-color: #7df6ff;
-    animation: reelWinGlow 0.6s;
-}
-
-.coin-particle {
-    position: fixed;
-
-    width: var(--coin-size);
-    height: var(--coin-size);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-family: var(--coin-particle-font-family, "Arial Black", Impact, sans-serif);
-
+    inset: 0;
     background:
-        radial-gradient(circle at 35% 28%, #fff8b8 0%, #ffd84a 28%, #e19a00 62%, #9a4e00 100%);
-
-    border-radius: 50%;
-
-    color: #7b2500;
-    font-size: calc(var(--coin-size) * 0.48);
-    font-weight: 900;
-
-    box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, 0.65),
-        inset 0 -3px 5px rgba(90, 35, 0, 0.45),
-        0 0 14px rgba(255, 210, 50, 0.85);
-
+        linear-gradient(180deg, rgba(40, 5, 0, 0.08), rgba(0, 0, 0, 0.28)),
+        radial-gradient(circle at 50% 45%, rgba(255, 175, 42, 0.16), rgba(0, 0, 0, 0) 42%);
     pointer-events: none;
-    z-index: 30;
-
-    animation: coinFlyToViewer var(--coin-duration) cubic-bezier(0.12, 0.72, 0.22, 1) forwards;
-}
-
-.coin-particle::before {
-    content: "";
-
-    position: absolute;
-    inset: 22%;
-
-    border: 2px solid rgba(130, 70, 0, 0.35);
-    border-radius: 50%;
-}
-
-@keyframes coinFlyToViewer {
-    0% {
-        transform:
-            translate(-50%, -50%) translate(0, 0) scale(var(--coin-start-scale)) rotate(0deg);
-
-        opacity: 0;
-    }
-
-    8% {
-        opacity: 1;
-    }
-
-    28% {
-        transform:
-            translate(-50%, -50%) translate(calc(var(--fly-x) * 0.45), var(--burst-y)) scale(0.85) rotate(var(--coin-rotation-quarter));
-
-        opacity: 1;
-    }
-
-    100% {
-        transform:
-            translate(-50%, -50%) translate(var(--fly-x), var(--fall-y)) scale(var(--coin-end-scale)) rotate(var(--coin-rotation));
-
-        opacity: 0;
-    }
-}
-
-.symbol-img {
-    width: 92%;
-    height: 92%;
-    object-fit: contain;
-    display: block;
-    pointer-events: none;
-}
-
-@keyframes bonusSymbolPop {
-    0% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 0 rgba(80, 220, 255, 0));
-    }
-
-    45% {
-        transform: scale(1.28);
-        filter: drop-shadow(0 0 24px rgba(80, 220, 255, 1));
-    }
-
-    100% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 14px rgba(80, 220, 255, 0.9));
-    }
-}
-
-@keyframes bonusSymbolPulse {
-    0% {
-        transform: scale(1.05);
-        filter: drop-shadow(0 0 10px rgba(80, 220, 255, 0.65));
-    }
-
-    50% {
-        transform: scale(1.16);
-        filter: drop-shadow(0 0 24px rgba(80, 220, 255, 1));
-    }
-
-    100% {
-        transform: scale(1.05);
-        filter: drop-shadow(0 0 10px rgba(80, 220, 255, 0.65));
-    }
-}
-
-.symbol.win-symbol {
-    z-index: 10;
-}
-
-.symbol.win-symbol .symbol-img {
-    animation: bonusSymbolPop 0.65s ease-out forwards;
-}
-
-.symbol.win-symbol.pulsing .symbol-img {
-    animation: bonusSymbolPulse 1s ease-in-out infinite;
-}
-
-#slotStage {
-    position: relative;
-
-    width: var(--slot-width);
-    max-width: none;
-
-    padding-top: var(--slot-stage-padding-top);
-
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-
-    flex-shrink: 0;
-}
-
-#gameLogo {
-    position: absolute;
-    left: 50%;
-    top: -8px;
-    transform: translateX(-50%);
-
-    width: var(--logo-width);
-    max-width: none;
-    height: auto;
-
-    z-index: 5;
-    pointer-events: none;
-}
-
-#spinBtn.cta-ready {
-    box-shadow: none;
-}
-
-#spinBtn.cta-ready::after {
-    display: none;
-}
-
-#ctaTitle {
-    color: white;
-    font-size: 42px;
-    font-weight: 900;
-
-    text-shadow:
-        0 3px 0 #003a9a,
-        0 0 18px rgba(255, 255, 255, 0.8);
-}
-
-#ctaAmount {
-    color: gold;
-    font-weight: 900;
-    line-height: 1;
-    width: 100%;
-    display: block;
-    white-space: nowrap;
-    word-break: keep-all;
-    overflow-wrap: normal;
-    text-align: center;
-
-    text-shadow:
-        0 3px 0 #8a2500,
-        0 0 22px rgba(255, 220, 80, 0.9);
-}
-
-#reels>div.anticipation-reel {
-    border-color: #ffd84a;
-}
-
-#reels>div.anticipation-reel::after {
-    animation: anticipationPulse 0.45s ease-in-out infinite;
-}
-
-@keyframes anticipationPulse {
-    0% {
-        opacity: 0.45;
-        transform: translate3d(0, 0, 0) scale(0.985);
-    }
-
-    50% {
-        opacity: 1;
-        transform: translate3d(0, 0, 0) scale(1);
-    }
-
-    100% {
-        opacity: 0.45;
-        transform: translate3d(0, 0, 0) scale(0.985);
-    }
-}
-
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-}
-
-body {
-    height: 100dvh;
-    overflow: hidden;
-}
-
-/* === GAME SCALER ADAPTIVE SYSTEM === */
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-}
-
-body {
-    height: 100dvh;
-    overflow: hidden;
+    z-index: 0;
 }
 
 #gameScaler {
     position: fixed;
-    left: 50%;
     top: 50%;
-
-    width: 430px;
-    height: 760px;
-
-    transform: translate(-50%, -50%) scale(var(--game-scale, 1));
+    left: 50%;
     transform-origin: center center;
-
+    translate: -50% -50%;
     z-index: 1;
 }
 
 #game {
-    width: 430px;
-    height: 760px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    gap: 18px;
-    padding: 18px;
-
     position: relative;
+    overflow: hidden;
 }
 
-/* базовые размеры сцены */
-
-#slotStage {
-    width: 390px;
-    max-width: none;
-
-    padding-top: 72px;
-}
-
-#gameLogo {
-    width: 340px;
-    max-width: none;
-
-    top: -4px;
-}
-
-#slotArea {
-    --symbol-height: 82px;
-
-    width: 390px;
-    max-width: none;
-    height: 265px;
-
-    padding: 8px;
-}
-
-#spinText {
-    font-size: 30px;
-}
-
-.coin-value {
-    font-size: 16px;
-}
-
-/* === FINAL TOP WIN PANEL STYLE === */
-
-#topWinPanel {
-    width: 360px;
-    height: 58px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    position: relative;
-
-    border: none;
-    border-radius: 0;
-
-    color: #ffd92f;
-    font-size: 34px;
-    font-weight: 900;
-    line-height: 1;
-    padding-bottom: 6px;
-
-    text-shadow:
-        0 3px 0 #8a2500,
-        0 0 10px rgba(255, 240, 80, 0.8);
-
-    box-shadow: none;
-
-    flex-shrink: 0;
-    margin-bottom: 12px;
-
-    overflow: visible;
-    z-index: 20;
-}
-
-#topWinPanelArt {
+#scratchStage {
     position: absolute;
     inset: 0;
-
-    background-image: var(--balance-panel-image);
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    pointer-events: none;
-    z-index: 0;
-    transform-origin: center center;
-    will-change: filter;
+    overflow: hidden;
 }
 
-#topWinPanelArt::after {
-    content: "";
-
+#scratchTop {
     position: absolute;
-    inset: -8px;
-
-    border-radius: 22px;
-
-    background: radial-gradient(ellipse at center,
-            rgba(255, 230, 90, 0.45) 0%,
-            rgba(255, 190, 40, 0.22) 45%,
-            rgba(255, 190, 40, 0) 72%);
-
-    opacity: 0;
+    top: -2px;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     pointer-events: none;
-    z-index: -1;
 }
 
-#topWinPanelText {
-    position: relative;
-    z-index: 1;
-}
-
-/* === FINAL COIN VALUE TEXT STYLE === */
-
-.coin-value {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-
-    color: #b51212;
-    font-family: var(--coin-value-font-family, "Arial Black", Impact, sans-serif);
-    font-size: 22px;
-    font-weight: 900;
-    line-height: 1;
-    white-space: nowrap;
-
+#scratchAmount {
+    width: 100%;
+    text-align: center;
+    font-size: 66px;
+    line-height: 0.88;
+    color: #ffec00;
     text-shadow:
-        0 0 1px #fff6b0,
-        0 0 3px rgba(255, 245, 180, 0.9),
-        0 1px 0 #8a1a00,
-        0 2px 0 rgba(120, 30, 0, 0.55);
+        0 5px 0 #f11300,
+        0 9px 10px rgba(0, 0, 0, 0.5);
+}
 
-    pointer-events: none;
+#scratchSubtitle {
+    margin-top: 1px;
+    font-size: 23px;
+    line-height: 1;
+    color: #ffec00;
+    text-shadow:
+        0 3px 0 #f11300,
+        0 6px 8px rgba(0, 0, 0, 0.45);
+}
+
+#scratchLogo {
+    width: 376px;
+    height: auto;
+    margin-top: 4px;
+    display: block;
+    filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.55));
+}
+
+#scratchCharacter {
+    position: absolute;
+    left: -104px;
+    bottom: -158px;
+    width: 360px;
+    height: auto;
     z-index: 3;
+    pointer-events: none;
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.45));
 }
 
-/* === BALANCE PANEL POP EFFECT === */
-
-#topWinPanel {
-    transform-origin: center center;
+#scratchInfoPanel {
+    position: absolute;
+    top: 178px;
+    right: 40px;
+    width: 148px;
+    height: 138px;
+    z-index: 4;
+    pointer-events: none;
 }
 
-#topWinPanel.balance-pop {
-    animation: balancePanelPop var(--balance-pop-duration, 620ms) cubic-bezier(0.18, 0.9, 0.22, 1) forwards;
+#scratchInfoPanelArt {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-#topWinPanel.balance-pop #topWinPanelArt::after {
-    animation: balancePanelGlow var(--balance-pop-duration, 620ms) ease-out forwards;
+#scratchInfoText {
+    position: absolute;
+    inset: 16px 12px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff400;
+    text-shadow:
+        0 3px 0 #ff1500,
+        0 5px 8px rgba(0, 0, 0, 0.5);
 }
 
-@keyframes balancePanelPop {
+#scratchInfoNumber {
+    font-size: 49px;
+    line-height: 0.82;
+}
+
+#scratchInfoLabel {
+    margin-top: 7px;
+    max-width: 112px;
+    font-size: 19px;
+    line-height: 0.9;
+}
+
+#scratchCards {
+    position: absolute;
+    left: 36px;
+    right: 36px;
+    top: 331px;
+    z-index: 6;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px 24px;
+}
+
+#scratchCards.locked .scratch-card:not(.revealed) {
+    pointer-events: none;
+    filter: saturate(0.75) brightness(0.82);
+}
+
+.scratch-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 300 / 420;
+    display: block;
+    padding: 0;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    cursor: pointer;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.48));
+}
+
+.scratch-card:not(.revealed) {
+    animation: scratchCardPulse 1.65s ease-in-out infinite;
+}
+
+.scratch-card:nth-child(2),
+.scratch-card:nth-child(5) {
+    animation-delay: 0.12s;
+}
+
+.scratch-card:nth-child(3),
+.scratch-card:nth-child(6) {
+    animation-delay: 0.24s;
+}
+
+.scratch-card-prize,
+.scratch-cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.scratch-card-prize {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 50% 45%, #fff3b8 0%, #f0b744 48%, #a7550f 100%);
+}
+
+.scratch-card-win-art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+.scratch-prize-text {
+    position: relative;
+    z-index: 2;
+    width: calc(100% - 28px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    color: #050505;
+    text-shadow: none;
+}
+
+.scratch-prize-text span:first-child {
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 0.95;
+}
+
+.scratch-prize-text span:last-child {
+    max-width: 92%;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 0.95;
+}
+
+.scratch-cover {
+    z-index: 3;
+    display: block;
+}
+
+.scratch-card-label {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 14px;
+    z-index: 4;
+    color: #fff8e0;
+    font-family: Impact, "Arial Black", sans-serif;
+    font-size: 22px;
+    letter-spacing: 0;
+    line-height: 1;
+    text-align: center;
+    -webkit-text-stroke: 1.2px #050505;
+    text-shadow:
+        0 2px 0 #000,
+        0 4px 4px rgba(0, 0, 0, 0.65);
+    pointer-events: none;
+}
+
+.scratch-card.revealed {
+    cursor: default;
+    animation: scratchRevealPop 0.28s ease-out;
+}
+
+.scratch-card.revealed .scratch-card-label {
+    opacity: 0;
+}
+
+@keyframes scratchRevealPop {
     0% {
         transform: scale(1);
-    }
-
-    28% {
-        transform: scale(1.03);
     }
 
     55% {
-        transform: scale(0.992);
+        transform: scale(1.05);
     }
 
     100% {
@@ -867,62 +296,7 @@ body {
     }
 }
 
-@keyframes balancePanelGlow {
-    0% {
-        opacity: 0;
-    }
-
-    20% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-/* === BALANCE PANEL CONTINUOUS PULSE === */
-
-#topWinPanel.balance-pulsing {
-    animation: balancePanelPulse 0.72s ease-in-out infinite;
-}
-
-@keyframes balancePanelPulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.025);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-/* === SPIN BUTTON IDLE ANIMATION === */
-
-#spinBtn::after {
-    content: "";
-
-    position: absolute;
-    inset: -8px;
-
-    border-radius: inherit;
-
-    background: radial-gradient(ellipse at center,
-            rgba(255, 220, 80, 0.55) 0%,
-            rgba(255, 160, 20, 0.22) 48%,
-            rgba(255, 160, 20, 0) 72%);
-
-    opacity: 0;
-    pointer-events: none;
-    z-index: -1;
-}
-
-
-@keyframes spinButtonIdleScale {
+@keyframes scratchCardPulse {
     0% {
         transform: scale(1);
     }
@@ -936,62 +310,249 @@ body {
     }
 }
 
-@keyframes spinButtonIdleGlow {
+#scratchInstruction {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 30px;
+    z-index: 8;
+    text-align: center;
+    font-size: 42px;
+    line-height: 0.9;
+    color: #ffec00;
+    text-shadow:
+        0 5px 0 #f11300,
+        0 8px 10px rgba(0, 0, 0, 0.65);
+    pointer-events: none;
+    animation: scratchInstructionPulse 1.25s ease-in-out infinite;
+}
+
+@keyframes scratchInstructionPulse {
     0% {
-        opacity: 0.25;
+        transform: scale(1);
     }
 
     50% {
-        opacity: 0.9;
+        transform: scale(1.045);
     }
 
     100% {
-        opacity: 0.25;
+        transform: scale(1);
     }
 }
 
-#spinBtn.spin-idle:not(.disabled):not(.cta-ready) {
-    animation: spinButtonIdleScale 1.15s ease-in-out infinite;
+#overlay {
+    position: fixed;
+    inset: 0;
+    display: none;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.52);
+    transition: opacity 0.3s ease;
+    z-index: 50;
 }
 
-#spinBtn.spin-idle:not(.disabled):not(.cta-ready)::after {
-    animation: spinButtonIdleGlow 1.15s ease-in-out infinite;
+#overlay.show {
+    opacity: 1;
 }
 
-/* === PIXI FX LAYER === */
+#ctaPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: min(86vw, 380px);
+    min-height: 310px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 22px;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(255, 193, 55, 0.28) 0%, rgba(255, 193, 55, 0) 36%),
+        linear-gradient(180deg, #8b2109 0%, #4f0b02 52%, #1b0501 100%);
+    border: 4px solid #f8c94a;
+    border-radius: 22px;
+    box-shadow:
+        inset 0 0 0 2px rgba(255, 238, 150, 0.42),
+        inset 0 -18px 34px rgba(55, 10, 0, 0.72),
+        0 0 42px rgba(255, 183, 33, 0.78),
+        0 18px 40px rgba(0, 0, 0, 0.62);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.75);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 51;
+}
+
+#ctaPopup.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#ctaTitle {
+    max-width: 100%;
+    font-size: 30px;
+    line-height: 1;
+    text-align: center;
+    color: #fff4a8;
+    text-shadow:
+        0 3px 0 #a81900,
+        0 8px 14px rgba(0, 0, 0, 0.55);
+}
+
+#ctaText,
+#ctaHint {
+    width: 100%;
+    max-width: 310px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: #fff4cf;
+    font-family: Arial, sans-serif;
+    font-size: 19px;
+    font-weight: 800;
+    line-height: 1.15;
+    text-align: center;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.72);
+}
+
+#ctaHint {
+    max-width: 300px;
+    font-size: 17px;
+    line-height: 1.12;
+}
+
+#ctaAmount {
+    width: 100%;
+    font-size: 42px;
+    line-height: 1;
+    font-weight: 900;
+    color: #ffe600;
+    text-align: center;
+    text-shadow:
+        0 3px 0 #bd1700,
+        0 6px 8px rgba(0, 0, 0, 0.55);
+}
+
+#ctaButton {
+    min-width: 210px;
+    min-height: 64px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #fff4a7 0%, #ffc22a 48%, #b95b05 100%);
+    color: #531700;
+    font-family: inherit;
+    font-size: 26px;
+    line-height: 1;
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.65),
+        0 7px 0 #7a2b00,
+        0 14px 24px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+}
+
+#ctaButton:active {
+    transform: translateY(4px);
+    box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.65),
+        0 3px 0 #7a2b00,
+        0 10px 20px rgba(0, 0, 0, 0.35);
+}
+
+#ctaCountdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #fff0b0;
+}
+
+#ctaCountdownTime {
+    font-size: 23px;
+    color: #ffe600;
+    text-shadow: 0 2px 0 #8f1300;
+}
 
 #fxLayer {
     position: fixed;
     inset: 0;
-
     width: 100vw;
     height: 100vh;
-
     pointer-events: none;
-
-    z-index: 50;
+    z-index: 49;
 }
 
+.scratch-fx-coin {
+    position: fixed;
+    z-index: 52;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 34% 28%, #fff8bc 0%, #ffe16a 30%, #d99207 68%, #8c3f00 100%);
+    color: #702300;
+    font-family: "Arial Black", Impact, sans-serif;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 1px 0 rgba(255, 242, 160, 0.8);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.68),
+        inset 0 -2px 4px rgba(90, 35, 0, 0.48),
+        0 0 12px rgba(255, 202, 50, 0.78);
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.7);
+    animation: scratchCoinBurst 1.28s cubic-bezier(0.12, 0.72, 0.2, 1) forwards;
+}
 
-/* === PRELOADER === */
+.scratch-fx-coin::before {
+    content: "";
+    position: absolute;
+    inset: 22%;
+    border: 1px solid rgba(112, 60, 0, 0.45);
+    border-radius: 50%;
+}
+
+@keyframes scratchCoinBurst {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translate(0, 0) scale(0.55) rotate(0deg);
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    46% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            translate(var(--coin-fly-x), var(--coin-fly-y))
+            scale(1.1)
+            rotate(var(--coin-rotate));
+    }
+
+    100% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            translate(calc(var(--coin-fly-x) * 1.18), var(--coin-fall-y))
+            scale(0.82)
+            rotate(var(--coin-rotate-end));
+    }
+}
 
 #preloader {
     position: fixed;
     inset: 0;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
-    background: #05051f;
-
+    background: #1a0700;
     opacity: 1;
     visibility: visible;
-
-    transition:
-        opacity 0.35s ease,
-        visibility 0.35s ease;
-
+    transition: opacity 0.35s ease, visibility 0.35s ease;
     z-index: 200;
 }
 
@@ -1003,7 +564,6 @@ body {
 
 #preloaderContent {
     width: min(72vw, 320px);
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1014,21 +574,16 @@ body {
     width: 100%;
     height: auto;
     display: block;
-
     filter: drop-shadow(0 0 18px rgba(255, 220, 90, 0.55));
 }
 
 #preloaderBar {
     width: 86%;
     height: 12px;
-
     overflow: hidden;
-
     border: 2px solid rgba(255, 216, 74, 0.85);
     border-radius: 999px;
-
     background: rgba(0, 0, 0, 0.45);
-
     box-shadow:
         0 0 14px rgba(255, 216, 74, 0.45),
         inset 0 0 8px rgba(0, 0, 0, 0.55);
@@ -1037,11 +592,7 @@ body {
 #preloaderProgress {
     width: 0%;
     height: 100%;
-
     border-radius: inherit;
-
     background: linear-gradient(90deg, #ffb400, #fff2a8, #ffcf37);
-
     transition: width 0.18s ease-out;
 }
-
