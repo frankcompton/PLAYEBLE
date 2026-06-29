@@ -50,13 +50,13 @@ body::after {
 
 #game {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #scratchStage {
     position: absolute;
     inset: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #scratchTop {
@@ -102,9 +102,9 @@ body::after {
 
 #scratchCharacter {
     position: absolute;
-    left: -104px;
-    bottom: -158px;
-    width: 360px;
+    left: -80px;
+    bottom: -305px;
+    width: 410px;
     height: auto;
     z-index: 3;
     pointer-events: none;
@@ -434,16 +434,18 @@ body::after {
 }
 
 #ctaButton {
-    min-width: 210px;
+    width: min(100%, 300px);
+    min-width: 0;
     min-height: 64px;
-    padding: 0 22px;
+    padding: 0 18px;
     border: 0;
     border-radius: 999px;
     background: linear-gradient(180deg, #fff4a7 0%, #ffc22a 48%, #b95b05 100%);
     color: #531700;
     font-family: inherit;
-    font-size: 26px;
+    font-size: clamp(18px, 6vw, 26px);
     line-height: 1;
+    white-space: nowrap;
     box-shadow:
         inset 0 2px 0 rgba(255, 255, 255, 0.65),
         0 7px 0 #7a2b00,

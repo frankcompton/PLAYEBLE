@@ -32,6 +32,7 @@ const cards = [];
 
 let revealedCards = 0;
 let isCtaQueued = false;
+let activeScratchCard = null;
 let ctaCountdownIntervalId = null;
 let ctaCountdownEndTime = 0;
 
@@ -171,11 +172,20 @@ function bindScratchEvents(state) {
 }
 
 function canScratch(state) {
-    return !state.isRevealed && revealedCards < scratchConfig.cardsToReveal && !isCtaQueued;
+    return (
+        !state.isRevealed &&
+        revealedCards < scratchConfig.cardsToReveal &&
+        !isCtaQueued &&
+        (!activeScratchCard || activeScratchCard === state)
+    );
 }
 
 function scratchAtPointer(state, event) {
     event.preventDefault();
+
+    if (!activeScratchCard) {
+        activeScratchCard = state;
+    }
 
     const rect = state.canvas.getBoundingClientRect();
     const scaleX = state.canvas.width / rect.width;
@@ -206,6 +216,7 @@ function revealCard(state) {
 
     state.isRevealed = true;
     revealedCards++;
+    activeScratchCard = null;
 
     state.context.clearRect(0, 0, state.canvas.width, state.canvas.height);
     state.card.classList.add("revealed");
@@ -310,12 +321,19 @@ function playBigWinEffects() {
 
 function showCta() {
     startCtaCountdown();
+    overlay.classList.remove("show");
+    ctaPopup.classList.remove("show");
     overlay.style.display = "block";
     ctaPopup.style.display = "flex";
 
+    overlay.offsetHeight;
+    ctaPopup.offsetHeight;
+
     requestAnimationFrame(() => {
-        overlay.classList.add("show");
-        ctaPopup.classList.add("show");
+        requestAnimationFrame(() => {
+            overlay.classList.add("show");
+            ctaPopup.classList.add("show");
+        });
     });
 }
 
