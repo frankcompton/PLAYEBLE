@@ -29,7 +29,7 @@ export const gameConfig = {
         subtitle: "SPITZENGEWINN",
         topAmount: "25.000€",
         infoNumber: "6",
-        infoText: "GEWINN-CHANCE",
+        infoText: "GEWINN-CHANCEN",
         cardLabel: "GEWINN",
         instruction: "Rubbel die Vase!"
     },
