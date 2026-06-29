@@ -29,6 +29,7 @@ const scratchInstruction = document.getElementById("scratchInstruction");
 const scratchConfig = gameConfig.scratch;
 const scratchAssets = gameConfig.assets.scratch;
 const cards = [];
+const initialInfoNumber = Number.parseInt(scratchConfig.infoNumber, 10);
 
 let revealedCards = 0;
 let isCtaQueued = false;
@@ -65,6 +66,14 @@ function applySceneAssets() {
     scratchInstruction.textContent = scratchConfig.instruction;
 }
 
+function updateScratchInfoCounter() {
+    if (!Number.isFinite(initialInfoNumber)) {
+        return;
+    }
+
+    scratchInfoNumber.textContent = String(Math.max(0, initialInfoNumber - revealedCards));
+}
+
 function setupCta() {
     ctaTitle.textContent = gameConfig.cta.title;
     ctaAmount.textContent = gameConfig.cta.amount;
@@ -97,8 +106,17 @@ function createScratchCards() {
             <div class="scratch-card-prize">
                 <img class="scratch-card-win-art" src="${scratchAssets.cardWin}" alt="">
                 <div class="scratch-prize-text">
-                    <span>${scratchConfig.prizeLine1}</span>
-                    <span>${scratchConfig.prizeLine2}</span>
+                    <svg class="scratch-prize-amount-svg" viewBox="0 0 260 30" preserveAspectRatio="none" aria-hidden="true">
+                        <text
+                            class="scratch-prize-amount-line"
+                            x="130"
+                            y="22"
+                            text-anchor="middle"
+                            textLength="265"
+                            lengthAdjust="spacingAndGlyphs"
+                        >${scratchConfig.prizeLine1}</text>
+                    </svg>
+                    <span class="scratch-prize-free-line">${createFreeSpinsHtml(scratchConfig.prizeLine2)}</span>
                 </div>
             </div>
             <canvas class="scratch-cover" width="300" height="420"></canvas>
@@ -133,10 +151,22 @@ function createScratchCards() {
         initScratchCover(state);
         bindScratchEvents(state);
     }
+
 }
 
 function handleResize() {
     resizeGame();
+}
+
+function createFreeSpinsHtml(value) {
+    const parts = value.trim().split(/\s+(.+)/);
+    const number = parts[0] || "";
+    const label = parts[1] || "";
+
+    return `
+        <span class="scratch-prize-free-number">${escapeHtml(number)}</span>
+        <span class="scratch-prize-free-label">${escapeHtml(label)}</span>
+    `;
 }
 
 function initScratchCover(state) {
@@ -236,6 +266,7 @@ function revealCard(state) {
 
     playCardWinSound();
     playDomCoinBurst(state.card);
+    updateScratchInfoCounter();
 
     if (revealedCards >= scratchConfig.cardsToReveal) {
         queueCta();
