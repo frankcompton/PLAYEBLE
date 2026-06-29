@@ -306,29 +306,28 @@ body::after {
     position: absolute;
     left: 9%;
     right: 9%;
-    bottom: 14px;
+    bottom: 13px;
     z-index: 4;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 29px;
     pointer-events: none;
 }
 
-.scratch-card-label-text {
+.scratch-card-label-svg {
+    width: 100%;
+    height: 100%;
     display: block;
-    max-width: 100%;
-    color: #fff8e0;
+    overflow: visible;
+}
+
+.scratch-card-label-text {
     font-family: "Arial Black", Arial, sans-serif;
-    font-size: 20px;
-    letter-spacing: 0;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    -webkit-text-stroke: 1.15px #050505;
-    text-shadow:
-        0 2px 0 #000,
-        0 4px 4px rgba(0, 0, 0, 0.65);
+    font-size: 24px;
+    font-weight: 900;
+    fill: #fff8e0;
+    stroke: #050505;
+    stroke-width: 4px;
+    paint-order: stroke fill;
+    filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.72));
 }
 
 .scratch-card.revealed {

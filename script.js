@@ -103,7 +103,16 @@ function createScratchCards() {
             </div>
             <canvas class="scratch-cover" width="300" height="420"></canvas>
             <div class="scratch-card-label">
-                <span class="scratch-card-label-text">${scratchConfig.cardLabel}</span>
+                <svg class="scratch-card-label-svg" viewBox="0 0 300 44" preserveAspectRatio="none" aria-hidden="true">
+                    <text
+                        class="scratch-card-label-text"
+                        x="150"
+                        y="30"
+                        text-anchor="middle"
+                        textLength="244"
+                        lengthAdjust="spacingAndGlyphs"
+                    >${scratchConfig.cardLabel}</text>
+                </svg>
             </div>
         `;
 
@@ -124,55 +133,10 @@ function createScratchCards() {
         initScratchCover(state);
         bindScratchEvents(state);
     }
-
-    fitScratchCardLabels();
 }
 
 function handleResize() {
     resizeGame();
-    fitScratchCardLabels();
-}
-
-function fitScratchCardLabels() {
-    const labels = Array.from(document.querySelectorAll(".scratch-card-label-text"));
-
-    for (let index = 0; index < labels.length; index++) {
-        fitTextInside(labels[index], 13, 20);
-    }
-}
-
-function fitTextInside(element, minFontSize, maxFontSize) {
-    const parent = element.parentElement;
-
-    if (!parent) {
-        return;
-    }
-
-    element.style.fontSize = `${maxFontSize}px`;
-
-    const availableWidth = parent.clientWidth;
-
-    if (availableWidth <= 0 || element.scrollWidth <= availableWidth) {
-        return;
-    }
-
-    let low = minFontSize;
-    let high = maxFontSize;
-    let best = minFontSize;
-
-    while (high - low > 0.25) {
-        const mid = (low + high) / 2;
-        element.style.fontSize = `${mid}px`;
-
-        if (element.scrollWidth <= availableWidth) {
-            best = mid;
-            low = mid;
-        } else {
-            high = mid;
-        }
-    }
-
-    element.style.fontSize = `${best}px`;
 }
 
 function initScratchCover(state) {
@@ -256,9 +220,6 @@ function scratchAtPointer(state, event) {
     const cellY = Math.floor(y / 36);
     state.scratchedCells.add(`${cellX}:${cellY}`);
 
-    if (state.scratchedCells.size >= 16) {
-        revealCard(state);
-    }
 }
 
 function revealCard(state) {
@@ -274,7 +235,6 @@ function revealCard(state) {
     state.card.classList.add("revealed");
 
     playCardWinSound();
-
     playDomCoinBurst(state.card);
 
     if (revealedCards >= scratchConfig.cardsToReveal) {
@@ -297,9 +257,7 @@ function playCardWinSound() {
         return;
     }
 
-    requestAnimationFrame(() => {
-        window.playSfx("smallWin");
-    });
+    window.playSfx("smallWin");
 }
 
 function playDomCoinBurst(card) {

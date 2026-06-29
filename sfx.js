@@ -118,12 +118,35 @@ async function resumeAudioContext() {
 }
 
 function unlockSfx() {
+    playSilentUnlockTick();
+
     if (sfxUnlocked) {
-        return;
+        return resumeAudioContext();
     }
 
     sfxUnlocked = true;
-    void resumeAudioContext();
+    return resumeAudioContext();
+}
+
+function playSilentUnlockTick() {
+    const context = getAudioContext();
+
+    if (!context) {
+        return;
+    }
+
+    try {
+        const source = context.createBufferSource();
+        const gainNode = context.createGain();
+
+        source.buffer = context.createBuffer(1, 1, context.sampleRate);
+        gainNode.gain.value = 0;
+        source.connect(gainNode);
+        gainNode.connect(context.destination);
+        source.start(0);
+    } catch {
+        // Silent unlock is best-effort only.
+    }
 }
 
 function primeSfx(soundNames = []) {
@@ -171,7 +194,7 @@ function playDecodedSfx(soundName) {
     const buffer = decodedBuffers[soundName];
     const context = getAudioContext();
 
-    if (!buffer || !context) {
+    if (!buffer || !context || context.state !== "running") {
         return false;
     }
 
@@ -257,6 +280,8 @@ function playSfx(soundName) {
         return;
     }
 
+    stopDecodedSfx(soundName, 0);
+
     const audio = sfxPlayers[soundName];
 
     if (!audio) {
@@ -281,11 +306,40 @@ function playSfx(soundName) {
     }
 }
 
+function playFreshSfx(soundName) {
+    if (!gameConfig.sfx || !gameConfig.sfx.enabled) {
+        return;
+    }
+
+    const sourceAudio = sfxPlayers[soundName];
+
+    if (!sourceAudio) {
+        return;
+    }
+
+    const audio = sourceAudio.cloneNode(true);
+    audio.volume = getSfxVolume(soundName);
+    audio.currentTime = 0;
+
+    const playPromise = audio.play();
+
+    if (playPromise) {
+        playPromise
+            .then(() => {
+                audio.addEventListener("ended", () => audio.remove(), { once: true });
+            })
+            .catch(() => {
+                audio.remove();
+            });
+    }
+}
+
 window.initSfx = initSfx;
 window.preloadSfx = preloadSfx;
 window.unlockSfx = unlockSfx;
 window.primeSfx = primeSfx;
 window.playSfx = playSfx;
+window.playFreshSfx = playFreshSfx;
 window.stopSfx = stopSfx;
 
 initSfx();
