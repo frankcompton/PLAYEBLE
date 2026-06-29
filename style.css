@@ -115,11 +115,11 @@ body::after {
         opacity: 0;
     }
 
-    72% {
+    63% {
         opacity: 1;
     }
 
-    92% {
+    96% {
         background-position: -120% 0;
         opacity: 1;
     }
