@@ -1027,6 +1027,7 @@ body {
     height: auto;
     display: block;
 
+    transform: translateY(20px);
     filter: drop-shadow(0 0 18px rgba(255, 220, 90, 0.55));
 }
 
