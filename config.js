@@ -5,7 +5,7 @@ export const gameConfig = {
 
     balance: {
         startValue: 0,
-        currency: "A$"
+        currency: "CA$"
     },
 
     currency: {
@@ -30,24 +30,24 @@ export const gameConfig = {
         balancePanelMiddle: "#2738e8",
         balancePanelBottom: "#0d1684",
         balancePanelBorder: "#ffd92f",
-        balanceText: "#ffd92f",
-        balanceGlow: "rgba(255, 220, 120, 0.45)",
+        balanceText: "#4a2d17",
+        balanceGlow: "rgba(255, 244, 160, 0.45)",
 
-        slotBackground: "rgba(5, 5, 45, 0.92)",
-        slotBorder: "#4cc8ff",
-        slotGlow: "rgba(0, 180, 255, 0.7)",
+        slotBackground: "rgba(18, 5, 42, 0.94)",
+        slotBorder: "#b45cff",
+        slotGlow: "rgba(180, 92, 255, 0.78)",
 
-        reelTop: "#101049",
-        reelBottom: "#05051f",
-        reelBorder: "rgba(120, 220, 255, 0.45)",
+        reelTop: "#24104c",
+        reelBottom: "#09031e",
+        reelBorder: "rgba(195, 122, 255, 0.5)",
 
-        ctaPopupTop: "#233dff",
-        ctaPopupBottom: "#07075f",
-        ctaPopupBorder: "gold",
+        ctaPopupTop: "#4a1478",
+        ctaPopupBottom: "#160323",
+        ctaPopupBorder: "#ffe47a",
 
-        ctaButtonTop: "#ffe978",
-        ctaButtonBottom: "#e19a00",
-        ctaButtonText: "#5c2200"
+        ctaButtonTop: "#fff1a6",
+        ctaButtonBottom: "#e4a014",
+        ctaButtonText: "#321006"
     },
 
     fonts: {
@@ -355,20 +355,20 @@ export const gameConfig = {
             balanceDelay: 300,
             balanceCountDuration: 500,
 
-            winReels: [0],
-            winSymbols: ["coin:100.00", "coin:250.00"],
+            winReels: [],
+            winSymbols: ["coin"],
 
             reels: [
-                "coin:100.00", "s3", "s1", "s4", "s7",
-                "coin:250.00", "s1", "s1", "s5", "s2",
-                "s7", "s2", "s1", "s6", "s3"
+                "coin", "s3", "s1", "s4", "coin",
+                "s4", "coin", "s1", "coin", "s2",
+                "s7", "s2", "coin", "s6", "s3"
             ]
         },
 
         {
             type: "jackpot",
             spinSfx: "spin3",
-            balance: 10350,
+            balance: 6000,
             balanceDelay: 500,
             balanceCountDuration: 2000,
 
@@ -382,9 +382,9 @@ export const gameConfig = {
             winReels: [0, 2, 4],
             winSymbols: ["bonus"],
             reels: [
-                "bonus", "s2", "bonus", "s1", "bonus",
-                "s4", "bonus", "s3", "s7", "bonus",
-                "bonus", "s7", "bonus", "s5", "bonus"
+                "s1", "s2", "bonus", "s1", "bonus",
+                "s4", "s6", "s3", "s7", "s5",
+                "bonus", "s7", "s3", "s5", "s4"
             ]
         }
     ],
@@ -397,8 +397,8 @@ export const gameConfig = {
 
 
     cta: {
-        title: "BIG WIN!",
-        amount: "10 350 A$",
+        title: "BONUS!",
+        amount: "UP TO $6,000 + 150 FREE SPINS + 3 BONUS ROUNDS",
         buttonText: "CLAIM!",
         countdownLabel: "OFFER ENDS IN",
         countdownMinutes: 30

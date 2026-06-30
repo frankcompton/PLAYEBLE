@@ -133,6 +133,22 @@ function fitTextToWidth(element, minFontSize, maxFontSize) {
 }
 
 function fitAmountText() {
+    if (!ctaAmount) {
+        return;
+    }
+
+    if (ctaAmount.textContent.trim().length > 24) {
+        ctaAmount.style.display = "block";
+        ctaAmount.style.width = "100%";
+        ctaAmount.style.fontSize = "22px";
+        ctaAmount.style.lineHeight = "1.12";
+        ctaAmount.style.whiteSpace = "normal";
+        ctaAmount.style.wordBreak = "normal";
+        ctaAmount.style.overflowWrap = "normal";
+        ctaAmount.style.textAlign = "center";
+        return;
+    }
+
     fitTextToWidth(ctaAmount, CTA_AMOUNT_FIT_MIN_FONT_SIZE, CTA_AMOUNT_FIT_MAX_FONT_SIZE);
 }
 
@@ -240,6 +256,8 @@ function showSmallWin(outcome) {
     if (window.playSmallWinFx) {
         window.playSmallWinFx(winReels);
     }
+
+    highlightWinSymbols(outcome);
 
     for (let i = 0; i < winReels.length; i++) {
         const reelIndex = winReels[i];
@@ -382,8 +400,13 @@ function initGame() {
 
 
 function isCoinSymbol(symbol) {
-    return symbol.startsWith("coin:");
+    return typeof symbol === "string" && symbol.startsWith("coin:");
 }
+
+function isWinCoinSymbol(symbol) {
+    return symbol === "coin" || isCoinSymbol(symbol);
+}
+
 function getCoinValue(symbol) {
     return symbol.replace("coin:", "");
 }
@@ -696,7 +719,7 @@ function spawnCoinParticlesFromWinCoins(outcome) {
 
             const symbolName = symbolElement.dataset.symbol;
 
-            if (!isCoinSymbol(symbolName)) {
+            if (!isWinCoinSymbol(symbolName)) {
                 continue;
             }
 
@@ -707,7 +730,7 @@ function spawnCoinParticlesFromWinCoins(outcome) {
             const rect = symbolElement.getBoundingClientRect();
 
             const startX = rect.left + rect.width / 2;
-            const startY = rect.top + rect.height / 2;
+            const startY = rect.top + rect.height * 0.34;
 
             spawnCoinParticlesFromPoint(startX, startY, particlesPerCoin);
         }

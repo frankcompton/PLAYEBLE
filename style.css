@@ -52,12 +52,12 @@ body {
     align-items: center;
 
     background: rgba(5, 5, 45, 0.92);
-    border: 4px solid #4cc8ff;
+    border: 4px solid #b45cff;
     border-radius: 12px;
 
     padding: 12px;
 
-    box-shadow: 0 0 24px rgba(0, 180, 255, 0.7);
+    box-shadow: 0 0 24px rgba(180, 92, 255, 0.78);
 
     position: relative;
     z-index: 1;
@@ -200,12 +200,15 @@ body {
 
     padding: 28px 22px;
 
-    background: linear-gradient(#233dff, #07075f);
-    border: 4px solid gold;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(255, 230, 120, 0.2) 0%, rgba(255, 230, 120, 0) 38%),
+        linear-gradient(#4a1478, #160323);
+    border: 4px solid #ffe47a;
     border-radius: 22px;
 
     box-shadow:
-        0 0 40px rgba(255, 215, 0, 0.8),
+        0 0 42px rgba(190, 96, 255, 0.82),
+        inset 0 0 24px rgba(255, 215, 94, 0.16),
         0 18px 40px rgba(0, 0, 0, 0.55);
 
     opacity: 0;
@@ -249,12 +252,19 @@ body {
 #ctaTitle {
     font-size: 34px;
     font-weight: bold;
+    color: #fff0a8;
+    text-shadow:
+        0 3px 0 #3b071f,
+        0 0 18px rgba(255, 220, 92, 0.65);
 }
 
 #ctaAmount {
     font-size: 42px;
     font-weight: bold;
-    color: #7a0000;
+    color: #ffe45f;
+    text-shadow:
+        0 3px 0 #6b1a00,
+        0 0 18px rgba(255, 220, 90, 0.8);
 }
 
 #ctaButton {
@@ -264,16 +274,16 @@ body {
     border: none;
     border-radius: 999px;
 
-    background: linear-gradient(#ffe978, #e19a00);
+    background: linear-gradient(#fff1a6, #e4a014);
 
-    color: #5c2200;
+    color: #321006;
     font-size: 22px;
     font-weight: 900;
 
     cursor: pointer;
 
     box-shadow:
-        0 8px 0 #8a4a00,
+        0 8px 0 #7a3600,
         0 0 24px rgba(255, 220, 80, 0.8);
 
     animation: ctaPulse 1s infinite;
@@ -306,7 +316,7 @@ body {
 }
 
 #ctaCountdownTime {
-    color: #ffd92f;
+    color: #ffe47a;
     font-size: 34px;
     font-weight: 900;
     letter-spacing: 1px;
@@ -601,17 +611,17 @@ body {
 }
 
 #ctaTitle {
-    color: white;
+    color: #fff0a8;
     font-size: 42px;
     font-weight: 900;
 
     text-shadow:
-        0 3px 0 #003a9a,
-        0 0 18px rgba(255, 255, 255, 0.8);
+        0 3px 0 #3b071f,
+        0 0 18px rgba(255, 220, 92, 0.65);
 }
 
 #ctaAmount {
-    color: gold;
+    color: #ffe45f;
     font-weight: 900;
     line-height: 1;
     width: 100%;
@@ -622,7 +632,7 @@ body {
     text-align: center;
 
     text-shadow:
-        0 3px 0 #8a2500,
+        0 3px 0 #6b1a00,
         0 0 22px rgba(255, 220, 80, 0.9);
 }
 
@@ -714,10 +724,10 @@ body {
 }
 
 #gameLogo {
-    width: 340px;
+    width: 390px;
     max-width: none;
 
-    top: -4px;
+    top: 20px;
 }
 
 #slotArea {
@@ -753,15 +763,15 @@ body {
     border: none;
     border-radius: 0;
 
-    color: #ffd92f;
+    color: #4a2d17;
     font-size: 34px;
     font-weight: 900;
     line-height: 1;
     padding-bottom: 6px;
 
     text-shadow:
-        0 3px 0 #8a2500,
-        0 0 10px rgba(255, 240, 80, 0.8);
+        0 1px 0 rgba(255, 255, 190, 0.45),
+        0 2px 2px rgba(0, 0, 0, 0.18);
 
     box-shadow: none;
 
