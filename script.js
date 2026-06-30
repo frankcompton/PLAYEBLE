@@ -202,6 +202,12 @@ function getRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
 }
 
+function waitForAnimationFrame() {
+    return new Promise((resolve) => {
+        requestAnimationFrame(() => resolve());
+    });
+}
+
 function startSpin() {
     removeClasses(spinBtn, "spin-idle");
     spinCount = spinCount + 1;
@@ -669,7 +675,38 @@ function createCoinParticle(startX, startY) {
     setTimeout(() => {
         coin.remove();
     }, effects.coinParticleDuration);
+
+    return coin;
 }
+
+async function warmupCoinParticles() {
+    if (!gameConfig.effects.coinParticlesEnabled) {
+        return;
+    }
+
+    const warmupCoins = [];
+    const warmupCount = Math.min(
+        30,
+        Math.max(1, (gameConfig.effects.coinParticlesPerWinCoin || 6) * 5)
+    );
+
+    for (let i = 0; i < warmupCount; i++) {
+        const coin = createCoinParticle(-120, -120);
+
+        coin.style.opacity = "0";
+        coin.style.pointerEvents = "none";
+        coin.style.animationDuration = "80ms";
+        warmupCoins.push(coin);
+    }
+
+    await waitForAnimationFrame();
+    await waitForAnimationFrame();
+
+    for (let i = 0; i < warmupCoins.length; i++) {
+        warmupCoins[i].remove();
+    }
+}
+
 function spawnCoinParticlesFromPoint(startX, startY, count) {
     const stagger = gameConfig.effects.coinParticleStagger;
 
@@ -1295,6 +1332,7 @@ async function startPreloader() {
     ];
 
     await Promise.all(preloadPromises);
+    await warmupCoinParticles();
 
     const elapsedTime = performance.now() - startTime;
     const remainingTime = Math.max(0, minVisibleTime - elapsedTime);

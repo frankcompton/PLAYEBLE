@@ -209,6 +209,24 @@ function warmupFx() {
     if (gameConfig.fx.jackpotRaysEnabled) {
         playJackpotRays();
     }
+
+    if (gameConfig.fx.jackpotBurstEnabled) {
+        playJackpotBurst();
+    }
+
+    if (gameConfig.fx.jackpotShockwaveEnabled) {
+        for (let i = 0; i < 3; i++) {
+            spawnShockwaveRing(centerPoint.x, centerPoint.y, {
+                color: i === 0 ? 0xffffff : 0xffd45a,
+                duration: 240,
+                radius: 24 + i * 8,
+                width: 3 - i * 0.5,
+                startScale: 0.3,
+                expandScale: 4.5 + i * 0.8,
+                peakAlpha: 0.7 - i * 0.15
+            });
+        }
+    }
 }
 
 function waitForNextFrame() {

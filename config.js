@@ -132,7 +132,7 @@ export const gameConfig = {
 
         coinParticlesFromReelEnabled: false,
         coinParticlesFromWinCoinsEnabled: true,
-        coinParticlesPerWinCoin: 8,
+        coinParticlesPerWinCoin: 6,
 
         coinParticleMinSize: 20,
         coinParticleMaxSize: 34,
