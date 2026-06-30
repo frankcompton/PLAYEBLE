@@ -25,7 +25,7 @@ export const gameConfig = {
         cardsToReveal: 3,
         bigWinDelay: 450,
         ctaDelay: 2600,
-        prizeLine1: "2.500 €",
+        prizeLine1: "2.500€",
         prizeLine2: "250 Freispiele",
         subtitle: "SPITZENGEWINN",
         topAmount: "25.000€",
@@ -126,7 +126,7 @@ export const gameConfig = {
     cta: {
         title: "Herzlichen Glückwunsch!",
         amount: "",
-        description: "Du hast 2.500 € und 250 Freispiele.",
+        description: "Du hast 2.500€ und 250 Freispiele.",
         hint: "Klicke auf den Button, um deinen Gewinn abzuholen.",
         buttonText: "Gewinn abholen",
         countdownLabel: "OFFER ENDS IN",
