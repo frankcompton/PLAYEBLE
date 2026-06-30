@@ -1079,7 +1079,12 @@ function updateCtaText() {
     resetCtaCountdownDisplay();
 }
 function applyGameAssets() {
-    document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
+    document.body.style.backgroundImage = `
+        linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
+        url("${gameConfig.assets.background}"),
+        radial-gradient(circle at 50% 18%, rgba(98, 38, 155, 0.42) 0%, rgba(32, 12, 74, 0.72) 42%, rgba(4, 2, 22, 1) 100%),
+        linear-gradient(180deg, #100629 0%, #040216 100%)
+    `;
     gameLogo.src = gameConfig.assets.logo;
 
     if (gameConfig.assets.ui.balancePanel) {
@@ -1252,7 +1257,9 @@ async function startPreloader() {
 
     preloader.style.background = `
         linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
-        url("${gameConfig.assets.background}") center center / cover no-repeat
+        url("${gameConfig.assets.background}") center center / cover no-repeat,
+        radial-gradient(circle at 50% 18%, rgba(98, 38, 155, 0.42) 0%, rgba(32, 12, 74, 0.72) 42%, rgba(4, 2, 22, 1) 100%),
+        linear-gradient(180deg, #100629 0%, #040216 100%)
     `;
 
     if (preloaderLogo) {
