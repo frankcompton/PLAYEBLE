@@ -362,6 +362,73 @@ body::after {
     opacity: 0;
 }
 
+#scratchGestureHint {
+    position: absolute;
+    left: 38px;
+    top: 360px;
+    width: 58px;
+    height: 78px;
+    z-index: 12;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    animation: scratchGestureRoute 2.25s ease-in-out infinite;
+}
+
+#scratchGestureHint.hidden {
+    opacity: 0;
+    visibility: hidden;
+    animation: none;
+}
+
+#scratchGestureHand {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 58px;
+    height: auto;
+    display: block;
+    transform: rotate(10deg);
+    filter: drop-shadow(0 5px 4px rgba(0, 0, 0, 0.42));
+}
+
+@keyframes scratchGestureRoute {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, 0, 0) scale(0.96);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    28% {
+        opacity: 1;
+        transform: translate3d(54px, -12px, 0) scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate3d(4px, 62px, 0) scale(1);
+    }
+
+    72% {
+        opacity: 1;
+        transform: translate3d(66px, 46px, 0) scale(1);
+    }
+
+    84% {
+        opacity: 0;
+        transform: translate3d(66px, 46px, 0) scale(0.98);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate3d(66px, 46px, 0) scale(0.98);
+    }
+}
+
 @keyframes scratchRevealPop {
     0% {
         transform: scale(1);

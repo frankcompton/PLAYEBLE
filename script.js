@@ -25,6 +25,7 @@ const scratchSubtitle = document.getElementById("scratchSubtitle");
 const scratchInfoNumber = document.getElementById("scratchInfoNumber");
 const scratchInfoLabel = document.getElementById("scratchInfoLabel");
 const scratchInstruction = document.getElementById("scratchInstruction");
+const scratchGestureHint = document.getElementById("scratchGestureHint");
 
 const scratchConfig = gameConfig.scratch;
 const scratchAssets = gameConfig.assets.scratch;
@@ -186,6 +187,7 @@ function bindScratchEvents(state) {
             return;
         }
 
+        hideScratchGestureHint();
         unlockAudio();
         state.isPointerDown = true;
         state.card.setPointerCapture(event.pointerId);
@@ -215,6 +217,14 @@ function bindScratchEvents(state) {
     state.card.addEventListener("pointercancel", () => {
         state.isPointerDown = false;
     });
+}
+
+function hideScratchGestureHint() {
+    if (!scratchGestureHint || scratchGestureHint.classList.contains("hidden")) {
+        return;
+    }
+
+    scratchGestureHint.classList.add("hidden");
 }
 
 function canScratch(state) {
@@ -409,7 +419,8 @@ function preloadAssets() {
         scratchAssets.character,
         scratchAssets.infoPanel,
         scratchAssets.cardCover,
-        scratchAssets.cardWin
+        scratchAssets.cardWin,
+        scratchAssets.hand
     ];
 
     const imagePromises = imageSources.map(loadImage);

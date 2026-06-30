@@ -16,7 +16,8 @@ export const gameConfig = {
             character: "assets/strach/scratch-character.webp",
             infoPanel: "assets/strach/scratch-info-panel.webp",
             cardCover: "assets/strach/scratch-card-cover.webp",
-            cardWin: "assets/strach/scratch-card-win.webp"
+            cardWin: "assets/strach/scratch-card-win.webp",
+            hand: "assets/strach/scratch-hand.webp"
         }
     },
 
