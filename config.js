@@ -88,21 +88,21 @@ export const gameConfig = {
         rotations: 6,
         winningSectorIndex: 1,
         stopOffsetDegrees: 22.5,
-        labelOffsetDegrees: -24.0,
+        labelOffsetDegrees: -25.0,
         sectors: 8,
         ctaDelay: 1200,
         prizes: [
             {
                 type: "bonus",
-                lines: ["opptil", "500 kr", "+ 10", "Gratisspinn"]
+                lines: ["500 kr", "+ 10", "Gratisspinn"]
             },
             {
                 type: "win",
-                lines: ["opptil", "25 000 kr", "+ 250", "Gratisspinn"]
+                lines: ["25 000 kr", "+ 250", "Gratisspinn"]
             },
             {
                 type: "bonus",
-                lines: ["opptil", "100 kr", "+ 5", "Gratisspinn"]
+                lines: ["100 kr", "+ 5", "Gratisspinn"]
             },
             {
                 type: "lose",
@@ -111,11 +111,11 @@ export const gameConfig = {
             },
             {
                 type: "bonus",
-                lines: ["opptil", "200 kr", "+ 15", "Gratisspinn"]
+                lines: ["200 kr", "+ 15", "Gratisspinn"]
             },
             {
                 type: "bonus",
-                lines: ["opptil", "500 kr", "+ 20", "Gratisspinn"]
+                lines: ["500 kr", "+ 20", "Gratisspinn"]
             },
             {
                 type: "lose",
@@ -123,7 +123,7 @@ export const gameConfig = {
             },
             {
                 type: "bonus",
-                lines: ["opptil", "1000 kr", "+ 30", "Gratisspinn"]
+                lines: ["1000 kr", "+ 30", "Gratisspinn"]
             }
         ]
     },

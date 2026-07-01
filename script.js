@@ -299,7 +299,7 @@ function renderWheelPrizeLabels() {
     const sectors = wheelConfig.sectors || prizes.length || 8;
     const labelOffsetDegrees = wheelConfig.labelOffsetDegrees || 0;
     const center = 170;
-    const radius = 113;
+    const radius =117;
 
     wheelPrizeLabels.innerHTML = "";
 
