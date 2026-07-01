@@ -1096,6 +1096,101 @@ body {
     z-index: 4;
 }
 
+#wheelWrap::before {
+    content: "";
+
+    position: absolute;
+    inset: 12px;
+
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(255, 224, 92, 0.3) 0%, rgba(255, 156, 24, 0.16) 48%, rgba(255, 156, 24, 0) 72%);
+    filter: blur(7px);
+
+    opacity: 0.68;
+    animation: wheelGlowPulse 1.9s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#wheelFrame {
+    animation: wheelFrameGlow 2.2s ease-in-out infinite;
+}
+
+#wheelWrap.wheel-win-pop {
+    animation: wheelWinPop 0.82s cubic-bezier(0.16, 0.9, 0.24, 1) both;
+}
+
+#wheelWrap.wheel-win-pop::before {
+    animation: wheelWinGlow 0.82s ease-out both;
+}
+
+@keyframes wheelGlowPulse {
+    0% {
+        opacity: 0.42;
+        transform: scale(0.96);
+    }
+
+    50% {
+        opacity: 0.88;
+        transform: scale(1.035);
+    }
+
+    100% {
+        opacity: 0.42;
+        transform: scale(0.96);
+    }
+}
+
+@keyframes wheelFrameGlow {
+    0% {
+        filter: drop-shadow(0 0 8px rgba(255, 210, 70, 0.34));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 18px rgba(255, 228, 100, 0.72));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 8px rgba(255, 210, 70, 0.34));
+    }
+}
+
+@keyframes wheelWinPop {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    36% {
+        transform: translate(-50%, -50%) scale(1.09);
+    }
+
+    62% {
+        transform: translate(-50%, -50%) scale(0.985);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes wheelWinGlow {
+    0% {
+        opacity: 0.5;
+        transform: scale(0.96);
+    }
+
+    35% {
+        opacity: 1;
+        transform: scale(1.16);
+    }
+
+    100% {
+        opacity: 0.46;
+        transform: scale(1.02);
+    }
+}
+
 #wheelSectors,
 #wheelFrame,
 #wheelCenter,
@@ -1148,7 +1243,7 @@ body {
     color: #fff7b4;
     font-family: "Arial Black", Impact, sans-serif;
     font-weight: 900;
-    line-height: 0.9;
+    line-height: 1.2;
     text-align: center;
     text-transform: uppercase;
 
@@ -1274,5 +1369,82 @@ body {
     100% {
         transform: translateX(-50%) scale(1);
     }
+}
+
+/* === MEGA FORTUNE CTA === */
+
+#ctaPopup {
+    max-width: 392px;
+    min-height: 330px;
+    gap: 16px;
+    padding: 30px 24px 28px;
+
+    background:
+        radial-gradient(circle at 50% 0%, rgba(52, 202, 255, 0.24) 0%, rgba(52, 202, 255, 0) 40%),
+        linear-gradient(180deg, #124b8a 0%, #062c60 48%, #03152e 100%);
+    border-color: #ffd86a;
+    border-radius: 24px;
+
+    box-shadow:
+        0 0 42px rgba(71, 224, 255, 0.48),
+        0 0 24px rgba(255, 216, 106, 0.58),
+        inset 0 0 22px rgba(255, 255, 255, 0.1),
+        0 18px 40px rgba(0, 0, 0, 0.58);
+}
+
+#ctaTitle {
+    color: #fff7c2;
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+
+    text-shadow:
+        0 3px 0 #053466,
+        0 0 16px rgba(255, 225, 110, 0.78);
+}
+
+#ctaAmount {
+    color: #ffffff;
+    max-width: 100%;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.18;
+    text-align: center;
+    white-space: normal;
+
+    text-shadow:
+        0 2px 0 #04254f,
+        0 0 12px rgba(76, 218, 255, 0.75);
+}
+
+#ctaButton {
+    min-width: 244px;
+    height: 62px;
+
+    background: linear-gradient(#e7f08a, #758b08);
+    color: #132000;
+
+    box-shadow:
+        0 8px 0 #365000,
+        0 0 24px rgba(220, 245, 82, 0.72);
+}
+
+#ctaCountdown {
+    margin-top: 0;
+    max-width: 330px;
+}
+
+#ctaCountdownLabel {
+    margin-bottom: 0;
+    color: #fff4b6;
+    font-size: 16px;
+    line-height: 1.18;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+#ctaCountdownTime {
+    display: none;
 }
 

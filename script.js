@@ -21,6 +21,7 @@ const preloader = document.getElementById("preloader");
 const preloaderLogo = document.getElementById("preloaderLogo");
 const preloaderProgress = document.getElementById("preloaderProgress");
 const wheelScene = document.getElementById("wheelScene");
+const wheelWrap = document.getElementById("wheelWrap");
 const wheelRotor = document.getElementById("wheelRotor");
 const wheelSectors = document.getElementById("wheelSectors");
 const wheelPrizeLabels = document.getElementById("wheelPrizeLabels");
@@ -143,6 +144,22 @@ function fitTextToWidth(element, minFontSize, maxFontSize) {
 }
 
 function fitAmountText() {
+    if (!ctaAmount) {
+        return;
+    }
+
+    if (ctaAmount.textContent.trim().length > 24) {
+        ctaAmount.style.display = "block";
+        ctaAmount.style.width = "100%";
+        ctaAmount.style.fontSize = "22px";
+        ctaAmount.style.lineHeight = "1.18";
+        ctaAmount.style.whiteSpace = "normal";
+        ctaAmount.style.wordBreak = "normal";
+        ctaAmount.style.overflowWrap = "normal";
+        ctaAmount.style.textAlign = "center";
+        return;
+    }
+
     fitTextToWidth(ctaAmount, CTA_AMOUNT_FIT_MIN_FONT_SIZE, CTA_AMOUNT_FIT_MAX_FONT_SIZE);
 }
 
@@ -311,6 +328,12 @@ function startWheelSpin() {
     wheelRotation = targetRotation % 360;
 
     setTimeout(() => {
+        addClasses(wheelWrap, "wheel-win-pop");
+
+        setTimeout(() => {
+            removeClasses(wheelWrap, "wheel-win-pop");
+        }, 900);
+
         if (window.playSfx) {
             window.playSfx("jackpot");
         }
@@ -472,6 +495,7 @@ function initGame() {
 
     wheelHasSpun = false;
     wheelRotation = 0;
+    removeClasses(wheelWrap, "wheel-win-pop");
 
     setWheelRotorRotation(0);
     renderWheelPrizeLabels();
@@ -1231,7 +1255,14 @@ function applyGameTheme() {
     slotArea.style.borderColor = theme.slotBorder;
     slotArea.style.boxShadow = `0 0 24px ${theme.slotGlow}`;
 
-    ctaPopup.style.background = `linear-gradient(${theme.ctaPopupTop}, ${theme.ctaPopupBottom})`;
+    if (gameConfig.mode === "wheel") {
+        ctaPopup.style.background = `
+            radial-gradient(circle at 50% 0%, rgba(52, 202, 255, 0.24) 0%, rgba(52, 202, 255, 0) 40%),
+            linear-gradient(180deg, ${theme.ctaPopupTop} 0%, #062c60 48%, ${theme.ctaPopupBottom} 100%)
+        `;
+    } else {
+        ctaPopup.style.background = `linear-gradient(${theme.ctaPopupTop}, ${theme.ctaPopupBottom})`;
+    }
     ctaPopup.style.borderColor = theme.ctaPopupBorder;
 
     ctaButton.style.background = `linear-gradient(${theme.ctaButtonTop}, ${theme.ctaButtonBottom})`;

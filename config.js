@@ -11,7 +11,7 @@ export const gameConfig = {
     },
 
     currency: {
-        effectCoinText: "$"
+        effectCoinText: "kr"
     },
 
     scene: {
@@ -43,13 +43,13 @@ export const gameConfig = {
         reelBottom: "#05051f",
         reelBorder: "rgba(120, 220, 255, 0.45)",
 
-        ctaPopupTop: "#233dff",
-        ctaPopupBottom: "#07075f",
-        ctaPopupBorder: "gold",
+        ctaPopupTop: "#12396f",
+        ctaPopupBottom: "#031c3c",
+        ctaPopupBorder: "#ffd86a",
 
-        ctaButtonTop: "#ffe978",
-        ctaButtonBottom: "#e19a00",
-        ctaButtonText: "#5c2200"
+        ctaButtonTop: "#e7f08a",
+        ctaButtonBottom: "#758b08",
+        ctaButtonText: "#132000"
     },
 
     fonts: {
@@ -102,13 +102,13 @@ export const gameConfig = {
         rotations: 6,
         winningSectorIndex: 1,
         stopOffsetDegrees: 22.5,
-        labelOffsetDegrees: -22.5,
+        labelOffsetDegrees: -24.0,
         sectors: 8,
         ctaDelay: 1200,
         prizes: [
             {
                 type: "bonus",
-                lines: ["opptil", "5 000 kr", "+ 50", "Gratisspinn"]
+                lines: ["opptil", "500 kr", "+ 10", "Gratisspinn"]
             },
             {
                 type: "win",
@@ -116,7 +116,7 @@ export const gameConfig = {
             },
             {
                 type: "bonus",
-                lines: ["opptil", "1 000 kr", "+ 25", "Gratisspinn"]
+                lines: ["opptil", "100 kr", "+ 5", "Gratisspinn"]
             },
             {
                 type: "lose",
@@ -125,11 +125,11 @@ export const gameConfig = {
             },
             {
                 type: "bonus",
-                lines: ["opptil", "2 500 kr", "+ 40", "Gratisspinn"]
+                lines: ["opptil", "200 kr", "+ 15", "Gratisspinn"]
             },
             {
                 type: "bonus",
-                lines: ["opptil", "500 kr", "+ 10", "Gratisspinn"]
+                lines: ["opptil", "500 kr", "+ 20", "Gratisspinn"]
             },
             {
                 type: "lose",
@@ -137,7 +137,7 @@ export const gameConfig = {
             },
             {
                 type: "bonus",
-                lines: ["opptil", "10 000 kr", "+ 100", "Gratisspinn"]
+                lines: ["opptil", "1000 kr", "+ 30", "Gratisspinn"]
             }
         ]
     },
@@ -254,7 +254,7 @@ export const gameConfig = {
     },
 
     fx: {
-        idleSparksEnabled: false,
+        idleSparksEnabled: true,
         idleSparkCount: 40,
         idleSparkMinSize: 2,
         idleSparkMaxSize: 5,
@@ -262,12 +262,12 @@ export const gameConfig = {
         idleSparkMaxSpeedY: 0.65,
         idleSparkMaxSpeedX: 0.2,
 
-        twinkleStarsEnabled: false,
+        twinkleStarsEnabled: true,
         twinkleStarCount: 14,
         twinkleStarMinSize: 3,
         twinkleStarMaxSize: 6,
 
-        ambientGlowEnabled: false,
+        ambientGlowEnabled: true,
         ambientGlowY: 340,
         ambientGlowRadius: 210,
         ambientGlowColor: 0x4cc8ff,
@@ -341,7 +341,7 @@ export const gameConfig = {
         jackpotShockwaveDuration: 680,
 
         coinRainEnabled: true,
-        coinRainText: "$",
+        coinRainText: "kr",
         coinRainInterval: 8,
         coinRainMinSize: 12,
         coinRainMaxSize: 24,
@@ -452,10 +452,10 @@ export const gameConfig = {
 
 
     cta: {
-        title: "BIG WIN!",
-        amount: "10 350 A$",
-        buttonText: "CLAIM!",
-        countdownLabel: "OFFER ENDS IN",
+        title: "Gratulerer!",
+        amount: "Du har vunnet 25 000kr + 250 gratisspinn.",
+        buttonText: "Krev premie",
+        countdownLabel: "Klikk på knappen for å kreve premien din.",
         countdownMinutes: 30
     },
 
