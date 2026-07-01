@@ -1326,7 +1326,7 @@ body {
 #boat {
     position: absolute;
     left: 50%;
-    bottom: -2px;
+    bottom: -16px;
     width: 520px;
     height: auto;
     transform: translateX(-50%);
