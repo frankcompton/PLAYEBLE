@@ -148,6 +148,18 @@ function fitAmountText() {
         return;
     }
 
+    if (gameConfig.mode === "wheel") {
+        ctaAmount.style.display = "block";
+        ctaAmount.style.width = "100%";
+        ctaAmount.style.fontSize = "22px";
+        ctaAmount.style.lineHeight = "1.18";
+        ctaAmount.style.whiteSpace = "normal";
+        ctaAmount.style.wordBreak = "keep-all";
+        ctaAmount.style.overflowWrap = "normal";
+        ctaAmount.style.textAlign = "center";
+        return;
+    }
+
     if (ctaAmount.textContent.trim().length > 24) {
         ctaAmount.style.display = "block";
         ctaAmount.style.width = "100%";
@@ -1208,7 +1220,11 @@ function startCtaCountdown() {
 
 function updateCtaText() {
     ctaTitle.textContent = gameConfig.cta.title;
-    ctaAmount.textContent = gameConfig.cta.amount;
+    if (gameConfig.mode === "wheel" && Array.isArray(gameConfig.cta.amountLines)) {
+        ctaAmount.innerHTML = gameConfig.cta.amountLines.join("<br>");
+    } else {
+        ctaAmount.textContent = gameConfig.cta.amount;
+    }
     ctaButton.textContent = gameConfig.cta.buttonText;
 
     if (ctaCountdownLabel) {
@@ -1218,7 +1234,12 @@ function updateCtaText() {
     resetCtaCountdownDisplay();
 }
 function applyGameAssets() {
-    document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
+    document.body.style.backgroundImage = `
+        linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
+        url("${gameConfig.assets.background}"),
+        radial-gradient(circle at 50% 18%, rgba(0, 146, 175, 0.26) 0%, rgba(4, 55, 104, 0.58) 42%, rgba(2, 20, 50, 1) 100%),
+        linear-gradient(180deg, #062f6b 0%, #031a43 58%, #02122f 100%)
+    `;
     gameLogo.src = gameConfig.assets.logo;
 
     if (gameConfig.assets.wheel) {
@@ -1426,7 +1447,9 @@ async function startPreloader() {
 
     preloader.style.background = `
         linear-gradient(${gameConfig.theme.bodyOverlayTop}, ${gameConfig.theme.bodyOverlayBottom}),
-        url("${gameConfig.assets.background}") center center / cover no-repeat
+        url("${gameConfig.assets.background}") center center / cover no-repeat,
+        radial-gradient(circle at 50% 18%, rgba(0, 146, 175, 0.26) 0%, rgba(4, 55, 104, 0.58) 42%, rgba(2, 20, 50, 1) 100%),
+        linear-gradient(180deg, #062f6b 0%, #031a43 58%, #02122f 100%)
     `;
 
     if (preloaderLogo) {

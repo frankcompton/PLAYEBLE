@@ -464,6 +464,11 @@ export const gameConfig = {
     cta: {
         title: "Gratulerer!",
         amount: "Du har vunnet 25 000kr + 250 gratisspinn.",
+        amountLines: [
+            "Du har vunnet",
+            "25 000kr + 250",
+            "gratisspinn."
+        ],
         buttonText: "Krev premie",
         countdownLabel: "Klikk på knappen for å kreve premien din.",
         countdownMinutes: 30
