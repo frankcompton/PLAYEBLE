@@ -1,4 +1,6 @@
 export const gameConfig = {
+    mode: "wheel",
+
     // =========================
     // 1. BASIC GAME SETTINGS
     // =========================
@@ -65,12 +67,20 @@ export const gameConfig = {
 
 
     assets: {
-        background: "assets/background.webp",
-        logo: "assets/logo.webp",
+        background: "assets/wheel/background.webp",
+        logo: "assets/wheel/logo.webp",
 
         ui: {
             balancePanel: "assets/ui/balance-panel.webp",
-            spinButton: "assets/ui/spin-button.webp"
+            spinButton: "assets/wheel/spin-button.webp"
+        },
+
+        wheel: {
+            boat: "assets/wheel/boat.webp",
+            frame: "assets/wheel/wheel-frame.webp",
+            center: "assets/wheel/wheel-center.webp",
+            pointer: "assets/wheel/wheel-pointer.webp",
+            sectors: "assets/wheel/wheel-sectors.webp"
         },
 
         symbols: {
@@ -85,6 +95,51 @@ export const gameConfig = {
             coin: "assets/symbols/coin.webp",
             bonus: "assets/symbols/coin2.webp"
         }
+    },
+
+    wheel: {
+        spinDuration: 5000,
+        rotations: 6,
+        winningSectorIndex: 1,
+        stopOffsetDegrees: 22.5,
+        labelOffsetDegrees: -22.5,
+        sectors: 8,
+        ctaDelay: 1200,
+        prizes: [
+            {
+                type: "bonus",
+                lines: ["opptil", "5 000 kr", "+ 50", "Gratisspinn"]
+            },
+            {
+                type: "win",
+                lines: ["opptil", "25 000 kr", "+ 250", "Gratisspinn"]
+            },
+            {
+                type: "bonus",
+                lines: ["opptil", "1 000 kr", "+ 25", "Gratisspinn"]
+            },
+            {
+                type: "lose",
+                title: "Ingen gevinst",
+                subtitle: "Prøv igjen"
+            },
+            {
+                type: "bonus",
+                lines: ["opptil", "2 500 kr", "+ 40", "Gratisspinn"]
+            },
+            {
+                type: "bonus",
+                lines: ["opptil", "500 kr", "+ 10", "Gratisspinn"]
+            },
+            {
+                type: "lose",
+                lines: ["Ingen", "gevinst", "Neste gang"]
+            },
+            {
+                type: "bonus",
+                lines: ["opptil", "10 000 kr", "+ 100", "Gratisspinn"]
+            }
+        ]
     },
 
 
@@ -199,7 +254,7 @@ export const gameConfig = {
     },
 
     fx: {
-        idleSparksEnabled: true,
+        idleSparksEnabled: false,
         idleSparkCount: 40,
         idleSparkMinSize: 2,
         idleSparkMaxSize: 5,
@@ -207,12 +262,12 @@ export const gameConfig = {
         idleSparkMaxSpeedY: 0.65,
         idleSparkMaxSpeedX: 0.2,
 
-        twinkleStarsEnabled: true,
+        twinkleStarsEnabled: false,
         twinkleStarCount: 14,
         twinkleStarMinSize: 3,
         twinkleStarMaxSize: 6,
 
-        ambientGlowEnabled: true,
+        ambientGlowEnabled: false,
         ambientGlowY: 340,
         ambientGlowRadius: 210,
         ambientGlowColor: 0x4cc8ff,

@@ -1045,3 +1045,234 @@ body {
     transition: width 0.18s ease-out;
 }
 
+/* === WHEEL OF FORTUNE SCENE === */
+
+body {
+    background-color: #041d46;
+}
+
+#topWinPanel {
+    display: none;
+}
+
+#game {
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#slotStage {
+    width: 430px;
+    height: 760px;
+    padding-top: 0;
+    overflow: hidden;
+}
+
+#gameLogo {
+    width: 328px;
+    left: 50%;
+    top: 1px;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+#slotArea {
+    display: none;
+}
+
+#wheelScene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+#wheelWrap {
+    position: absolute;
+    left: 50%;
+    top: 348px;
+    width: 396px;
+    height: 396px;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+}
+
+#wheelSectors,
+#wheelFrame,
+#wheelCenter,
+#wheelPointer,
+#boat {
+    display: block;
+    user-select: none;
+    pointer-events: none;
+}
+
+#wheelRotor {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 340px;
+    height: 340px;
+    transform: translate(-50%, -50%) rotate(0deg);
+    transform-origin: center center;
+    will-change: transform;
+    z-index: 1;
+}
+
+#wheelSectors {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#wheelPrizeLabels {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.wheel-prize {
+    position: absolute;
+    width: 76px;
+    min-height: 62px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    padding: 3px 4px;
+
+    color: #fff7b4;
+    font-family: "Arial Black", Impact, sans-serif;
+    font-weight: 900;
+    line-height: 0.9;
+    text-align: center;
+    text-transform: uppercase;
+
+    text-shadow:
+        0 2px 0 #7a1f00,
+        0 0 5px rgba(255, 210, 55, 0.85);
+}
+
+.wheel-prize-line {
+    display: block;
+    max-width: 100%;
+    font-size: 9px;
+    white-space: normal;
+}
+
+.wheel-prize-line-2,
+.wheel-prize-line-3 {
+    font-size: 11px;
+    line-height: 0.92;
+}
+
+.wheel-prize-win {
+    color: #ffffff;
+    text-shadow:
+        0 2px 0 #7a0000,
+        0 0 8px rgba(255, 245, 80, 1),
+        0 0 14px rgba(255, 120, 20, 0.85);
+}
+
+.wheel-prize-win .wheel-prize-line {
+    font-size: 9.5px;
+}
+
+.wheel-prize-win .wheel-prize-line-2,
+.wheel-prize-win .wheel-prize-line-3 {
+    font-size: 12px;
+}
+
+.wheel-prize-lose {
+    color: #4b1600;
+    text-shadow:
+        0 1px 0 rgba(255, 235, 150, 0.65),
+        0 0 3px rgba(255, 210, 90, 0.45);
+}
+
+#wheelFrame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 396px;
+    height: 396px;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+#wheelCenter {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 96px;
+    height: 96px;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+#wheelPointer {
+    position: absolute;
+    left: 50%;
+    top: -24px;
+    width: 55px;
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 5;
+}
+
+#boat {
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    width: 430px;
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 6;
+}
+
+#spinBtn {
+    position: absolute;
+    left: 50%;
+    bottom: 95px;
+    width: 214px;
+    height: 66px;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    z-index: 12;
+}
+
+#spinBtn:not(.disabled):hover {
+    transform: translateX(-50%) scale(1.04);
+}
+
+#spinBtn:not(.disabled):active {
+    transform: translateX(-50%) scale(0.96);
+}
+
+#spinBtn.disabled {
+    opacity: 0.78;
+    transform: translateX(-50%) scale(0.98);
+}
+
+#spinBtn.spin-idle:not(.disabled):not(.cta-ready) {
+    animation: wheelButtonIdleScale 1.15s ease-in-out infinite;
+}
+
+@keyframes wheelButtonIdleScale {
+    0% {
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        transform: translateX(-50%) scale(1.035);
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
+}
+

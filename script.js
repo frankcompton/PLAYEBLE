@@ -20,6 +20,14 @@ const gameScaler = document.getElementById("gameScaler");
 const preloader = document.getElementById("preloader");
 const preloaderLogo = document.getElementById("preloaderLogo");
 const preloaderProgress = document.getElementById("preloaderProgress");
+const wheelScene = document.getElementById("wheelScene");
+const wheelRotor = document.getElementById("wheelRotor");
+const wheelSectors = document.getElementById("wheelSectors");
+const wheelPrizeLabels = document.getElementById("wheelPrizeLabels");
+const wheelFrame = document.getElementById("wheelFrame");
+const wheelCenter = document.getElementById("wheelCenter");
+const wheelPointer = document.getElementById("wheelPointer");
+const boat = document.getElementById("boat");
 
 // State
 let spinCount = 0;
@@ -36,6 +44,8 @@ let balancePopTimeoutId = null;
 let balancePulseFrameId = null;
 let anticipationFrameId = null;
 let anticipationPulseReelIndex = null;
+let wheelRotation = 0;
+let wheelHasSpun = false;
 
 // Settings
 const CTA_DELAY = gameConfig.timings.ctaDelay;
@@ -212,6 +222,109 @@ function startSpin() {
     prepareReelsForSpin(currentOutcome);
     animateReelsToResult(currentOutcome);
 }
+
+function getWheelTargetRotation() {
+    const wheelConfig = gameConfig.wheel || {};
+    const sectors = wheelConfig.sectors || 8;
+    const winningSectorIndex = wheelConfig.winningSectorIndex || 0;
+    const sectorAngle = 360 / sectors;
+    const sectorCenterAngle = winningSectorIndex * sectorAngle + sectorAngle / 2;
+    const rotations = wheelConfig.rotations || 6;
+    const stopOffsetDegrees = wheelConfig.stopOffsetDegrees || 0;
+
+    return wheelRotation + rotations * 360 + (360 - sectorCenterAngle) + stopOffsetDegrees;
+}
+
+function setWheelRotorRotation(rotation, transition = "none") {
+    if (!wheelRotor) {
+        return;
+    }
+
+    wheelRotor.style.transition = transition;
+    wheelRotor.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+}
+
+function renderWheelPrizeLabels() {
+    if (!wheelPrizeLabels) {
+        return;
+    }
+
+    const wheelConfig = gameConfig.wheel || {};
+    const prizes = wheelConfig.prizes || [];
+    const sectors = wheelConfig.sectors || prizes.length || 8;
+    const labelOffsetDegrees = wheelConfig.labelOffsetDegrees || 0;
+    const center = 170;
+    const radius = 113;
+
+    wheelPrizeLabels.innerHTML = "";
+
+    for (let i = 0; i < prizes.length; i++) {
+        const prize = prizes[i];
+        const sectorAngle = 360 / sectors;
+        const angle = i * sectorAngle + sectorAngle / 2 - 90 + labelOffsetDegrees;
+        const angleRad = angle * Math.PI / 180;
+        const label = document.createElement("div");
+        const lines = prize.lines || (
+            prize.type === "lose"
+                ? ["Ingen", "gevinst", "Prov igjen"]
+                : [prize.title, prize.subtitle].filter(Boolean)
+        );
+
+        addClasses(label, "wheel-prize", `wheel-prize-${prize.type || "bonus"}`);
+
+        label.style.left = `${center + Math.cos(angleRad) * radius}px`;
+        label.style.top = `${center + Math.sin(angleRad) * radius}px`;
+        label.style.transform = `translate(-50%, -50%) rotate(${angle + 90}deg)`;
+
+        for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+            const line = document.createElement("span");
+            addClasses(line, "wheel-prize-line", `wheel-prize-line-${lineIndex + 1}`);
+            line.textContent = lines[lineIndex] || "";
+            label.appendChild(line);
+        }
+
+        wheelPrizeLabels.appendChild(label);
+    }
+}
+
+function startWheelSpin() {
+    if (!wheelRotor || wheelHasSpun) {
+        return;
+    }
+
+    wheelHasSpun = true;
+    lockSpinButton();
+    removeClasses(spinBtn, "spin-idle");
+
+    if (window.playSfx) {
+        window.playSfx("spin");
+    }
+
+    const wheelConfig = gameConfig.wheel || {};
+    const duration = wheelConfig.spinDuration || 5000;
+    const targetRotation = getWheelTargetRotation();
+
+    setWheelRotorRotation(
+        targetRotation,
+        `transform ${duration}ms cubic-bezier(0.12, 0.72, 0.08, 1)`
+    );
+    wheelRotation = targetRotation % 360;
+
+    setTimeout(() => {
+        if (window.playSfx) {
+            window.playSfx("jackpot");
+        }
+
+        if (window.playJackpotFx) {
+            window.playJackpotFx();
+        }
+
+        setTimeout(() => {
+            showCta();
+        }, wheelConfig.ctaDelay || CTA_DELAY);
+    }, duration);
+}
+
 function goToOffer() {
     const offerUrl = gameConfig.offer.url;
 
@@ -334,6 +447,11 @@ function handleSpinButtonClick() {
         return;
     }
 
+    if (gameConfig.mode === "wheel") {
+        startWheelSpin();
+        return;
+    }
+
     startSpin();
 }
 function initGame() {
@@ -351,6 +469,12 @@ function initGame() {
     removeClasses(spinBtn, "cta-ready");
 
     removeClasses(slotArea, "jackpot-state", "jackpot-flash", "small-win");
+
+    wheelHasSpun = false;
+    wheelRotation = 0;
+
+    setWheelRotorRotation(0);
+    renderWheelPrizeLabels();
 
     if (window.stopCoinRain) {
         window.stopCoinRain();
@@ -370,12 +494,17 @@ function initGame() {
     updateCtaText();
     fitAmountText();
 
-    initReels();
+    if (gameConfig.mode !== "wheel") {
+        initReels();
+    }
 
     applyGameTheme();
 
     setBalance(gameConfig.balance.startValue);
-    clearWinSymbols();
+
+    if (gameConfig.mode !== "wheel") {
+        clearWinSymbols();
+    }
 
     unlockSpinButton();
 }
@@ -1059,6 +1188,28 @@ function applyGameAssets() {
     document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
     gameLogo.src = gameConfig.assets.logo;
 
+    if (gameConfig.assets.wheel) {
+        if (wheelSectors) {
+            wheelSectors.src = gameConfig.assets.wheel.sectors;
+        }
+
+        if (wheelFrame) {
+            wheelFrame.src = gameConfig.assets.wheel.frame;
+        }
+
+        if (wheelCenter) {
+            wheelCenter.src = gameConfig.assets.wheel.center;
+        }
+
+        if (wheelPointer) {
+            wheelPointer.src = gameConfig.assets.wheel.pointer;
+        }
+
+        if (boat) {
+            boat.src = gameConfig.assets.wheel.boat;
+        }
+    }
+
     if (gameConfig.assets.ui.balancePanel) {
         document.documentElement.style.setProperty(
             "--balance-panel-image",
@@ -1170,6 +1321,12 @@ function getPreloadImageSources() {
     if (gameConfig.assets.ui) {
         for (const uiAssetName in gameConfig.assets.ui) {
             sources.push(gameConfig.assets.ui[uiAssetName]);
+        }
+    }
+
+    if (gameConfig.assets.wheel) {
+        for (const wheelAssetName in gameConfig.assets.wheel) {
+            sources.push(gameConfig.assets.wheel[wheelAssetName]);
         }
     }
 

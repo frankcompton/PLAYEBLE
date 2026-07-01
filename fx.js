@@ -342,7 +342,11 @@ function createSoftGlow() {
         softGlowContainer.addChild(glow);
     }
 
-    fxApp.stage.addChildAt(softGlowContainer, 1);
+    if (fxApp.stage.children.length > 1) {
+        fxApp.stage.addChildAt(softGlowContainer, 1);
+    } else {
+        fxApp.stage.addChild(softGlowContainer);
+    }
 }
 
 function createFlashOverlay() {
