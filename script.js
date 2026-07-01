@@ -71,18 +71,34 @@ const CTA_AMOUNT_FIT_MAX_FONT_SIZE = 200;
 const CTA_AMOUNT_FIT_MIN_FONT_SIZE = 18;
 
 function addClasses(element, ...classNames) {
+    if (!element) {
+        return;
+    }
+
     element.classList.add(...classNames);
 }
 
 function removeClasses(element, ...classNames) {
+    if (!element) {
+        return;
+    }
+
     element.classList.remove(...classNames);
 }
 
 function setDisplayed(element, display) {
+    if (!element) {
+        return;
+    }
+
     element.style.display = display;
 }
 
 function refreshCachedSymbolHeight() {
+    if (!slotArea) {
+        return;
+    }
+
     const symbolHeight = parseFloat(
         getComputedStyle(slotArea).getPropertyValue("--symbol-height")
     );
@@ -330,7 +346,6 @@ function startWheelSpin() {
     }
 
     if (window.playSfx) {
-        window.playSfx("tap");
         window.playSfx("wheelSpin");
     }
 
@@ -1264,14 +1279,14 @@ function applyGameAssets() {
         }
     }
 
-    if (gameConfig.assets.ui.balancePanel) {
+    if (gameConfig.assets.ui?.balancePanel) {
         document.documentElement.style.setProperty(
             "--balance-panel-image",
             `url("${gameConfig.assets.ui.balancePanel}")`
         );
     }
 
-    if (gameConfig.assets.ui.spinButton) {
+    if (gameConfig.assets.ui?.spinButton) {
         document.documentElement.style.setProperty(
             "--spin-button-image",
             `url("${gameConfig.assets.ui.spinButton}")`
@@ -1281,9 +1296,11 @@ function applyGameAssets() {
 function applyGameTheme() {
     const theme = gameConfig.theme;
 
-    slotArea.style.background = theme.slotBackground;
-    slotArea.style.borderColor = theme.slotBorder;
-    slotArea.style.boxShadow = `0 0 24px ${theme.slotGlow}`;
+    if (slotArea) {
+        slotArea.style.background = theme.slotBackground;
+        slotArea.style.borderColor = theme.slotBorder;
+        slotArea.style.boxShadow = `0 0 24px ${theme.slotGlow}`;
+    }
 
     if (gameConfig.mode === "wheel") {
         ctaPopup.style.background = `
@@ -1391,8 +1408,10 @@ function getPreloadImageSources() {
         }
     }
 
-    for (const symbolName in gameConfig.assets.symbols) {
-        sources.push(gameConfig.assets.symbols[symbolName]);
+    if (gameConfig.assets.symbols) {
+        for (const symbolName in gameConfig.assets.symbols) {
+            sources.push(gameConfig.assets.symbols[symbolName]);
+        }
     }
 
     return [...new Set(sources.filter(Boolean))];

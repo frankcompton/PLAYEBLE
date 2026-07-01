@@ -71,7 +71,6 @@ export const gameConfig = {
         logo: "assets/wheel/logo.webp",
 
         ui: {
-            balancePanel: "assets/ui/balance-panel.webp",
             spinButton: "assets/wheel/spin-button.webp"
         },
 
@@ -81,19 +80,6 @@ export const gameConfig = {
             center: "assets/wheel/wheel-center.webp",
             pointer: "assets/wheel/wheel-pointer.webp",
             sectors: "assets/wheel/wheel-sectors.webp"
-        },
-
-        symbols: {
-            s1: "assets/symbols/cherry.webp",
-            s2: "assets/symbols/lemon.webp",
-            s3: "assets/symbols/bar.webp",
-            s4: "assets/symbols/grape.webp",
-            s5: "assets/symbols/melon.webp",
-            s6: "assets/symbols/orange.webp",
-            s7: "assets/symbols/plum.webp",
-
-            coin: "assets/symbols/coin.webp",
-            bonus: "assets/symbols/coin2.webp"
         }
     },
 
@@ -221,38 +207,8 @@ export const gameConfig = {
         masterVolume: 0.7,
 
         sounds: {
-            spin1: {
-                src: "assets/sfx/spin-1.mp3",
-                volume: 1
-            },
-
-            spin2: {
-                src: "assets/sfx/spin-2.mp3",
-                volume: 1
-            },
-
-            spin3: {
-                src: "assets/sfx/spin.mp3",
-                volume: 1
-            },
-
-            lose: {
-                src: "assets/sfx/lose.mp3",
-                volume: 1
-            },
-
-            smallWin: {
-                src: "assets/sfx/small-win.mp3",
-                volume: 1
-            },
-
             jackpot: {
                 src: "assets/sfx/jackpot.mp3",
-                volume: 1
-            },
-
-            tap: {
-                src: "assets/wheel/tap.mp3",
                 volume: 1
             },
 
