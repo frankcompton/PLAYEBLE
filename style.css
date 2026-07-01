@@ -1260,7 +1260,6 @@ body {
 
 .wheel-prize-line {
     display: inline-block;
-    max-width: 100%;
     font-size: 9px;
     white-space: nowrap;
 }

@@ -88,7 +88,7 @@ export const gameConfig = {
         rotations: 6,
         winningSectorIndex: 1,
         stopOffsetDegrees: 22.5,
-        labelOffsetDegrees: -25.0,
+        labelOffsetDegrees: -24.0,
         sectors: 8,
         ctaDelay: 1200,
         prizes: [
