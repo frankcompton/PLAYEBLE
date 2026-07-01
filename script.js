@@ -1218,15 +1218,15 @@ function resetCtaCountdownDisplay() {
         return;
     }
 
-    const countdownMinutes = gameConfig.cta.countdownMinutes || 30;
-    ctaCountdownTime.textContent = formatCtaCountdown(countdownMinutes * 60 * 1000);
+    const countdownSeconds = gameConfig.cta.countdownSeconds ?? ((gameConfig.cta.countdownMinutes || 30) * 60);
+    ctaCountdownTime.textContent = formatCtaCountdown(countdownSeconds * 1000);
 }
 
 function startCtaCountdown() {
     stopCtaCountdown();
 
-    const countdownMinutes = gameConfig.cta.countdownMinutes || 30;
-    ctaCountdownEndTime = Date.now() + countdownMinutes * 60 * 1000;
+    const countdownSeconds = gameConfig.cta.countdownSeconds ?? ((gameConfig.cta.countdownMinutes || 30) * 60);
+    ctaCountdownEndTime = Date.now() + countdownSeconds * 1000;
 
     updateCtaCountdownDisplay();
 

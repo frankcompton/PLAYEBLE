@@ -427,7 +427,7 @@ export const gameConfig = {
         ],
         buttonText: "Krev premie",
         countdownLabel: "Klikk på knappen for å kreve premien din.",
-        countdownMinutes: 30
+        countdownSeconds: 15
     },
 
     offer: {

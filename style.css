@@ -1451,8 +1451,9 @@ body {
 }
 
 #ctaCountdown {
-    margin-top: 0;
+    margin-top: 2px;
     max-width: 330px;
+    gap: 6px;
 }
 
 #ctaCountdownLabel {
@@ -1465,6 +1466,14 @@ body {
 }
 
 #ctaCountdownTime {
-    display: none;
+    display: block;
+    color: #fff7c2;
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 1px;
+    text-shadow:
+        0 3px 0 #053466,
+        0 0 14px rgba(255, 225, 110, 0.78);
 }
 
