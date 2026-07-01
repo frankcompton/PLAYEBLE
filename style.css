@@ -1062,14 +1062,14 @@ body {
 #game {
     gap: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #slotStage {
     width: 430px;
     height: 760px;
     padding-top: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #gameLogo {
@@ -1087,7 +1087,7 @@ body {
 #wheelScene {
     position: absolute;
     inset: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 #wheelWrap {
@@ -1326,8 +1326,8 @@ body {
 #boat {
     position: absolute;
     left: 50%;
-    bottom: 10px;
-    width: 440px;
+    bottom: -2px;
+    width: 520px;
     height: auto;
     transform: translateX(-50%);
     transform-origin: 50% 72%;
