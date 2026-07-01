@@ -313,8 +313,13 @@ function startWheelSpin() {
     lockSpinButton();
     removeClasses(spinBtn, "spin-idle");
 
+    if (window.unlockSfx) {
+        window.unlockSfx();
+    }
+
     if (window.playSfx) {
-        window.playSfx("spin");
+        window.playSfx("tap");
+        window.playSfx("wheelSpin");
     }
 
     const wheelConfig = gameConfig.wheel || {};
@@ -328,6 +333,10 @@ function startWheelSpin() {
     wheelRotation = targetRotation % 360;
 
     setTimeout(() => {
+        if (window.stopSfx) {
+            window.stopSfx("wheelSpin", 220);
+        }
+
         addClasses(wheelWrap, "wheel-win-pop");
 
         setTimeout(() => {

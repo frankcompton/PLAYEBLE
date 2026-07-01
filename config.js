@@ -249,6 +249,16 @@ export const gameConfig = {
             jackpot: {
                 src: "assets/sfx/jackpot.mp3",
                 volume: 1
+            },
+
+            tap: {
+                src: "assets/wheel/tap.mp3",
+                volume: 1
+            },
+
+            wheelSpin: {
+                src: "assets/wheel/wheel_sound.mp3",
+                volume: 1
             }
         }
     },
