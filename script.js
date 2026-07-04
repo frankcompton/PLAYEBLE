@@ -235,6 +235,14 @@ function startSpin() {
     animateReelsToResult(currentOutcome);
 }
 function goToOffer() {
+    if (
+        window.FbPlayableAd &&
+        typeof window.FbPlayableAd.onCTAClick === "function"
+    ) {
+        window.FbPlayableAd.onCTAClick();
+        return;
+    }
+
     const offerUrl = gameConfig.offer.url;
 
     if (!offerUrl) {
