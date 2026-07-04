@@ -151,20 +151,7 @@ function decodeSoundBuffer(soundName) {
         return Promise.resolve(null);
     }
 
-    return fetch(audio.src)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${soundName}`);
-            }
-
-            return response.arrayBuffer();
-        })
-        .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
-        .then((buffer) => {
-            decodedBuffers[soundName] = buffer;
-            return buffer;
-        })
-        .catch(() => null);
+    return Promise.resolve(null);
 }
 
 function playDecodedSfx(soundName) {

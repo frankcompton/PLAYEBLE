@@ -57,7 +57,7 @@ function updateFxViewportSize() {
 async function initFx() {
     fxLayer = document.getElementById("fxLayer");
 
-    if (!fxLayer) {
+    if (!fxLayer || typeof PIXI === "undefined") {
         return;
     }
 
