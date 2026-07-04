@@ -6,6 +6,7 @@ const rootDir = process.cwd();
 const distDir = path.join(rootDir, "dist");
 const outputPath = path.join(distDir, "index.single.html");
 const singleAppPath = path.join(distDir, "single-app.tmp.js");
+const singleEntryPath = path.join(distDir, "single-entry.tmp.js");
 
 const mimeTypes = {
     ".webp": "image/webp",
@@ -33,9 +34,19 @@ const forbiddenPatterns = [
 async function main() {
     await rm(distDir, { recursive: true, force: true });
     await mkdir(distDir, { recursive: true });
+    await writeFile(
+        singleEntryPath,
+        [
+            `import "${toModulePath(path.relative(distDir, path.join(rootDir, "config.js")))}";`,
+            `import "${toModulePath(path.relative(distDir, path.join(rootDir, "sfx.js")))}";`,
+            `import "${toModulePath(path.relative(distDir, path.join(rootDir, "fx-single.js")))}";`,
+            `import "${toModulePath(path.relative(distDir, path.join(rootDir, "script.js")))}";`
+        ].join("\n"),
+        "utf8"
+    );
 
     await esbuildBuild({
-        entryPoints: [path.join(rootDir, "main.js")],
+        entryPoints: [singleEntryPath],
         bundle: true,
         format: "iife",
         platform: "browser",
@@ -56,14 +67,15 @@ async function main() {
 
     const htmlSource = await readFile(path.join(rootDir, "index.html"), "utf8");
     const htmlOutput = htmlSource
-        .replace(/<link rel="stylesheet" href="style\.css">/, `<style>${cssResult.code}</style>`)
-        .replace(/\s*<script src="assets\/pixi\.min\.js"><\/script>/, "")
-        .replace(/<script type="module" src="main\.js"><\/script>/, `<script>${appWithAssets}</script>`);
+        .replace(/<link rel="stylesheet" href="style\.css">/, () => `<style>${cssResult.code}</style>`)
+        .replace(/\s*<script\b[^>]*assets\/pixi\.min\.js[^>]*><\/script>/i, "")
+        .replace(/<script\b[^>]*src="main\.js"[^>]*><\/script>/i, () => `<script>${appWithAssets}</script>`);
 
     assertSingleHtml(htmlOutput);
 
     await writeFile(outputPath, htmlOutput, "utf8");
     await rm(singleAppPath, { force: true });
+    await rm(singleEntryPath, { force: true });
 
     const outputStats = await stat(outputPath);
     const outputSizeMb = outputStats.size / 1024 / 1024;
@@ -74,6 +86,11 @@ async function main() {
     if (outputStats.size >= 5 * 1024 * 1024) {
         throw new Error("Single HTML is larger than 5 MB.");
     }
+}
+
+function toModulePath(filePath) {
+    const normalizedPath = filePath.replace(/\\/g, "/");
+    return normalizedPath.startsWith(".") ? normalizedPath : `./${normalizedPath}`;
 }
 
 async function inlineAssetPaths(source) {
