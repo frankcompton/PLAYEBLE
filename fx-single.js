@@ -85,17 +85,6 @@ function ensureFxStyles() {
             animation-delay: var(--delay);
         }
 
-        .single-fx-burst {
-            width: var(--size);
-            height: var(--size);
-            left: var(--x);
-            top: var(--y);
-            border-radius: 50%;
-            background: var(--color);
-            box-shadow: 0 0 14px var(--color);
-            animation: singleBurst var(--duration) cubic-bezier(0.12, 0.68, 0.22, 1) forwards;
-        }
-
         .single-fx-coin {
             width: var(--size);
             height: var(--size);
@@ -114,6 +103,10 @@ function ensureFxStyles() {
             animation: singleCoinFall var(--duration) linear forwards;
         }
 
+        .single-fx-coin-burst {
+            animation: singleCoinBurst var(--duration) cubic-bezier(0.12, 0.72, 0.18, 1) forwards;
+        }
+
         .single-fx-coin::before {
             content: "";
             position: absolute;
@@ -129,16 +122,17 @@ function ensureFxStyles() {
             top: var(--y);
             background: var(--color);
             border-radius: 2px;
-            animation: singleConfetti var(--duration) cubic-bezier(0.16, 0.7, 0.2, 1) forwards;
+            transform-origin: center center;
+            animation: singleConfetti var(--duration) ease-in forwards;
         }
 
         .single-fx-rays {
             left: 50%;
             top: var(--y);
-            width: 680px;
-            height: 680px;
-            margin-left: -340px;
-            margin-top: -340px;
+            width: 1020px;
+            height: 1020px;
+            margin-left: -510px;
+            margin-top: -510px;
             border-radius: 50%;
             background: repeating-conic-gradient(from 0deg, rgba(255, 236, 110, 0.34) 0deg 6deg, rgba(255, 236, 110, 0) 6deg 17deg);
             mix-blend-mode: screen;
@@ -166,20 +160,23 @@ function ensureFxStyles() {
             50% { opacity: 0.92; transform: rotate(45deg) scale(1.08); }
         }
 
-        @keyframes singleBurst {
-            from { transform: translate(-50%, -50%) translate(0, 0) scale(0.5); opacity: 1; }
-            to { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(1.28); opacity: 0; }
-        }
-
         @keyframes singleCoinFall {
             from { transform: translate(-50%, -50%) translate(0, -52px) scale(0.72) rotate(0deg); opacity: 0; }
             9% { opacity: 1; }
             to { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(var(--end-scale)) rotate(var(--rot)); opacity: 0; }
         }
 
+        @keyframes singleCoinBurst {
+            0% { transform: translate(-50%, -50%) translate(0, 0) scale(0.42) rotate(0deg); opacity: 0; }
+            9% { opacity: 1; }
+            34% { transform: translate(-50%, -50%) translate(calc(var(--dx) * 0.58), var(--burst-y)) scale(1.05) rotate(calc(var(--rot) * 0.35)); opacity: 1; }
+            100% { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(var(--end-scale)) rotate(var(--rot)); opacity: 0; }
+        }
+
         @keyframes singleConfetti {
-            from { transform: translate(-50%, -50%) translate(0, 0) rotate(0deg); opacity: 1; }
-            to { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; }
+            0% { transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) rotateY(0deg); opacity: 0; }
+            8% { opacity: 1; }
+            100% { transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--rot)) rotateY(540deg); opacity: 0; }
         }
 
         @keyframes singleRays {
@@ -238,18 +235,11 @@ function playSpinStartFx() {
 }
 
 function playReelStopFx(reelIndex) {
-    const point = getReelCenterPoint(reelIndex);
-    spawnBurst(point.x, point.y, 7, 30, 520);
+    // No-op for Moloco single: removes bubble particles on reel stops.
 }
 
 function playAnticipationFx(reelIndex) {
-    stopAnticipationFx();
-
-    const point = getReelCenterPoint(reelIndex);
-
-    anticipationTimer = setInterval(() => {
-        spawnBurst(point.x, point.y, 4, 30, 480);
-    }, 150);
+    // No-op for Moloco single: avoids bubble particles before the winning stop.
 }
 
 function stopAnticipationFx() {
@@ -260,22 +250,15 @@ function stopAnticipationFx() {
 }
 
 function playSmallWinFx(winReels) {
-    const reels = winReels || [0];
-
-    for (const reelIndex of reels) {
-        const point = getReelCenterPoint(reelIndex);
-        spawnBurst(point.x, point.y - 42, 24, 115, 1050);
-    }
+    // No-op for Moloco single: removes bubble particles around win symbols.
 }
 
 function playSlotShineFx() {
-    const point = getScreenPointFromGamePoint(gameConfig.scene.baseWidth / 2, gameConfig.scene.baseHeight / 2);
-    spawnBurst(point.x, point.y, 22, 120, 900);
+    // No-op for Moloco single: removes central bubble particles.
 }
 
 function playBalanceSparkFx() {
-    const point = getScreenPointFromGamePoint(gameConfig.scene.baseWidth / 2, 88);
-    spawnBurst(point.x, point.y, 9, 52, 700);
+    // No-op for Moloco single: removes bubble particles near the balance panel.
 }
 
 function playCtaFx() {
@@ -284,8 +267,6 @@ function playCtaFx() {
 }
 
 function playJackpotFx() {
-    const point = getScreenPointFromGamePoint(gameConfig.scene.baseWidth / 2, gameConfig.fx.jackpotBurstY || 380);
-
     if (gameConfig.fx.jackpotFlashEnabled) {
         spawnFlash(gameConfig.fx.jackpotFlashDuration || 520);
     }
@@ -294,7 +275,7 @@ function playJackpotFx() {
         spawnRays(gameConfig.fx.jackpotRaysY || 370, gameConfig.fx.jackpotRaysDuration || 1400);
     }
 
-    spawnBurst(point.x, point.y, Math.min(gameConfig.fx.jackpotBurstCount || 72, 84), 230, gameConfig.fx.jackpotBurstDuration || 1500);
+    spawnCoinBurst();
     startCoinRain(3200);
 }
 
@@ -324,34 +305,6 @@ function stopCoinRain() {
     }
 }
 
-function spawnBurst(x, y, count, spread, duration) {
-    if (!fxLayer) {
-        return;
-    }
-
-    const colors = ["#ffe27a", "#ffc83d", "#fff2b0", "#7df6ff"];
-
-    for (let i = 0; i < count; i++) {
-        const particle = document.createElement("div");
-        const angle = random(0, Math.PI * 2);
-        const distance = random(spread * 0.25, spread);
-        const dx = Math.cos(angle) * distance;
-        const dy = Math.sin(angle) * distance - random(22, 82);
-
-        particle.className = "single-fx-particle single-fx-burst";
-        particle.style.setProperty("--x", `${x}px`);
-        particle.style.setProperty("--y", `${y}px`);
-        particle.style.setProperty("--dx", `${dx}px`);
-        particle.style.setProperty("--dy", `${dy}px`);
-        particle.style.setProperty("--size", `${random(5, 13)}px`);
-        particle.style.setProperty("--duration", `${random(duration * 0.78, duration * 1.22)}ms`);
-        particle.style.setProperty("--color", colors[Math.floor(random(0, colors.length))]);
-
-        fxLayer.appendChild(particle);
-        removeAfter(particle, duration + 260);
-    }
-}
-
 function spawnCoin() {
     const coin = document.createElement("div");
     const size = random(24, 42);
@@ -372,21 +325,62 @@ function spawnCoin() {
     removeAfter(coin, duration + 160);
 }
 
+function spawnCoinBurst() {
+    if (!fxLayer) {
+        return;
+    }
+
+    const point = getScreenPointFromGamePoint(
+        gameConfig.scene.baseWidth / 2,
+        gameConfig.fx.jackpotBurstY || 380
+    );
+    const count = Math.min(gameConfig.fx.jackpotBurstCount || 42, 54);
+
+    for (let i = 0; i < count; i++) {
+        const coin = document.createElement("div");
+        const angle = random(Math.PI * 0.08, Math.PI * 0.92);
+        const distance = random(115, 330);
+        const dx = Math.cos(angle) * distance;
+        const burstY = -random(90, 235);
+        const dy = random(150, 390);
+        const size = random(26, 50);
+        const duration = random(1150, 2300);
+
+        coin.className = "single-fx-coin single-fx-coin-burst";
+        coin.textContent = gameConfig.fx.coinRainText || gameConfig.currency.effectCoinText || "$";
+        coin.style.setProperty("--x", `${point.x + random(-28, 28)}px`);
+        coin.style.setProperty("--y", `${point.y + random(-18, 18)}px`);
+        coin.style.setProperty("--size", `${size}px`);
+        coin.style.setProperty("--dx", `${dx}px`);
+        coin.style.setProperty("--burst-y", `${burstY}px`);
+        coin.style.setProperty("--dy", `${dy}px`);
+        coin.style.setProperty("--rot", `${random(360, 1320)}deg`);
+        coin.style.setProperty("--end-scale", `${random(0.85, 1.45)}`);
+        coin.style.setProperty("--duration", `${duration}ms`);
+
+        setTimeout(() => {
+            fxLayer.appendChild(coin);
+            removeAfter(coin, duration + 120);
+        }, i * random(5, 18));
+    }
+}
+
 function spawnConfetti(count, duration) {
     const colors = ["#ffd45a", "#ff6b6b", "#7df6ff", "#ff85c8", "#8bff7a", "#ffffff"];
+    const baseDuration = Math.max(duration * 2.15, 5200);
 
     for (let i = 0; i < count; i++) {
         const piece = document.createElement("div");
-        const pieceDuration = random(duration * 0.78, duration * 1.18);
+        const pieceDuration = random(baseDuration * 0.72, baseDuration * 1.18);
 
         piece.className = "single-fx-confetti";
         piece.style.setProperty("--x", `${random(10, 90)}vw`);
-        piece.style.setProperty("--y", `${random(8, 22)}vh`);
+        piece.style.setProperty("--y", `${random(4, 18)}vh`);
         piece.style.setProperty("--w", `${random(6, 12)}px`);
         piece.style.setProperty("--h", `${random(10, 18)}px`);
-        piece.style.setProperty("--dx", `${random(-160, 160)}px`);
-        piece.style.setProperty("--dy", `${random(300, 700)}px`);
-        piece.style.setProperty("--rot", `${random(260, 1120)}deg`);
+        piece.style.setProperty("--dx", `${random(-130, 130)}px`);
+        piece.style.setProperty("--dy", `${random(520, 980)}px`);
+        piece.style.setProperty("--rot", `${random(360, 1380)}deg`);
         piece.style.setProperty("--duration", `${pieceDuration}ms`);
         piece.style.setProperty("--color", colors[Math.floor(random(0, colors.length))]);
 

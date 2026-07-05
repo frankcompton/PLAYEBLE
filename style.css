@@ -65,6 +65,31 @@ body {
     z-index: 1;
 
     overflow: visible;
+
+    animation: slotFrameGlow 2.8s ease-in-out infinite;
+}
+
+@keyframes slotFrameGlow {
+    0% {
+        box-shadow:
+            0 0 18px rgba(180, 92, 255, 0.58),
+            0 0 34px rgba(125, 246, 255, 0.12),
+            inset 0 0 10px rgba(180, 92, 255, 0.24);
+    }
+
+    50% {
+        box-shadow:
+            0 0 32px rgba(190, 96, 255, 0.95),
+            0 0 58px rgba(125, 246, 255, 0.34),
+            inset 0 0 18px rgba(255, 216, 74, 0.2);
+    }
+
+    100% {
+        box-shadow:
+            0 0 18px rgba(180, 92, 255, 0.58),
+            0 0 34px rgba(125, 246, 255, 0.12),
+            inset 0 0 10px rgba(180, 92, 255, 0.24);
+    }
 }
 
 
@@ -383,6 +408,7 @@ body {
 
 #slotArea.jackpot-state {
     box-shadow: 0 0 40px gold;
+    animation: none;
 }
 
 .symbol.coin-symbol {
@@ -815,11 +841,33 @@ body {
     opacity: 0;
     pointer-events: none;
     z-index: -1;
+
+    animation: balancePanelSoftGlow 3.2s ease-in-out infinite;
 }
 
 #topWinPanelText {
     position: relative;
     z-index: 1;
+}
+
+@keyframes balancePanelSoftGlow {
+    0% {
+        opacity: 0.2;
+        transform: scale(0.98);
+        filter: blur(0px);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.025);
+        filter: blur(1px);
+    }
+
+    100% {
+        opacity: 0.2;
+        transform: scale(0.98);
+        filter: blur(0px);
+    }
 }
 
 /* === FINAL COIN VALUE TEXT STYLE === */
