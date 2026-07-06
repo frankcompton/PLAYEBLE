@@ -252,7 +252,7 @@ export const gameConfig = {
         balanceSparkDuration: 550,
 
         ctaConfettiEnabled: true,
-        ctaConfettiCount: 72,
+        ctaConfettiCount: 50,
         ctaConfettiDuration: 2700,
 
         jackpotFlashEnabled: true,
@@ -261,14 +261,14 @@ export const gameConfig = {
         jackpotRaysEnabled: true,
         jackpotRaysDuration: 1400,
         jackpotRaysY: 370,
-        jackpotRayCount: 22,
+        jackpotRayCount: 15,
         jackpotRayLength: 580,
         jackpotRayWidth: 36,
         jackpotRaysRotationSpeed: 0.014,
 
         jackpotBurstEnabled: true,
-        jackpotBurstCount: 72,
-        jackpotStarBurstCount: 18,
+        jackpotBurstCount: 50,
+        jackpotStarBurstCount: 13,
         jackpotBurstDuration: 1500,
         jackpotBurstY: 380,
 
@@ -288,7 +288,7 @@ export const gameConfig = {
 
         coinRainEnabled: true,
         coinRainText: "$",
-        coinRainInterval: 8,
+        coinRainInterval: 11,
         coinRainMinSize: 12,
         coinRainMaxSize: 24,
         coinRainMinSpeed: 1.8,

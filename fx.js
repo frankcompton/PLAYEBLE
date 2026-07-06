@@ -121,6 +121,8 @@ async function preloadFx() {
         warmupFx();
         await waitForNextFrame();
         await waitForNextFrame();
+        await waitForNextFrame();
+        await waitForNextFrame();
     } finally {
         clearFxWarmupArtifacts();
         resetWarmupFxState();
@@ -145,6 +147,14 @@ function warmupFx() {
     warmupCoin.y = centerPoint.y;
     fxApp.stage.addChild(warmupCoin);
     fxWarmupArtifacts.push(warmupCoin);
+
+    for (let i = 0; i < 8; i++) {
+        const coin = createPixiCoin(12 + i * 1.5);
+        coin.x = centerPoint.x + (i - 3.5) * 18;
+        coin.y = centerPoint.y + (i % 2) * 12;
+        fxApp.stage.addChild(coin);
+        fxWarmupArtifacts.push(coin);
+    }
 
     spawnSparkBurst(centerPoint.x, centerPoint.y, {
         count: 1,
@@ -190,7 +200,9 @@ function warmupFx() {
         const previousCoinRainActive = coinRainActive;
 
         coinRainActive = true;
-        spawnCoinRainDrop();
+        for (let i = 0; i < 8; i++) {
+            spawnCoinRainDrop();
+        }
         coinRainActive = previousCoinRainActive;
     }
 
@@ -208,6 +220,32 @@ function warmupFx() {
 
     if (gameConfig.fx.jackpotRaysEnabled) {
         playJackpotRays();
+    }
+
+    if (gameConfig.fx.jackpotBurstEnabled) {
+        for (let i = 0; i < 12; i++) {
+            createBurstParticle(centerPoint.x, centerPoint.y);
+        }
+
+        for (let i = 0; i < 4; i++) {
+            createStarBurstParticle(centerPoint.x, centerPoint.y);
+        }
+    }
+
+    if (gameConfig.fx.jackpotShockwaveEnabled) {
+        const fx = gameConfig.fx;
+
+        for (let i = 0; i < 3; i++) {
+            spawnShockwaveRing(centerPoint.x, centerPoint.y, {
+                color: i === 0 ? 0xffffff : 0xffd45a,
+                duration: fx.jackpotShockwaveDuration,
+                radius: 24 + i * 8,
+                width: 3 - i * 0.5,
+                startScale: 0.3,
+                expandScale: 4.5 + i * 0.8,
+                peakAlpha: 0.7 - i * 0.15
+            });
+        }
     }
 }
 
