@@ -1237,9 +1237,9 @@ body {
 #postSpinActions {
     width: 100%;
     display: none;
-    grid-template-columns: 170px 170px;
+    grid-template-columns: 178px 170px;
     justify-content: center;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
 }
 
@@ -1261,7 +1261,7 @@ body {
 }
 
 #getItOnBtn {
-    width: 170px;
+    width: 178px;
     height: 56px;
     padding: 0;
     border: 2px solid rgba(255, 235, 150, 0.9);
@@ -1272,7 +1272,7 @@ body {
         linear-gradient(180deg, #202844 0%, #070a19 100%);
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: 164px 48px, 100% 100%, 100% 100%;
+    background-size: 172px 50px, 100% 100%, 100% 100%;
     background-color: #070a19;
     box-shadow:
         0 0 12px rgba(255, 216, 80, 0.5),
