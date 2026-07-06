@@ -151,20 +151,40 @@ function decodeSoundBuffer(soundName) {
         return Promise.resolve(null);
     }
 
-    return fetch(audio.src)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`Failed to fetch ${soundName}`);
-            }
+    const audioSource = audio.src || "";
 
-            return response.arrayBuffer();
-        })
+    if (!audioSource.startsWith("data:")) {
+        return Promise.resolve(null);
+    }
+
+    return Promise.resolve(dataUriToArrayBuffer(audioSource))
         .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
         .then((buffer) => {
             decodedBuffers[soundName] = buffer;
             return buffer;
         })
         .catch(() => null);
+}
+
+function dataUriToArrayBuffer(dataUri) {
+    const commaIndex = dataUri.indexOf(",");
+
+    if (commaIndex === -1) {
+        return new ArrayBuffer(0);
+    }
+
+    const metadata = dataUri.slice(0, commaIndex);
+    const data = dataUri.slice(commaIndex + 1);
+    const binaryString = metadata.includes(";base64")
+        ? atob(data)
+        : decodeURIComponent(data);
+    const bytes = new Uint8Array(binaryString.length);
+
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    return bytes.buffer;
 }
 
 function playDecodedSfx(soundName) {

@@ -27,8 +27,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build site
-        run: npm run build
+      - name: Build single HTML site
+        run: |
+          npm run single
+          mv dist/index.single.html dist/index.html
 
       - name: Resolve branch target
         id: branch
