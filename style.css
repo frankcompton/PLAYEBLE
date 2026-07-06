@@ -1237,9 +1237,8 @@ body {
 #postSpinActions {
     width: 100%;
     display: none;
-    grid-template-columns: 178px 170px;
+    grid-template-columns: 170px;
     justify-content: center;
-    gap: 12px;
     align-items: center;
 }
 
@@ -1247,7 +1246,6 @@ body {
     display: grid;
 }
 
-#getItOnBtn,
 #tryAgainBtn {
     height: 56px;
     border-radius: 8px;
@@ -1258,30 +1256,6 @@ body {
     line-height: 1;
     white-space: nowrap;
     letter-spacing: 0;
-}
-
-#getItOnBtn {
-    width: 178px;
-    height: 56px;
-    padding: 0;
-    border: 2px solid rgba(255, 235, 150, 0.9);
-    border-radius: 8px;
-    background-image:
-        url("assets/getit.webp"),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 38%),
-        linear-gradient(180deg, #202844 0%, #070a19 100%);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 172px 50px, 100% 100%, 100% 100%;
-    background-color: #070a19;
-    box-shadow:
-        0 0 12px rgba(255, 216, 80, 0.5),
-        inset 0 0 10px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-}
-
-#getItOnBtn img {
-    display: none;
 }
 
 #tapHand {
@@ -1310,7 +1284,7 @@ body {
 }
 
 #bottomControls.hand-try-again #tapHand {
-    left: 71%;
+    left: 47%;
     top: 10px;
 }
 
@@ -1348,7 +1322,7 @@ body {
 }
 
 #bottomControls.hand-try-again::after {
-    left: 74%;
+    left: 50%;
     top: 30px;
 }
 

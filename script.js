@@ -16,7 +16,6 @@ const overlay = document.getElementById("overlay");
 const topWinPanelText = document.getElementById("topWinPanelText");
 const freeSpinsValue = document.getElementById("freeSpinsValue");
 const postSpinActions = document.getElementById("postSpinActions");
-const getItOnBtn = document.getElementById("getItOnBtn");
 const tryAgainBtn = document.getElementById("tryAgainBtn");
 const tapHand = document.getElementById("tapHand");
 const bottomControls = document.getElementById("bottomControls");
@@ -1450,7 +1449,6 @@ window.addEventListener("pointerdown", unlockSfxOnFirstInteraction, {
 });
 spinBtn.addEventListener("click", handleSpinButtonClick);
 tryAgainBtn.addEventListener("click", handleSpinButtonClick);
-getItOnBtn.addEventListener("click", goToOffer);
 ctaButton.addEventListener("click", goToOffer);
 
 window.addEventListener("resize", () => {
