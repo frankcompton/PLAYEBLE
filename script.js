@@ -823,10 +823,14 @@ function animateBalanceTo(targetBalance, duration, outcome) {
         return;
     }
 
-    if (balanceEffect === "pulse") {
-        startBalancePulse();
-    } else {
-        playBalancePop();
+    const shouldAnimateBonusPanel = false;
+
+    if (shouldAnimateBonusPanel) {
+        if (balanceEffect === "pulse") {
+            startBalancePulse();
+        } else {
+            playBalancePop();
+        }
     }
 
     let lastBalanceSparkStep = 0;
@@ -856,7 +860,9 @@ function animateBalanceTo(targetBalance, duration, outcome) {
             requestAnimationFrame(updateBalance);
         } else {
             setBalance(targetBalance);
-            stopBalancePulse();
+            if (shouldAnimateBonusPanel) {
+                stopBalancePulse();
+            }
         }
     }
 
