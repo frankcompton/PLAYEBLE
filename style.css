@@ -1272,7 +1272,7 @@ body {
         linear-gradient(180deg, #202844 0%, #070a19 100%);
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: 150px 39px, 100% 100%, 100% 100%;
+    background-size: 164px 48px, 100% 100%, 100% 100%;
     background-color: #070a19;
     box-shadow:
         0 0 12px rgba(255, 216, 80, 0.5),
@@ -1310,8 +1310,8 @@ body {
 }
 
 #bottomControls.hand-try-again #tapHand {
-    left: 79%;
-    top: 5px;
+    left: 71%;
+    top: 10px;
 }
 
 #tapHand.hidden {
@@ -1348,7 +1348,7 @@ body {
 }
 
 #bottomControls.hand-try-again::after {
-    left: 77%;
+    left: 74%;
     top: 30px;
 }
 
