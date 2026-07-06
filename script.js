@@ -18,6 +18,8 @@ const freeSpinsValue = document.getElementById("freeSpinsValue");
 const postSpinActions = document.getElementById("postSpinActions");
 const getItOnBtn = document.getElementById("getItOnBtn");
 const tryAgainBtn = document.getElementById("tryAgainBtn");
+const tapHand = document.getElementById("tapHand");
+const bottomControls = document.getElementById("bottomControls");
 const reelElements = Array.from(document.querySelectorAll("#reels > div"));
 const reelStrips = Array.from(document.querySelectorAll("#reels > div > div"));
 const gameScaler = document.getElementById("gameScaler");
@@ -203,6 +205,7 @@ function startSpin() {
     removeClasses(spinBtn, "spin-idle");
     removeClasses(slotArea, "jackpot-state", "jackpot-flash", "small-win");
     clearWinSymbols();
+    hideTapHand();
     removeClasses(tryAgainBtn, "disabled");
     spinCount = spinCount + 1;
 
@@ -242,6 +245,7 @@ function showInitialSpinButton() {
     setDisplayed(spinBtn, "flex");
     removeClasses(postSpinActions, "show");
     postSpinActions.setAttribute("aria-hidden", "true");
+    showTapHand("unlock");
 }
 
 function showPostSpinActions() {
@@ -251,8 +255,34 @@ function showPostSpinActions() {
 
     if (spinCount >= outcomes.length) {
         addClasses(tryAgainBtn, "disabled");
+        hideTapHand();
     } else {
         removeClasses(tryAgainBtn, "disabled");
+        showTapHand("try-again");
+    }
+}
+
+function showTapHand(mode = "unlock") {
+    if (!tapHand) {
+        return;
+    }
+
+    removeClasses(tapHand, "hidden");
+    if (bottomControls) {
+        removeClasses(bottomControls, "hand-hidden", "hand-unlock", "hand-try-again");
+        addClasses(bottomControls, mode === "try-again" ? "hand-try-again" : "hand-unlock");
+    }
+}
+
+function hideTapHand() {
+    if (!tapHand) {
+        return;
+    }
+
+    addClasses(tapHand, "hidden");
+    if (bottomControls) {
+        removeClasses(bottomControls, "hand-unlock", "hand-try-again");
+        addClasses(bottomControls, "hand-hidden");
     }
 }
 
@@ -803,6 +833,32 @@ function setFreeSpins(value) {
         freeSpinsValue.textContent = String(currentFreeSpins);
     }
 }
+function animateFreeSpinsTo(targetFreeSpins, duration) {
+    const startFreeSpins = currentFreeSpins;
+    const difference = targetFreeSpins - startFreeSpins;
+    const startTime = performance.now();
+
+    if (duration === 0 || difference === 0) {
+        setFreeSpins(targetFreeSpins);
+        return;
+    }
+
+    function updateFreeSpins(currentTime) {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const currentValue = startFreeSpins + difference * progress;
+
+        setFreeSpins(currentValue);
+
+        if (progress < 1) {
+            requestAnimationFrame(updateFreeSpins);
+        } else {
+            setFreeSpins(targetFreeSpins);
+        }
+    }
+
+    requestAnimationFrame(updateFreeSpins);
+}
 function setBalance(value) {
     currentBalance = value;
     if (topWinPanelText) {
@@ -1015,7 +1071,7 @@ function finishOutcome(outcome) {
 
     setTimeout(() => {
         animateBalanceTo(getOutcomeCashBonus(outcome), outcome.balanceCountDuration, outcome);
-        setFreeSpins(getOutcomeFreeSpins(outcome));
+        animateFreeSpinsTo(getOutcomeFreeSpins(outcome), outcome.balanceCountDuration);
     }, delay);
 }
 function highlightWinSymbols(outcome) {

@@ -1205,6 +1205,7 @@ body {
     align-items: center;
 
     flex-shrink: 0;
+    position: relative;
 }
 
 #spinBtn {
@@ -1236,8 +1237,9 @@ body {
 #postSpinActions {
     width: 100%;
     display: none;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
+    grid-template-columns: 170px 170px;
+    justify-content: center;
+    gap: 16px;
     align-items: center;
 }
 
@@ -1259,18 +1261,154 @@ body {
 }
 
 #getItOnBtn {
+    width: 170px;
+    height: 56px;
     padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
-    overflow: visible;
+    border: 2px solid rgba(255, 235, 150, 0.9);
+    border-radius: 8px;
+    background-image:
+        url("assets/getit.webp"),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 38%),
+        linear-gradient(180deg, #202844 0%, #070a19 100%);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 150px 39px, 100% 100%, 100% 100%;
+    background-color: #070a19;
+    box-shadow:
+        0 0 12px rgba(255, 216, 80, 0.5),
+        inset 0 0 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
 #getItOnBtn img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: fill;
+    display: none;
+}
+
+#tapHand {
+    position: absolute;
+    left: 47%;
+    top: 5px;
+
+    width: 74px;
+    height: auto;
+
+    transform: translate(-5%, 0) scale(0.86);
+    transform-origin: 46% 16%;
+
+    opacity: 0;
+    pointer-events: none;
+    z-index: 35;
+
+    filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.45));
+
+    animation: tapHandHint 1.62s ease-in-out infinite;
+}
+
+#bottomControls.hand-unlock #tapHand {
+    left: 47%;
+    top: 5px;
+}
+
+#bottomControls.hand-try-again #tapHand {
+    left: 79%;
+    top: 5px;
+}
+
+#tapHand.hidden {
+    display: none;
+}
+
+#bottomControls::after {
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    top: 30px;
+
+    width: 20px;
+    height: 20px;
+
+    border: 3px solid rgba(255, 235, 150, 0.9);
+    border-radius: 50%;
+
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.2);
+
+    pointer-events: none;
+    z-index: 34;
+
+    box-shadow: 0 0 16px rgba(255, 216, 80, 0.65);
+
+    animation: tapRipple 1.62s ease-in-out infinite;
+}
+
+#bottomControls.hand-unlock::after {
+    left: 50%;
+    top: 30px;
+}
+
+#bottomControls.hand-try-again::after {
+    left: 77%;
+    top: 30px;
+}
+
+#bottomControls.hand-hidden::after {
+    display: none;
+}
+
+@keyframes tapHandHint {
+    0% {
+        opacity: 0;
+        transform: translate(-5%, -4px) scale(0.86);
+    }
+
+    18% {
+        opacity: 1;
+        transform: translate(-5%, -4px) scale(0.86);
+    }
+
+    42% {
+        opacity: 1;
+        transform: translate(-5%, 10px) scale(0.79);
+    }
+
+    55% {
+        opacity: 1;
+        transform: translate(-5%, 2px) scale(0.86);
+    }
+
+    78% {
+        opacity: 0;
+        transform: translate(-5%, 2px) scale(0.86);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-5%, -4px) scale(0.86);
+    }
+}
+
+@keyframes tapRipple {
+    0%,
+    39% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2);
+    }
+
+    43% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) scale(0.35);
+    }
+
+    66% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.25);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.25);
+    }
 }
 
 #tryAgainBtn {
