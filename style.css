@@ -1162,17 +1162,17 @@ body {
 }
 
 #slotStage {
-    width: 318px;
+    width: 340px;
     padding-top: 0;
 }
 
 #slotArea {
-    --symbol-height: 96px;
+    --symbol-height: 103px;
 
-    width: 318px;
-    height: 318px;
+    width: 340px;
+    height: 340px;
     max-width: none;
-    padding: 10px;
+    padding: 11px;
 
     border-radius: 12px;
     border-width: 3px;
@@ -1259,11 +1259,18 @@ body {
 }
 
 #getItOnBtn {
-    border: 2px solid rgba(255, 255, 255, 0.78);
-    background: linear-gradient(180deg, #141414 0%, #000 100%);
-    color: #fff;
-    font-size: 15px;
-    text-shadow: 0 1px 0 #000;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: hidden;
+}
+
+#getItOnBtn img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
 }
 
 #tryAgainBtn {
@@ -1284,26 +1291,80 @@ body {
     filter: grayscale(0.5);
 }
 
+#slotArea::before {
+    content: "";
+
+    position: absolute;
+    left: 9px;
+    right: 9px;
+    top: calc(50% - var(--symbol-height) / 2 - 2px);
+    height: calc(var(--symbol-height) + 4px);
+
+    border: 2px solid rgba(255, 232, 146, 0.96);
+    border-radius: 8px;
+
+    opacity: 0;
+    pointer-events: none;
+    z-index: 8;
+
+    box-shadow:
+        0 0 18px rgba(255, 226, 120, 0.95),
+        inset 0 0 18px rgba(255, 226, 120, 0.28);
+
+    transition: opacity 0.18s ease;
+}
+
+#slotArea.small-win::before,
+#slotArea.jackpot-state::before {
+    opacity: 1;
+    animation: winLineGlow 1.05s ease-in-out infinite;
+}
+
 #slotArea.small-win .symbol.win-symbol .symbol-img {
-    animation: centerSymbolPop 0.72s ease-out forwards;
+    animation: centerSymbolPopPulse 1.6s ease-in-out infinite;
 }
 
 #slotArea.jackpot-state .symbol.win-symbol .symbol-img {
-    animation: centerSymbolJackpotPop 0.86s ease-out forwards;
+    animation: centerSymbolJackpotPopPulse 1.45s ease-in-out infinite;
 }
 
 #slotArea.jackpot-state .symbol.win-symbol.pulsing .symbol-img {
-    animation: centerSymbolJackpotPulse 0.92s ease-in-out infinite;
+    animation: centerSymbolJackpotPopPulse 1.45s ease-in-out infinite;
 }
 
-@keyframes centerSymbolPop {
+@keyframes winLineGlow {
+    0%,
+    100% {
+        box-shadow:
+            0 0 14px rgba(255, 226, 120, 0.76),
+            inset 0 0 14px rgba(255, 226, 120, 0.22);
+    }
+
+    50% {
+        box-shadow:
+            0 0 28px rgba(255, 240, 160, 1),
+            inset 0 0 24px rgba(255, 226, 120, 0.38);
+    }
+}
+
+@keyframes centerSymbolPopPulse {
     0% {
         transform: scale(1);
         filter: drop-shadow(0 0 0 rgba(255, 230, 120, 0));
     }
 
-    50% {
+    28% {
         transform: scale(1.22);
+        filter: drop-shadow(0 0 18px rgba(255, 225, 92, 0.95));
+    }
+
+    48% {
+        transform: scale(1.06);
+        filter: drop-shadow(0 0 10px rgba(255, 225, 92, 0.8));
+    }
+
+    74% {
+        transform: scale(1.13);
         filter: drop-shadow(0 0 18px rgba(255, 225, 92, 0.95));
     }
 
@@ -1313,15 +1374,25 @@ body {
     }
 }
 
-@keyframes centerSymbolJackpotPop {
+@keyframes centerSymbolJackpotPopPulse {
     0% {
         transform: scale(1);
         filter: drop-shadow(0 0 0 rgba(255, 230, 120, 0));
     }
 
-    46% {
+    30% {
         transform: scale(1.36);
         filter: drop-shadow(0 0 28px rgba(255, 235, 110, 1));
+    }
+
+    50% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 18px rgba(255, 235, 110, 0.9));
+    }
+
+    75% {
+        transform: scale(1.22);
+        filter: drop-shadow(0 0 30px rgba(255, 235, 110, 1));
     }
 
     100% {
@@ -1330,20 +1401,90 @@ body {
     }
 }
 
-@keyframes centerSymbolJackpotPulse {
-    0% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 14px rgba(255, 230, 90, 0.75));
-    }
+/* === CTA BONUS UNLOCKED VARIANT === */
 
-    50% {
-        transform: scale(1.2);
-        filter: drop-shadow(0 0 28px rgba(255, 235, 110, 1));
-    }
+#ctaPopup {
+    width: 368px;
+    min-height: 405px;
+    padding: 42px 24px 30px;
+    gap: 22px;
 
-    100% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 14px rgba(255, 230, 90, 0.75));
-    }
+    border: 0;
+    border-radius: 8px;
+
+    background:
+        radial-gradient(circle at 50% 42%, rgba(92, 48, 132, 0.72) 0%, rgba(42, 18, 68, 0) 55%),
+        linear-gradient(180deg, #432052 0%, #261337 100%);
+
+    box-shadow:
+        0 0 36px rgba(0, 0, 0, 0.56),
+        inset 0 0 42px rgba(0, 0, 0, 0.28);
+}
+
+#ctaTitle {
+    color: #ffd336;
+    font-size: 27px;
+    line-height: 1.08;
+    text-align: center;
+
+    text-shadow:
+        0 2px 0 rgba(83, 50, 0, 0.85),
+        0 0 12px rgba(255, 220, 70, 0.7);
+}
+
+#ctaAmount {
+    color: #fffef4;
+    width: 100%;
+    display: block;
+
+    font-size: 58px;
+    line-height: 1.12;
+    text-align: center;
+    white-space: normal;
+
+    text-shadow:
+        0 0 12px rgba(255, 230, 108, 0.95),
+        0 0 26px rgba(255, 224, 76, 0.75),
+        0 3px 0 rgba(69, 44, 0, 0.55);
+}
+
+#ctaSubtitle {
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 310px;
+
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.22;
+    text-align: center;
+
+    text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+#ctaButton {
+    width: 310px;
+    height: 68px;
+
+    margin-top: 12px;
+
+    border: 0;
+    border-radius: 11px;
+
+    background: linear-gradient(180deg, #ffe15a 0%, #ffb300 100%);
+
+    color: #70509c;
+    font-size: 28px;
+    line-height: 1;
+
+    box-shadow:
+        0 6px 0 #b87000,
+        0 0 18px rgba(255, 220, 70, 0.55);
+
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+#ctaCountdown {
+    margin-top: -8px;
+    opacity: 0.86;
 }
 

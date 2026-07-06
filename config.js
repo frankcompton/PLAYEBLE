@@ -404,9 +404,9 @@ export const gameConfig = {
 
 
     cta: {
-        title: "BIG WIN!",
-        amount: "10 350 A$",
-        buttonText: "CLAIM!",
+        title: "BONUS UNLOCKED!",
+        amount: "A$1,500 + 250<br>FREE SPINS",
+        buttonText: "Claim Bonus",
         countdownLabel: "OFFER ENDS IN",
         countdownMinutes: 30
     },

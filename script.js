@@ -138,6 +138,10 @@ function fitTextToWidth(element, minFontSize, maxFontSize) {
 }
 
 function fitAmountText() {
+    if (gameConfig.cta.amount.includes("<br")) {
+        return;
+    }
+
     fitTextToWidth(ctaAmount, CTA_AMOUNT_FIT_MIN_FONT_SIZE, CTA_AMOUNT_FIT_MAX_FONT_SIZE);
 }
 
@@ -197,6 +201,8 @@ function getRandomNumber(min, max) {
 
 function startSpin() {
     removeClasses(spinBtn, "spin-idle");
+    removeClasses(slotArea, "jackpot-state", "jackpot-flash", "small-win");
+    clearWinSymbols();
     removeClasses(tryAgainBtn, "disabled");
     spinCount = spinCount + 1;
 
@@ -271,10 +277,6 @@ function showSmallWin(outcome) {
 
     if (gameConfig.effects.slotWinGlowEnabled) {
         addClasses(slotArea, "small-win");
-
-        setTimeout(() => {
-            removeClasses(slotArea, "small-win");
-        }, SMALL_WIN_GLOW_DURATION);
     }
 
     for (let i = 0; i < winReels.length; i++) {
@@ -1033,11 +1035,6 @@ function highlightWinSymbols(outcome) {
 
             addClasses(symbolElement, "win-symbol");
 
-            if (gameConfig.effects.bonusPulseEnabled) {
-                setTimeout(() => {
-                    addClasses(symbolElement, "pulsing");
-                }, WIN_SYMBOL_POP_DURATION);
-            }
         }
     }
 }
@@ -1101,7 +1098,7 @@ function startCtaCountdown() {
 
 function updateCtaText() {
     ctaTitle.textContent = gameConfig.cta.title;
-    ctaAmount.textContent = gameConfig.cta.amount;
+    ctaAmount.innerHTML = gameConfig.cta.amount;
     ctaButton.textContent = gameConfig.cta.buttonText;
 
     if (ctaCountdownLabel) {
