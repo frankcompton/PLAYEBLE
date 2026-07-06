@@ -815,15 +815,15 @@ function initReels() {
 }
 function formatBalance(value) {
     const roundedValue = Math.floor(value);
-    const formattedValue = roundedValue.toLocaleString("en-US").replace(/,/g, " ");
+    const formattedValue = roundedValue.toLocaleString("de-DE");
 
     return `${formattedValue} ${gameConfig.balance.currency}`;
 }
 function formatCashBonus(value) {
     const roundedValue = Math.floor(value);
-    const formattedValue = roundedValue.toLocaleString("en-US").replace(/,/g, ",");
+    const formattedValue = roundedValue.toLocaleString("de-DE");
 
-    return `${gameConfig.balance.currency}${formattedValue}`;
+    return `${formattedValue} ${gameConfig.balance.currency}`;
 }
 function getOutcomeCashBonus(outcome) {
     return outcome.bonusCash ?? outcome.balance ?? 0;
@@ -1169,7 +1169,7 @@ function updateCtaText() {
     ctaButton.textContent = gameConfig.cta.buttonText;
 
     if (ctaCountdownLabel) {
-        ctaCountdownLabel.textContent = gameConfig.cta.countdownLabel || "OFFER ENDS IN";
+        ctaCountdownLabel.textContent = gameConfig.cta.countdownLabel || "ANGEBOT ENDET IN";
     }
 
     resetCtaCountdownDisplay();

@@ -6,11 +6,11 @@ export const gameConfig = {
     balance: {
         startValue: 0,
         startFreeSpins: 0,
-        currency: "A$"
+        currency: "€"
     },
 
     currency: {
-        effectCoinText: "$"
+        effectCoinText: "€"
     },
 
     scene: {
@@ -287,7 +287,7 @@ export const gameConfig = {
         jackpotShockwaveDuration: 680,
 
         coinRainEnabled: true,
-        coinRainText: "$",
+        coinRainText: "€",
         coinRainInterval: 11,
         coinRainMinSize: 12,
         coinRainMaxSize: 24,
@@ -373,8 +373,8 @@ export const gameConfig = {
         {
             type: "jackpot",
             spinSfx: "spin3",
-            balance: 10350,
-            bonusCash: 1500,
+            balance: 2500,
+            bonusCash: 2500,
             bonusFreeSpins: 250,
             balanceDelay: 500,
             balanceCountDuration: 2000,
@@ -404,10 +404,10 @@ export const gameConfig = {
 
 
     cta: {
-        title: "BONUS UNLOCKED!",
-        amount: "A$1,500 + 250<br>FREE SPINS",
-        buttonText: "CLAIM BONUS",
-        countdownLabel: "OFFER ENDS IN",
+        title: "BONUS FREIGESCHALTET!",
+        amount: "100% BIS ZU 2500€<br>+ 250 FREISPIELE",
+        buttonText: "BONUS HOLEN",
+        countdownLabel: "ANGEBOT ENDET IN",
         countdownMinutes: 30
     },
 
