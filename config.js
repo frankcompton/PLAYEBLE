@@ -405,7 +405,7 @@ export const gameConfig = {
 
     cta: {
         title: "BONUS FREIGESCHALTET!",
-        amount: "100% BIS ZU 2500€<br>+ 250 FREISPIELE",
+        amount: "100% BIS ZU 2500 €<br>+ 250 FREISPIELE",
         buttonText: "BONUS HOLEN",
         countdownLabel: "ANGEBOT ENDET IN",
         countdownMinutes: 30
