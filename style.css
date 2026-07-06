@@ -1045,3 +1045,305 @@ body {
     transition: width 0.18s ease-out;
 }
 
+/* === BONUS LAYOUT VARIANT === */
+
+#game {
+    justify-content: flex-start;
+    gap: 13px;
+    padding: 18px 20px 16px;
+}
+
+#topWinPanel {
+    width: 390px;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+#gameLogo {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+
+    width: 318px;
+    max-width: none;
+    height: auto;
+
+    display: block;
+    flex-shrink: 0;
+
+    filter: drop-shadow(0 0 15px rgba(255, 220, 90, 0.42));
+}
+
+#welcomeBonusTitle {
+    color: #fff1a8;
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0;
+
+    text-shadow:
+        0 2px 0 #573000,
+        0 0 12px rgba(255, 218, 80, 0.8);
+}
+
+#bonusBoxes {
+    width: 340px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.bonusBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.bonusLabel {
+    color: rgba(255, 232, 155, 0.86);
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 12px;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.7);
+}
+
+.bonusValue {
+    width: 100%;
+    height: 39px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid rgba(255, 224, 127, 0.92);
+    border-radius: 7px;
+
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 42%),
+        linear-gradient(180deg, #252a47 0%, #090c20 100%);
+
+    color: #fff0a2;
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+
+    box-shadow:
+        0 0 9px rgba(255, 216, 100, 0.5),
+        inset 0 0 12px rgba(0, 0, 0, 0.7);
+
+    text-shadow:
+        0 2px 0 rgba(82, 36, 0, 0.9),
+        0 0 8px rgba(255, 235, 150, 0.8);
+}
+
+#slotStage {
+    width: 318px;
+    padding-top: 0;
+}
+
+#slotArea {
+    --symbol-height: 96px;
+
+    width: 318px;
+    height: 318px;
+    max-width: none;
+    padding: 10px;
+
+    border-radius: 12px;
+    border-width: 3px;
+
+    box-shadow:
+        0 0 20px rgba(76, 200, 255, 0.7),
+        inset 0 0 18px rgba(255, 216, 74, 0.12);
+}
+
+#reels>div {
+    border-color: rgba(255, 216, 74, 0.45);
+}
+
+.symbol {
+    width: 100%;
+}
+
+.symbol-img {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+}
+
+#bottomControls {
+    width: 390px;
+    height: 70px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+#spinBtn {
+    width: 260px;
+    height: 56px;
+
+    border: 2px solid rgba(255, 235, 150, 0.9);
+    border-radius: 8px;
+
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 40%),
+        linear-gradient(180deg, #41548e 0%, #172247 100%);
+
+    box-shadow:
+        0 0 14px rgba(255, 216, 80, 0.55),
+        inset 0 0 12px rgba(0, 0, 0, 0.5);
+}
+
+#spinText {
+    color: #fff1a8;
+    font-family: "Arial Black", Impact, sans-serif;
+    font-size: 24px;
+    line-height: 1;
+    text-shadow:
+        0 2px 0 rgba(70, 32, 0, 0.9),
+        0 0 10px rgba(255, 240, 160, 0.65);
+}
+
+#postSpinActions {
+    width: 100%;
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    align-items: center;
+}
+
+#postSpinActions.show {
+    display: grid;
+}
+
+#getItOnBtn,
+#tryAgainBtn {
+    height: 50px;
+    border-radius: 8px;
+    cursor: pointer;
+
+    font-family: "Arial Black", Impact, sans-serif;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0;
+}
+
+#getItOnBtn {
+    border: 2px solid rgba(255, 255, 255, 0.78);
+    background: linear-gradient(180deg, #141414 0%, #000 100%);
+    color: #fff;
+    font-size: 15px;
+    text-shadow: 0 1px 0 #000;
+}
+
+#tryAgainBtn {
+    border: 2px solid rgba(255, 235, 150, 0.9);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 40%),
+        linear-gradient(180deg, #485a98 0%, #1a244a 100%);
+    color: #fff1a8;
+    font-size: 22px;
+    text-shadow:
+        0 2px 0 rgba(70, 32, 0, 0.9),
+        0 0 10px rgba(255, 240, 160, 0.65);
+}
+
+#tryAgainBtn.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    filter: grayscale(0.5);
+}
+
+#slotArea.small-win .symbol.win-symbol .symbol-img {
+    animation: centerSymbolPop 0.72s ease-out forwards;
+}
+
+#slotArea.jackpot-state .symbol.win-symbol .symbol-img {
+    animation: centerSymbolJackpotPop 0.86s ease-out forwards;
+}
+
+#slotArea.jackpot-state .symbol.win-symbol.pulsing .symbol-img {
+    animation: centerSymbolJackpotPulse 0.92s ease-in-out infinite;
+}
+
+@keyframes centerSymbolPop {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(255, 230, 120, 0));
+    }
+
+    50% {
+        transform: scale(1.22);
+        filter: drop-shadow(0 0 18px rgba(255, 225, 92, 0.95));
+    }
+
+    100% {
+        transform: scale(1.06);
+        filter: drop-shadow(0 0 10px rgba(255, 225, 92, 0.8));
+    }
+}
+
+@keyframes centerSymbolJackpotPop {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 0 rgba(255, 230, 120, 0));
+    }
+
+    46% {
+        transform: scale(1.36);
+        filter: drop-shadow(0 0 28px rgba(255, 235, 110, 1));
+    }
+
+    100% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 18px rgba(255, 235, 110, 0.9));
+    }
+}
+
+@keyframes centerSymbolJackpotPulse {
+    0% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 14px rgba(255, 230, 90, 0.75));
+    }
+
+    50% {
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 28px rgba(255, 235, 110, 1));
+    }
+
+    100% {
+        transform: scale(1.08);
+        filter: drop-shadow(0 0 14px rgba(255, 230, 90, 0.75));
+    }
+}
+

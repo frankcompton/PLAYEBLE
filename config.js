@@ -5,6 +5,7 @@ export const gameConfig = {
 
     balance: {
         startValue: 0,
+        startFreeSpins: 0,
         currency: "A$"
     },
 
@@ -339,6 +340,8 @@ export const gameConfig = {
             type: "lose",
             spinSfx: "spin1",
             balance: 0,
+            bonusCash: 0,
+            bonusFreeSpins: 0,
             balanceDelay: 0,
             balanceCountDuration: 0,
             reels: [
@@ -352,15 +355,17 @@ export const gameConfig = {
             type: "smallWin",
             spinSfx: "spin2",
             balance: 350,
+            bonusCash: 450,
+            bonusFreeSpins: 50,
             balanceDelay: 300,
             balanceCountDuration: 500,
 
-            winReels: [0],
-            winSymbols: ["coin:100.00", "coin:250.00"],
+            winReels: [0, 1, 2],
+            winSymbols: ["coin"],
 
             reels: [
-                "coin:100.00", "s3", "s1",
-                "coin:250.00", "s1", "s1",
+                "s4", "s3", "s1",
+                "coin", "coin", "coin",
                 "s7", "s2", "s1"
             ]
         },
@@ -369,6 +374,8 @@ export const gameConfig = {
             type: "jackpot",
             spinSfx: "spin3",
             balance: 10350,
+            bonusCash: 1500,
+            bonusFreeSpins: 250,
             balanceDelay: 500,
             balanceCountDuration: 2000,
 
@@ -383,8 +390,8 @@ export const gameConfig = {
             winSymbols: ["bonus"],
             reels: [
                 "s6", "s2", "s1",
-                "s4", "bonus", "s3",
-                "bonus", "s7", "bonus"
+                "bonus", "bonus", "bonus",
+                "s4", "s7", "s3"
             ]
         }
     ],

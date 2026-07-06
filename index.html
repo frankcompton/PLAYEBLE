@@ -21,13 +21,21 @@
     <div id="gameScaler">
         <div id="game">
             <div id="topWinPanel">
-                <div id="topWinPanelArt" aria-hidden="true"></div>
-                <span id="topWinPanelText">0 A$</span>
+                <img id="gameLogo" alt="Coin Strike">
+                <div id="welcomeBonusTitle">YOUR WELCOME BONUS</div>
+                <div id="bonusBoxes">
+                    <div class="bonusBox">
+                        <div class="bonusLabel">CASH BONUS</div>
+                        <div id="topWinPanelText" class="bonusValue">A$0</div>
+                    </div>
+                    <div class="bonusBox">
+                        <div class="bonusLabel">FREE SPINS</div>
+                        <div id="freeSpinsValue" class="bonusValue">0</div>
+                    </div>
+                </div>
             </div>
 
             <div id="slotStage">
-                <img id="gameLogo" alt="Coin Strike">
-
                 <div id="slotArea">
                     <div id="reels">
                         <div>
@@ -45,9 +53,20 @@
                 </div>
             </div>
 
-            <button id="spinBtn">
-                <span id="spinText">SPIN</span>
-            </button>
+            <div id="bottomControls">
+                <button id="spinBtn">
+                    <span id="spinText">UNLOCK BONUS</span>
+                </button>
+
+                <div id="postSpinActions" aria-hidden="true">
+                    <button id="getItOnBtn" type="button">
+                        <span>GET IT ON</span>
+                    </button>
+                    <button id="tryAgainBtn" type="button">
+                        <span>TRY AGAIN</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

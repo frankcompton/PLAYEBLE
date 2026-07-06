@@ -14,6 +14,10 @@ const ctaCountdownLabel = document.getElementById("ctaCountdownLabel");
 const ctaCountdownTime = document.getElementById("ctaCountdownTime");
 const overlay = document.getElementById("overlay");
 const topWinPanelText = document.getElementById("topWinPanelText");
+const freeSpinsValue = document.getElementById("freeSpinsValue");
+const postSpinActions = document.getElementById("postSpinActions");
+const getItOnBtn = document.getElementById("getItOnBtn");
+const tryAgainBtn = document.getElementById("tryAgainBtn");
 const reelElements = Array.from(document.querySelectorAll("#reels > div"));
 const reelStrips = Array.from(document.querySelectorAll("#reels > div > div"));
 const gameScaler = document.getElementById("gameScaler");
@@ -26,6 +30,7 @@ let spinCount = 0;
 let isSpinning = false;
 let isCtaActive = false;
 let currentBalance = 0;
+let currentFreeSpins = 0;
 let currentSpinSfx = null;
 let ctaCountdownIntervalId = null;
 let ctaCountdownEndTime = 0;
@@ -147,10 +152,14 @@ const reelSymbols = gameConfig.reelSymbols;
 function lockSpinButton() {
     isSpinning = true;
     addClasses(spinBtn, "disabled");
+    addClasses(tryAgainBtn, "disabled");
 }
 
 function unlockSpinButton() {
     removeClasses(spinBtn, "disabled");
+    if (spinCount > 0 && spinCount < outcomes.length) {
+        removeClasses(tryAgainBtn, "disabled");
+    }
     isSpinning = false;
 }
 function showJackpot(outcome) {
@@ -163,10 +172,10 @@ function showJackpot(outcome) {
         window.playJackpotFx();
     }
 
+    addClasses(slotArea, "jackpot-state", "jackpot-flash");
+
     highlightWinReels(outcome);
     highlightWinSymbols(outcome);
-
-    addClasses(slotArea, "jackpot-state", "jackpot-flash");
 
     setTimeout(() => {
         removeClasses(slotArea, "jackpot-flash");
@@ -188,6 +197,7 @@ function getRandomNumber(min, max) {
 
 function startSpin() {
     removeClasses(spinBtn, "spin-idle");
+    removeClasses(tryAgainBtn, "disabled");
     spinCount = spinCount + 1;
 
     if (spinCount > outcomes.length) {
@@ -222,6 +232,24 @@ function goToOffer() {
     window.location.href = offerUrl;
 }
 
+function showInitialSpinButton() {
+    setDisplayed(spinBtn, "flex");
+    removeClasses(postSpinActions, "show");
+    postSpinActions.setAttribute("aria-hidden", "true");
+}
+
+function showPostSpinActions() {
+    setDisplayed(spinBtn, "none");
+    addClasses(postSpinActions, "show");
+    postSpinActions.setAttribute("aria-hidden", "false");
+
+    if (spinCount >= outcomes.length) {
+        addClasses(tryAgainBtn, "disabled");
+    } else {
+        removeClasses(tryAgainBtn, "disabled");
+    }
+}
+
 function startSpinVisuals() {
     lockSpinButton();
 
@@ -241,6 +269,14 @@ function showSmallWin(outcome) {
         window.playSmallWinFx(winReels);
     }
 
+    if (gameConfig.effects.slotWinGlowEnabled) {
+        addClasses(slotArea, "small-win");
+
+        setTimeout(() => {
+            removeClasses(slotArea, "small-win");
+        }, SMALL_WIN_GLOW_DURATION);
+    }
+
     for (let i = 0; i < winReels.length; i++) {
         const reelIndex = winReels[i];
 
@@ -249,16 +285,10 @@ function showSmallWin(outcome) {
         }
     }
 
+    highlightWinSymbols(outcome);
+
     if (gameConfig.effects.coinParticlesEnabled) {
         spawnCoinParticlesFromWinCoins(outcome);
-    }
-
-    if (gameConfig.effects.slotWinGlowEnabled) {
-        addClasses(slotArea, "small-win");
-
-        setTimeout(() => {
-            removeClasses(slotArea, "small-win");
-        }, SMALL_WIN_GLOW_DURATION);
     }
 }
 
@@ -274,12 +304,14 @@ function handleOutcomeType(outcome) {
         }
 
         unlockSpinButton();
+        showPostSpinActions();
         return;
     }
 
     if (outcome.type === "smallWin") {
         showSmallWin(outcome);
         unlockSpinButton();
+        showPostSpinActions();
         return;
     }
 
@@ -309,6 +341,7 @@ function showOverlayAndPopup() {
 }
 function showCta() {
     addClasses(spinBtn, "cta-ready");
+    addClasses(tryAgainBtn, "disabled");
     spinBtn.blur();
 
     if (window.playCtaFx) {
@@ -375,6 +408,8 @@ function initGame() {
     applyGameTheme();
 
     setBalance(gameConfig.balance.startValue);
+    setFreeSpins(gameConfig.balance.startFreeSpins || 0);
+    showInitialSpinButton();
     clearWinSymbols();
 
     unlockSpinButton();
@@ -382,13 +417,13 @@ function initGame() {
 
 
 function isCoinSymbol(symbol) {
-    return symbol.startsWith("coin:");
+    return symbol === "coin" || symbol.startsWith("coin:");
 }
 function getCoinValue(symbol) {
     return symbol.replace("coin:", "");
 }
 function createSymbolHtml(symbol) {
-    if (isCoinSymbol(symbol)) {
+    if (symbol.startsWith("coin:")) {
         return `
             <div class="symbol coin-symbol" data-symbol="${symbol}">
                 <img class="symbol-img" src="${symbolMap.coin}" alt="">
@@ -747,12 +782,31 @@ function formatBalance(value) {
 
     return `${formattedValue} ${gameConfig.balance.currency}`;
 }
+function formatCashBonus(value) {
+    const roundedValue = Math.floor(value);
+    const formattedValue = roundedValue.toLocaleString("en-US").replace(/,/g, ",");
+
+    return `${gameConfig.balance.currency}${formattedValue}`;
+}
+function getOutcomeCashBonus(outcome) {
+    return outcome.bonusCash ?? outcome.balance ?? 0;
+}
+function getOutcomeFreeSpins(outcome) {
+    return outcome.bonusFreeSpins ?? currentFreeSpins;
+}
+function setFreeSpins(value) {
+    currentFreeSpins = Math.floor(value);
+
+    if (freeSpinsValue) {
+        freeSpinsValue.textContent = String(currentFreeSpins);
+    }
+}
 function setBalance(value) {
     currentBalance = value;
     if (topWinPanelText) {
-        topWinPanelText.textContent = formatBalance(currentBalance);
+        topWinPanelText.textContent = formatCashBonus(currentBalance);
     } else {
-        topWinPanel.textContent = formatBalance(currentBalance);
+        topWinPanel.textContent = formatCashBonus(currentBalance);
     }
 }
 function animateBalanceTo(targetBalance, duration, outcome) {
@@ -782,9 +836,9 @@ function animateBalanceTo(targetBalance, duration, outcome) {
         const currentValue = startBalance + difference * progress;
 
         if (topWinPanelText) {
-            topWinPanelText.textContent = formatBalance(currentValue);
+            topWinPanelText.textContent = formatCashBonus(currentValue);
         } else {
-            topWinPanel.textContent = formatBalance(currentValue);
+            topWinPanel.textContent = formatCashBonus(currentValue);
         }
 
         if (difference !== 0 && window.playBalanceSparkFx) {
@@ -952,7 +1006,8 @@ function finishOutcome(outcome) {
     const delay = outcome.balanceDelay || 0;
 
     setTimeout(() => {
-        animateBalanceTo(outcome.balance, outcome.balanceCountDuration, outcome);
+        animateBalanceTo(getOutcomeCashBonus(outcome), outcome.balanceCountDuration, outcome);
+        setFreeSpins(getOutcomeFreeSpins(outcome));
     }, delay);
 }
 function highlightWinSymbols(outcome) {
@@ -1330,6 +1385,8 @@ window.addEventListener("pointerdown", unlockSfxOnFirstInteraction, {
     passive: true
 });
 spinBtn.addEventListener("click", handleSpinButtonClick);
+tryAgainBtn.addEventListener("click", handleSpinButtonClick);
+getItOnBtn.addEventListener("click", goToOffer);
 ctaButton.addEventListener("click", goToOffer);
 
 window.addEventListener("resize", () => {
