@@ -412,7 +412,7 @@ export const gameConfig = {
     },
 
     offer: {
-        url: "https://google.com"
+        url: ""
     }
 };
 
