@@ -5,6 +5,7 @@ const spinBtn = document.getElementById("spinBtn");
 const topWinPanel = document.getElementById("topWinPanel");
 const topWinPanelArt = document.getElementById("topWinPanelArt");
 const slotArea = document.getElementById("slotArea");
+const slotFrameImg = document.getElementById("slotFrameImg");
 const gameLogo = document.getElementById("gameLogo");
 const ctaPopup = document.getElementById("ctaPopup");
 const ctaTitle = document.getElementById("ctaTitle");
@@ -64,6 +65,8 @@ const WIN_SYMBOL_POP_DURATION = gameConfig.timings.winSymbolPopDuration;
 const JACKPOT_FLASH_DURATION = gameConfig.timings.jackpotFlashDuration;
 const CTA_AMOUNT_FIT_MAX_FONT_SIZE = 200;
 const CTA_AMOUNT_FIT_MIN_FONT_SIZE = 18;
+let billRainActive = false;
+let billRainTimeoutIds = [];
 
 function addClasses(element, ...classNames) {
     element.classList.add(...classNames);
@@ -181,6 +184,8 @@ function showJackpot(outcome) {
 
     highlightWinReels(outcome);
     highlightWinSymbols(outcome);
+    spawnBillsFromWinSymbols(outcome, gameConfig.effects.billsPerJackpotSymbol || 5);
+    startBillRain();
 
     setTimeout(() => {
         removeClasses(slotArea, "jackpot-flash");
@@ -326,6 +331,8 @@ function showSmallWin(outcome) {
     if (gameConfig.effects.coinParticlesEnabled) {
         spawnCoinParticlesFromWinCoins(outcome);
     }
+
+    spawnBillsFromWinSymbols(outcome, gameConfig.effects.billsPerSmallWinSymbol || 1);
 }
 
 function handleOutcomeType(outcome) {
@@ -424,6 +431,8 @@ function initGame() {
     if (window.stopCoinRain) {
         window.stopCoinRain();
     }
+
+    stopBillRain();
 
     if (window.stopAnticipationFx) {
         window.stopAnticipationFx();
@@ -783,6 +792,183 @@ function spawnCoinParticlesFromWinCoins(outcome) {
             spawnCoinParticlesFromPoint(startX, startY, particlesPerCoin);
         }
     }
+}
+
+function getBillTargetPoint() {
+    const targetElement = topWinPanelText || topWinPanel;
+
+    if (!targetElement) {
+        return {
+            x: window.innerWidth / 2,
+            y: 90
+        };
+    }
+
+    const rect = targetElement.getBoundingClientRect();
+
+    return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+    };
+}
+
+function createBillParticle(startX, startY, index = 0) {
+    const effects = gameConfig.effects;
+
+    if (!effects.billParticlesEnabled) {
+        return;
+    }
+
+    const target = getBillTargetPoint();
+    const bill = document.createElement("div");
+    const width = effects.billParticleWidth || 72;
+    const duration = effects.billParticleDuration || 980;
+    const arcY = -getRandomNumber(70, 125);
+    const startRotation = 0;
+    const midRotation = 0;
+    const endRotation = 0;
+
+    addClasses(bill, "bill-particle");
+
+    bill.style.setProperty("--bill-width", `${width}px`);
+    bill.style.setProperty("--bill-duration", `${duration}ms`);
+    bill.style.setProperty("--bill-start-x", `${startX}px`);
+    bill.style.setProperty("--bill-start-y", `${startY}px`);
+    bill.style.setProperty("--bill-mid-x", `${startX + (target.x - startX) * 0.35}px`);
+    bill.style.setProperty("--bill-mid-y", `${startY + (target.y - startY) * 0.35 + arcY}px`);
+    bill.style.setProperty("--bill-end-x", `${target.x}px`);
+    bill.style.setProperty("--bill-end-y", `${target.y}px`);
+    bill.style.setProperty("--bill-pop-scale", effects.billParticlePopScale || 1.08);
+    bill.style.setProperty("--bill-target-scale", effects.billParticleTargetScale || 0.24);
+    bill.style.setProperty("--bill-rotation-start", `${startRotation}deg`);
+    bill.style.setProperty("--bill-rotation-mid", `${midRotation}deg`);
+    bill.style.setProperty("--bill-rotation-end", `${endRotation}deg`);
+
+    document.body.appendChild(bill);
+
+    setTimeout(() => {
+        bill.remove();
+    }, duration + 80);
+}
+
+function spawnBillsFromPoint(startX, startY, count) {
+    const stagger = gameConfig.effects.billParticleStagger || 95;
+
+    for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+            createBillParticle(startX, startY, i);
+        }, i * stagger);
+    }
+}
+
+function spawnBillsFromWinSymbols(outcome, countPerSymbol) {
+    if (!gameConfig.effects.billParticlesEnabled || countPerSymbol <= 0) {
+        return;
+    }
+
+    const winSymbols = new Set(outcome.winSymbols || []);
+
+    for (let reelIndex = 0; reelIndex < reelStrips.length; reelIndex++) {
+        const symbolsInReel = reelStrips[reelIndex].children;
+
+        for (let rowIndex = 0; rowIndex < VISIBLE_ROWS; rowIndex++) {
+            const symbolElement = symbolsInReel[rowIndex];
+
+            if (!symbolElement) {
+                continue;
+            }
+
+            const symbolName = symbolElement.dataset.symbol;
+
+            if (!winSymbols.has(symbolName)) {
+                continue;
+            }
+
+            const rect = symbolElement.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            spawnBillsFromPoint(startX, startY, countPerSymbol);
+        }
+    }
+}
+
+function createBillRainDrop(index = 0) {
+    const effects = gameConfig.effects;
+    const bill = document.createElement("div");
+    const width = getRandomNumber(effects.billRainWidthMin || 54, effects.billRainWidthMax || 86);
+    const startX = getRandomNumber(-20, window.innerWidth - width + 20);
+    const startY = -getRandomNumber(60, 180);
+    const endY = window.innerHeight + getRandomNumber(90, 220);
+    const driftX = getRandomNumber(-85, 85);
+    const duration = getRandomNumber(
+        (effects.billRainDuration || 3200) * 0.85,
+        (effects.billRainDuration || 3200) * 1.25
+    );
+    const rotationStart = getRandomNumber(-35, 35);
+    const rotationEnd = rotationStart + getRandomNumber(210, 420) * (Math.random() > 0.5 ? 1 : -1);
+
+    addClasses(bill, "bill-rain");
+
+    bill.style.setProperty("--bill-rain-width", `${width}px`);
+    bill.style.setProperty("--bill-rain-start-x", `${startX}px`);
+    bill.style.setProperty("--bill-rain-start-y", `${startY}px`);
+    bill.style.setProperty("--bill-rain-end-x", `${startX - driftX * 0.35}px`);
+    bill.style.setProperty("--bill-rain-end-y", `${endY}px`);
+    bill.style.setProperty("--bill-rain-duration", `${duration}ms`);
+    bill.style.setProperty("--bill-rain-rotation-start", `${rotationStart}deg`);
+    bill.style.setProperty("--bill-rain-rotation-end", `${rotationEnd}deg`);
+
+    document.body.appendChild(bill);
+
+    setTimeout(() => {
+        bill.remove();
+    }, duration + 120);
+}
+
+function startBillRain() {
+    const effects = gameConfig.effects;
+
+    if (!effects.billRainEnabled || billRainActive) {
+        return;
+    }
+
+    billRainActive = true;
+    billRainTimeoutIds = [];
+
+    const count = effects.billRainCount || 24;
+    const stagger = effects.billRainStagger || 110;
+
+    for (let i = 0; i < count; i++) {
+        const timeoutId = setTimeout(() => {
+            if (billRainActive) {
+                createBillRainDrop(i);
+            }
+        }, i * stagger);
+
+        billRainTimeoutIds.push(timeoutId);
+    }
+
+    const stopTimeoutId = setTimeout(() => {
+        billRainActive = false;
+        billRainTimeoutIds = [];
+    }, count * stagger + (effects.billRainDuration || 3200));
+
+    billRainTimeoutIds.push(stopTimeoutId);
+}
+
+function stopBillRain() {
+    billRainActive = false;
+
+    for (let i = 0; i < billRainTimeoutIds.length; i++) {
+        clearTimeout(billRainTimeoutIds[i]);
+    }
+
+    billRainTimeoutIds = [];
+
+    document.querySelectorAll(".bill-rain").forEach((bill) => {
+        bill.remove();
+    });
 }
 
 function highlightWinReels(outcome) {
@@ -1177,6 +1363,24 @@ function applyGameAssets() {
     document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
     gameLogo.src = gameConfig.assets.logo;
 
+    if (gameConfig.assets.bill) {
+        document.documentElement.style.setProperty(
+            "--bill-image",
+            `url("${gameConfig.assets.bill}")`
+        );
+    }
+
+    if (gameConfig.assets.slotFrame) {
+        document.documentElement.style.setProperty(
+            "--slot-frame-image",
+            `url("${gameConfig.assets.slotFrame}")`
+        );
+        if (slotFrameImg) {
+            slotFrameImg.src = gameConfig.assets.slotFrame;
+        }
+        addClasses(slotArea, "asset-slot-frame");
+    }
+
     if (gameConfig.assets.ui.balancePanel) {
         document.documentElement.style.setProperty(
             "--balance-panel-image",
@@ -1198,6 +1402,11 @@ function applyGameTheme() {
     slotArea.style.borderColor = theme.slotBorder;
     slotArea.style.boxShadow = `0 0 24px ${theme.slotGlow}`;
 
+    if (gameConfig.assets.slotFrame) {
+        slotArea.style.borderColor = "transparent";
+        slotArea.style.boxShadow = "inset 0 0 18px rgba(255, 216, 74, 0.12)";
+    }
+
     ctaPopup.style.background = `linear-gradient(${theme.ctaPopupTop}, ${theme.ctaPopupBottom})`;
     ctaPopup.style.borderColor = theme.ctaPopupBorder;
 
@@ -1206,7 +1415,7 @@ function applyGameTheme() {
 
     for (let i = 0; i < reelElements.length; i++) {
         reelElements[i].style.background = `linear-gradient(${theme.reelTop}, ${theme.reelBottom})`;
-        reelElements[i].style.borderColor = theme.reelBorder;
+        reelElements[i].style.borderColor = gameConfig.assets.slotFrame ? "transparent" : theme.reelBorder;
     }
     topWinPanel.style.color = theme.balanceText;
 }
@@ -1284,6 +1493,8 @@ function getPreloadImageSources() {
 
     sources.push(gameConfig.assets.background);
     sources.push(gameConfig.assets.logo);
+    sources.push(gameConfig.assets.bill);
+    sources.push(gameConfig.assets.slotFrame);
 
     if (gameConfig.assets.ui) {
         for (const uiAssetName in gameConfig.assets.ui) {

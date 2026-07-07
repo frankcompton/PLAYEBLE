@@ -68,6 +68,8 @@ export const gameConfig = {
     assets: {
         background: "assets/background.webp",
         logo: "assets/logo.webp",
+        bill: "assets/bill.webp",
+        slotFrame: "assets/slot-frame.webp",
 
         ui: {
             balancePanel: "assets/ui/balance-panel.webp",
@@ -127,7 +129,7 @@ export const gameConfig = {
     },
 
     effects: {
-        coinParticlesEnabled: true,
+        coinParticlesEnabled: false,
         coinParticleCount: 16,
         coinParticleDuration: 1300,
 
@@ -160,6 +162,22 @@ export const gameConfig = {
 
         balancePopEnabled: true,
         balancePopDuration: 620,
+
+        billParticlesEnabled: true,
+        billRainEnabled: true,
+        billAsset: "assets/bill.webp",
+        billsPerSmallWinSymbol: 1,
+        billsPerJackpotSymbol: 5,
+        billParticleDuration: 980,
+        billParticleStagger: 95,
+        billParticleWidth: 72,
+        billParticlePopScale: 1.08,
+        billParticleTargetScale: 0.24,
+        billRainCount: 24,
+        billRainDuration: 3200,
+        billRainWidthMin: 54,
+        billRainWidthMax: 86,
+        billRainStagger: 110,
     },
 
     sfx: {
@@ -286,8 +304,8 @@ export const gameConfig = {
         jackpotShockwaveEnabled: true,
         jackpotShockwaveDuration: 680,
 
-        coinRainEnabled: true,
-        coinRainText: "€",
+        coinRainEnabled: false,
+        coinRainText: "\u20ac",
         coinRainInterval: 11,
         coinRainMinSize: 12,
         coinRainMaxSize: 24,
@@ -355,7 +373,7 @@ export const gameConfig = {
             type: "smallWin",
             spinSfx: "spin2",
             balance: 350,
-            bonusCash: 450,
+            bonusCash: 300,
             bonusFreeSpins: 50,
             balanceDelay: 300,
             balanceCountDuration: 500,
@@ -405,7 +423,7 @@ export const gameConfig = {
 
     cta: {
         title: "BONUS FREIGESCHALTET!",
-        amount: "100% BIS ZU 2500 €<br>+ 250 FREISPIELE",
+        amount: "100% BIS ZU 2500\u20ac<br>+ 250 FREISPIELE",
         buttonText: "BONUS HOLEN",
         countdownLabel: "ANGEBOT ENDET IN",
         countdownMinutes: 30
