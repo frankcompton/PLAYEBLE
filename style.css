@@ -1227,11 +1227,13 @@ body {
 
     display: inline-block;
     padding: 5px 18px 6px;
+    border: 2px solid rgba(255, 207, 74, 0.96);
     border-radius: 8px;
     background:
         linear-gradient(180deg, rgba(99, 17, 8, 0.92), rgba(30, 5, 2, 0.86));
     box-shadow:
-        0 0 14px rgba(255, 74, 16, 0.44),
+        0 0 11px rgba(255, 88, 18, 0.7),
+        0 0 18px rgba(255, 204, 64, 0.34),
         inset 0 0 10px rgba(0, 0, 0, 0.58);
 
     text-shadow:
