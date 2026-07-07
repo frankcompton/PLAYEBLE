@@ -1410,7 +1410,7 @@ body {
 #postSpinActions {
     width: 100%;
     display: none;
-    grid-template-columns: 170px;
+    grid-template-columns: 213px;
     justify-content: center;
     align-items: center;
 }
@@ -1420,7 +1420,7 @@ body {
 }
 
 #tryAgainBtn {
-    height: 56px;
+    height: 70px;
     border-radius: 8px;
     cursor: pointer;
 
@@ -1567,7 +1567,7 @@ body {
         linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 40%),
         linear-gradient(180deg, #485a98 0%, #1a244a 100%);
     color: #fff1a8;
-    font-size: 22px;
+    font-size: 28px;
     text-shadow:
         0 2px 0 rgba(70, 32, 0, 0.9),
         0 0 10px rgba(255, 240, 160, 0.65);
