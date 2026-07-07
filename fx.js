@@ -178,7 +178,7 @@ function warmupFx() {
         minSize: 2,
         maxSize: 3,
         gravity: 0.04,
-        colors: [0xffe27a, 0x7df6ff]
+        colors: [0xffe27a, 0xff8a16]
     });
 
     spawnShockwaveRing(centerPoint.x, centerPoint.y, {
@@ -453,7 +453,7 @@ function createIdleSparks() {
     const fx = gameConfig.fx;
     const sceneWidth = fxViewportWidth;
     const sceneHeight = fxViewportHeight;
-    const colors = [0xffd45a, 0x7df6ff, 0xfff2b0, 0xffb400];
+    const colors = [0xffd45a, 0xff8a16, 0xfff2b0, 0xffb400];
 
     for (let i = 0; i < fx.idleSparkCount; i++) {
         const spark = new PIXI.Graphics();
@@ -950,7 +950,7 @@ function spawnSparkBurst(x, y, options) {
     }
 
     const count = options.count || 12;
-    const colors = options.colors || [0xffe27a, 0xffc83d, 0x7df6ff, 0xfff2b0];
+    const colors = options.colors || [0xffe27a, 0xffc83d, 0xff8a16, 0xfff2b0];
     const spreadX = options.spreadX || 90;
     const launchUpMin = options.launchUpMin || 20;
     const launchUpMax = options.launchUpMax || 70;
@@ -1037,11 +1037,11 @@ function playSpinStartFx() {
         minSize: 2,
         maxSize: 4,
         gravity: 0.05,
-        colors: [0x7df6ff, 0x4cc8ff, 0xffffff, 0xffe27a]
+        colors: [0xffe27a, 0xff8a16, 0xffffff, 0xffb400]
     });
 
     spawnShockwaveRing(centerX, centerY, {
-        color: 0x4cc8ff,
+        color: 0xff8a16,
         duration: fx.spinStartDuration,
         radius: 22,
         width: 2,
@@ -1068,7 +1068,7 @@ function playReelStopFx(reelIndex) {
         minSize: 2,
         maxSize: 5,
         gravity: 0.1,
-        colors: [0xffe27a, 0x7df6ff, 0xffffff]
+        colors: [0xffe27a, 0xff8a16, 0xffffff]
     });
 
     if (reelIndex === 2) {
@@ -1204,7 +1204,7 @@ function playCtaFx() {
 
     const fx = gameConfig.fx;
     const sceneWidth = fxViewportWidth;
-    const colors = [0xffd45a, 0xff6b6b, 0x7df6ff, 0xff85c8, 0x8bff7a, 0xffffff];
+    const colors = [0xffd45a, 0xff6b6b, 0xff8a16, 0xffc045, 0xfff2b0, 0xffffff];
 
     for (let i = 0; i < fx.ctaConfettiCount; i++) {
         const piece = new PIXI.Graphics();

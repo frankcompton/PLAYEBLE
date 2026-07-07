@@ -24,31 +24,31 @@ export const gameConfig = {
     // =========================
 
     theme: {
-        bodyOverlayTop: "rgba(0, 0, 0, 0.10)",
-        bodyOverlayBottom: "rgba(0, 0, 0, 0.20)",
+        bodyOverlayTop: "rgba(28, 0, 0, 0.12)",
+        bodyOverlayBottom: "rgba(0, 0, 0, 0.32)",
 
-        balancePanelTop: "#5d6bff",
-        balancePanelMiddle: "#2738e8",
-        balancePanelBottom: "#0d1684",
-        balancePanelBorder: "#ffd92f",
-        balanceText: "#ffd92f",
-        balanceGlow: "rgba(255, 220, 120, 0.45)",
+        balancePanelTop: "#3b1110",
+        balancePanelMiddle: "#1c0909",
+        balancePanelBottom: "#090202",
+        balancePanelBorder: "#ffcf4a",
+        balanceText: "#fff0a2",
+        balanceGlow: "rgba(255, 110, 24, 0.62)",
 
-        slotBackground: "rgba(5, 5, 45, 0.92)",
-        slotBorder: "#4cc8ff",
-        slotGlow: "rgba(0, 180, 255, 0.7)",
+        slotBackground: "rgba(12, 4, 8, 0.94)",
+        slotBorder: "#ff9b22",
+        slotGlow: "rgba(255, 74, 16, 0.72)",
 
-        reelTop: "#101049",
-        reelBottom: "#05051f",
-        reelBorder: "rgba(120, 220, 255, 0.45)",
+        reelTop: "#160511",
+        reelBottom: "#050106",
+        reelBorder: "rgba(255, 170, 48, 0.42)",
 
-        ctaPopupTop: "#233dff",
-        ctaPopupBottom: "#07075f",
-        ctaPopupBorder: "gold",
+        ctaPopupTop: "#5c0e08",
+        ctaPopupBottom: "#160303",
+        ctaPopupBorder: "#ffcf4a",
 
-        ctaButtonTop: "#ffe978",
-        ctaButtonBottom: "#e19a00",
-        ctaButtonText: "#5c2200"
+        ctaButtonTop: "#fff06f",
+        ctaButtonBottom: "#ff8a00",
+        ctaButtonText: "#4f1200"
     },
 
     fonts: {
@@ -156,7 +156,7 @@ export const gameConfig = {
         slotShineEnabled: false,
         slotShineDuration: 900,
 
-        reelWinGlowEnabled: true,
+        reelWinGlowEnabled: false,
         anticipationGlowEnabled: true,
         bonusPulseEnabled: true,
 
@@ -234,7 +234,7 @@ export const gameConfig = {
         ambientGlowEnabled: true,
         ambientGlowY: 340,
         ambientGlowRadius: 210,
-        ambientGlowColor: 0x4cc8ff,
+        ambientGlowColor: 0xff8a16,
         ambientGlowAlpha: 0.08,
         ambientGlowPulse: 0.06,
 
