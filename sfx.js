@@ -8,6 +8,10 @@ const activeBufferNodes = {};
 let sfxUnlocked = false;
 let sfxInitialized = false;
 let audioContext = null;
+let musicPlayer = null;
+let musicShouldPlay = false;
+let musicDucked = false;
+let musicFadeTimer = null;
 
 function initSfx() {
     if (sfxInitialized) {
@@ -36,6 +40,15 @@ function initSfx() {
 
         sfxPlayers[soundName] = audio;
     }
+
+    const musicConfig = gameConfig.sfx.music;
+
+    if (musicConfig && musicConfig.src) {
+        musicPlayer = new Audio(musicConfig.src);
+        musicPlayer.preload = "auto";
+        musicPlayer.loop = true;
+        musicPlayer.volume = getMusicVolume(false);
+    }
 }
 
 function preloadSfx() {
@@ -48,6 +61,10 @@ function preloadSfx() {
             preloadAudio(sfxPlayers[soundName]),
             decodeSoundBuffer(soundName)
         );
+    }
+
+    if (musicPlayer) {
+        loadPromises.push(preloadAudio(musicPlayer));
     }
 
     return Promise.all(loadPromises);
@@ -84,6 +101,16 @@ function getSfxVolume(soundName) {
     const soundVolume = gameConfig.sfx.sounds[soundName]?.volume ?? 1;
 
     return masterVolume * soundVolume;
+}
+
+function getMusicVolume(isDucked = musicDucked) {
+    const masterVolume = gameConfig.sfx.masterVolume ?? 1;
+    const musicConfig = gameConfig.sfx.music || {};
+    const musicVolume = isDucked
+        ? musicConfig.duckVolume ?? 0.08
+        : musicConfig.volume ?? 0.18;
+
+    return masterVolume * musicVolume;
 }
 
 function getAudioContext() {
@@ -124,6 +151,77 @@ function unlockSfx() {
 
     sfxUnlocked = true;
     void resumeAudioContext();
+
+    if (musicShouldPlay) {
+        startMusic();
+    }
+}
+
+function fadeMusicTo(targetVolume, duration = 0) {
+    if (!musicPlayer) {
+        return;
+    }
+
+    if (musicFadeTimer) {
+        clearInterval(musicFadeTimer);
+        musicFadeTimer = null;
+    }
+
+    if (duration <= 0) {
+        musicPlayer.volume = targetVolume;
+        return;
+    }
+
+    const startVolume = musicPlayer.volume;
+    const stepTime = 16;
+    const steps = Math.max(1, Math.round(duration / stepTime));
+    let currentStep = 0;
+
+    musicFadeTimer = setInterval(() => {
+        currentStep++;
+
+        const progress = currentStep / steps;
+        musicPlayer.volume = startVolume + (targetVolume - startVolume) * progress;
+
+        if (currentStep >= steps) {
+            clearInterval(musicFadeTimer);
+            musicFadeTimer = null;
+            musicPlayer.volume = targetVolume;
+        }
+    }, stepTime);
+}
+
+function startMusic() {
+    if (!gameConfig.sfx || !gameConfig.sfx.enabled) {
+        return;
+    }
+
+    initSfx();
+    musicShouldPlay = true;
+
+    if (!musicPlayer) {
+        return;
+    }
+
+    musicPlayer.loop = true;
+    fadeMusicTo(getMusicVolume(), 0);
+
+    const playPromise = musicPlayer.play();
+
+    if (playPromise) {
+        playPromise.catch(() => {
+            // Mobile browsers allow music only after the first user gesture.
+        });
+    }
+}
+
+function setMusicDucked(isDucked, fadeDuration = gameConfig.sfx.music?.fadeDuration ?? 450) {
+    if (!musicPlayer) {
+        return;
+    }
+
+    musicDucked = isDucked;
+    fadeMusicTo(getMusicVolume(isDucked), fadeDuration);
 }
 
 function primeSfx(soundNames = []) {
@@ -307,6 +405,8 @@ window.unlockSfx = unlockSfx;
 window.primeSfx = primeSfx;
 window.playSfx = playSfx;
 window.stopSfx = stopSfx;
+window.startMusic = startMusic;
+window.setMusicDucked = setMusicDucked;
 
 initSfx();
 

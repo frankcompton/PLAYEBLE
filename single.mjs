@@ -126,7 +126,7 @@ function sanitizePixiSource(source) {
 }
 
 async function inlineAssetReferences(source) {
-    const assetPattern = /assets\/[A-Za-z0-9_./-]+\.(?:webp|png|jpe?g|gif|svg|mp3|wav|ogg|ttf|woff2?|js)/g;
+    const assetPattern = /assets\/[A-Za-z0-9_./-]+\.(?:webp|png|jpe?g|gif|svg|mp3|wav|ogg|ttf|woff2?|js)/gi;
     const matches = Array.from(new Set(source.match(assetPattern) || []));
     let output = source;
 

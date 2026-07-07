@@ -184,6 +184,13 @@ export const gameConfig = {
         enabled: true,
         masterVolume: 0.7,
 
+        music: {
+            src: "assets/music.ogg",
+            volume: 0.18,
+            duckVolume: 0.08,
+            fadeDuration: 450
+        },
+
         sounds: {
             spin1: {
                 src: "assets/sfx/spin-1.mp3",

@@ -172,6 +172,10 @@ function unlockSpinButton() {
 }
 function showJackpot(outcome) {
 
+    if (window.setMusicDucked) {
+        window.setMusicDucked(true);
+    }
+
     if (window.playSfx) {
         window.playSfx("jackpot");
     }
@@ -383,6 +387,10 @@ function showOverlayAndPopup() {
     });
 }
 function showCta() {
+    if (window.setMusicDucked) {
+        window.setMusicDucked(false);
+    }
+
     addClasses(spinBtn, "cta-ready");
     addClasses(tryAgainBtn, "disabled");
     spinBtn.blur();
@@ -401,6 +409,10 @@ function showCta() {
     unlockSpinButton();
 }
 function handleSpinButtonClick() {
+    if (window.startMusic) {
+        window.startMusic();
+    }
+
     if (isCtaActive === true) {
         goToOffer();
         return;
@@ -1654,6 +1666,10 @@ function getPreloadSoundSources() {
         }
     }
 
+    if (gameConfig.sfx.music && gameConfig.sfx.music.src) {
+        sources.push(gameConfig.sfx.music.src);
+    }
+
     return [...new Set(sources.filter(Boolean))];
 }
 
@@ -1680,6 +1696,10 @@ async function bootstrap() {
 
     initGame();
     hidePreloader();
+
+    if (window.startMusic) {
+        window.startMusic();
+    }
 }
 
 function unlockSfxOnFirstInteraction() {
