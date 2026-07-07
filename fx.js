@@ -119,16 +119,29 @@ async function preloadFx() {
 
     try {
         warmupFx();
-        await waitForNextFrame();
-        await waitForNextFrame();
-        await waitForNextFrame();
-        await waitForNextFrame();
+        await warmupFxFrames(22);
     } finally {
         clearFxWarmupArtifacts();
         resetWarmupFxState();
 
         canvas.style.visibility = previousVisibility;
         canvas.style.opacity = previousOpacity;
+    }
+}
+
+async function warmupFxFrames(frameCount) {
+    if (!fxApp) {
+        return;
+    }
+
+    for (let i = 0; i < frameCount; i++) {
+        updateFx();
+
+        if (fxApp.renderer) {
+            fxApp.renderer.render(fxApp.stage);
+        }
+
+        await waitForNextFrame();
     }
 }
 
