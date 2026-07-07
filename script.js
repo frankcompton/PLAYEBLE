@@ -851,6 +851,40 @@ function createBillParticle(startX, startY, index = 0) {
     }, duration + 80);
 }
 
+function warmupBillParticles() {
+    if (!gameConfig.effects.billParticlesEnabled) {
+        return;
+    }
+
+    const bill = document.createElement("div");
+    const width = gameConfig.effects.billParticleWidth || 72;
+
+    addClasses(bill, "bill-particle");
+
+    bill.style.visibility = "hidden";
+    bill.style.opacity = "0";
+    bill.style.animation = "none";
+    bill.style.setProperty("--bill-width", `${width}px`);
+    bill.style.setProperty("--bill-duration", "1ms");
+    bill.style.setProperty("--bill-start-x", "-120px");
+    bill.style.setProperty("--bill-start-y", "-120px");
+    bill.style.setProperty("--bill-mid-x", "-120px");
+    bill.style.setProperty("--bill-mid-y", "-120px");
+    bill.style.setProperty("--bill-end-x", "-120px");
+    bill.style.setProperty("--bill-end-y", "-120px");
+    bill.style.setProperty("--bill-pop-scale", gameConfig.effects.billParticlePopScale || 1.08);
+    bill.style.setProperty("--bill-target-scale", gameConfig.effects.billParticleTargetScale || 0.24);
+    bill.style.setProperty("--bill-rotation-start", "0deg");
+    bill.style.setProperty("--bill-rotation-mid", "0deg");
+    bill.style.setProperty("--bill-rotation-end", "0deg");
+
+    document.body.appendChild(bill);
+    bill.getBoundingClientRect();
+    requestAnimationFrame(() => {
+        bill.remove();
+    });
+}
+
 function spawnBillsFromPoint(startX, startY, count) {
     const stagger = gameConfig.effects.billParticleStagger || 95;
 
@@ -1641,6 +1675,8 @@ async function bootstrap() {
     if (window.preloadFx) {
         await window.preloadFx();
     }
+
+    warmupBillParticles();
 
     initGame();
     hidePreloader();

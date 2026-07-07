@@ -164,7 +164,7 @@ export const gameConfig = {
         balancePopDuration: 620,
 
         billParticlesEnabled: true,
-        billRainEnabled: true,
+        billRainEnabled: false,
         billAsset: "assets/bill.webp",
         billsPerSmallWinSymbol: 1,
         billsPerJackpotSymbol: 5,
@@ -304,7 +304,7 @@ export const gameConfig = {
         jackpotShockwaveEnabled: true,
         jackpotShockwaveDuration: 680,
 
-        coinRainEnabled: false,
+        coinRainEnabled: true,
         coinRainText: "\u20ac",
         coinRainInterval: 11,
         coinRainMinSize: 12,
