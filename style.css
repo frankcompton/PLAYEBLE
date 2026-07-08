@@ -1628,7 +1628,7 @@ body {
     position: absolute;
     left: 3px;
     right: 3px;
-    top: calc(50% - var(--symbol-height) / 2 - 2px);
+    top: calc(50% - var(--symbol-height) / 2 - 6px);
     height: calc(var(--symbol-height) + 4px);
 
     border: 2px solid rgba(255, 232, 146, 0.96);
