@@ -1215,7 +1215,7 @@ body {
 }
 
 #welcomeBonusTitle {
-    color: #fff8ff;
+    color: #ffe53b;
     font-family: "Arial Black", Impact, sans-serif;
     font-size: 25px;
     font-weight: 900;
@@ -1227,19 +1227,19 @@ body {
 
     display: inline-block;
     padding: 5px 18px 6px;
-    border: 2px solid rgba(255, 255, 255, 0.96);
+    border: 2px solid rgba(255, 234, 85, 0.94);
     border-radius: 8px;
     background:
-        linear-gradient(180deg, rgba(255, 115, 207, 0.92), rgba(128, 48, 210, 0.86));
+        linear-gradient(180deg, rgba(8, 62, 136, 0.94), rgba(2, 16, 52, 0.9));
     box-shadow:
-        0 0 13px rgba(255, 76, 205, 0.78),
-        0 0 22px rgba(79, 220, 255, 0.34),
-        inset 0 0 12px rgba(255, 255, 255, 0.18);
+        0 0 10px rgba(4, 39, 126, 0.55),
+        0 0 15px rgba(255, 224, 70, 0.22),
+        inset 0 0 12px rgba(255, 255, 255, 0.12);
 
     text-shadow:
-        0 2px 0 #8b237a,
-        0 0 8px rgba(255, 68, 196, 0.82),
-        0 0 14px rgba(255, 255, 255, 0.62);
+        0 2px 0 #5f1800,
+        0 0 6px rgba(255, 235, 92, 0.58),
+        0 0 10px rgba(255, 224, 70, 0.42);
 }
 
 #bonusBoxes {
@@ -1257,7 +1257,7 @@ body {
 }
 
 .bonusLabel {
-    color: #fff8ff;
+    color: #ffe85a;
     font-family: "Arial Black", Impact, sans-serif;
     font-size: 12px;
     line-height: 1;
@@ -1269,15 +1269,15 @@ body {
     padding: 2px 8px 3px;
     border-radius: 5px;
     background:
-        linear-gradient(180deg, rgba(255, 124, 210, 0.9), rgba(130, 45, 202, 0.82));
+        linear-gradient(180deg, rgba(8, 62, 136, 0.92), rgba(2, 16, 52, 0.86));
     box-shadow:
-        0 0 8px rgba(255, 86, 205, 0.42),
-        inset 0 0 7px rgba(255, 255, 255, 0.16);
+        0 0 6px rgba(255, 224, 70, 0.28),
+        inset 0 0 7px rgba(255, 255, 255, 0.12);
 
     text-shadow:
-        0 2px 0 rgba(118, 30, 130, 0.95),
-        0 0 7px rgba(255, 55, 196, 0.72),
-        0 0 10px rgba(255, 255, 255, 0.55);
+        0 2px 0 rgba(88, 22, 0, 0.95),
+        0 0 6px rgba(255, 235, 92, 0.52),
+        0 0 8px rgba(255, 224, 70, 0.34);
 }
 
 .bonusValue {
@@ -1288,13 +1288,13 @@ body {
     justify-content: center;
     align-items: center;
 
-    border: 2px solid rgba(255, 255, 255, 0.96);
+    border: 2px solid rgba(255, 234, 85, 0.94);
     border-radius: 7px;
 
     background:
-        linear-gradient(180deg, rgba(255, 115, 207, 0.92), rgba(128, 48, 210, 0.86));
+        linear-gradient(180deg, rgba(8, 62, 136, 0.94), rgba(2, 16, 52, 0.9));
 
-    color: #fff8ff;
+    color: #ffe53b;
     font-family: "Arial Black", Impact, sans-serif;
     font-size: 26px;
     font-weight: 900;
@@ -1303,13 +1303,13 @@ body {
     white-space: nowrap;
 
     box-shadow:
-        0 0 11px rgba(255, 76, 205, 0.78),
-        0 0 18px rgba(74, 224, 255, 0.34),
-        inset 0 0 12px rgba(74, 11, 95, 0.42);
+        0 0 9px rgba(4, 39, 126, 0.52),
+        0 0 13px rgba(255, 224, 70, 0.22),
+        inset 0 0 12px rgba(0, 6, 30, 0.5);
 
     text-shadow:
-        0 2px 0 rgba(119, 25, 135, 0.92),
-        0 0 9px rgba(255, 255, 255, 0.82);
+        0 2px 0 rgba(91, 20, 0, 0.92),
+        0 0 7px rgba(255, 235, 92, 0.58);
 }
 
 #slotStage {
@@ -1329,7 +1329,7 @@ body {
     border-width: 3px;
 
     box-shadow:
-        0 0 20px rgba(255, 74, 205, 0.72),
+        0 0 20px rgba(4, 30, 116, 0.72),
         inset 0 0 18px rgba(255, 255, 255, 0.16);
 }
 
@@ -1362,12 +1362,12 @@ body {
 
 #slotArea.asset-slot-frame #reels {
     position: absolute;
-    inset: 4px;
+    inset: 2px;
     width: auto;
     height: auto;
 
     background:
-        linear-gradient(180deg, rgba(126, 37, 116, 0.76) 0%, rgba(62, 20, 88, 0.76) 100%);
+        linear-gradient(180deg, rgba(0, 92, 136, 1) 0%, rgb(0, 28, 65) 100%);
     box-shadow: none;
     clip-path: polygon(
         4% 0,
@@ -1419,28 +1419,28 @@ body {
     width: 260px;
     height: 56px;
 
-    border: 2px solid rgba(255, 255, 255, 0.92);
+    border: 2px solid rgba(255, 234, 85, 0.9);
     border-radius: 8px;
 
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 42%),
-        linear-gradient(180deg, #ff79cf 0%, #8b3fe3 100%);
+        linear-gradient(180deg, #073c84 0%, #020d2b 100%);
 
     box-shadow:
-        0 0 16px rgba(255, 77, 205, 0.7),
-        0 0 24px rgba(76, 225, 255, 0.34),
-        inset 0 0 12px rgba(75, 16, 118, 0.42);
+        0 0 12px rgba(4, 35, 126, 0.52),
+        0 0 16px rgba(255, 224, 70, 0.22),
+        inset 0 0 12px rgba(0, 6, 30, 0.52);
 }
 
 #spinText {
-    color: #fff8ff;
+    color: #ffe53b;
     font-family: "Arial Black", Impact, sans-serif;
     font-size: 23px;
     line-height: 1;
     text-shadow:
-        0 2px 0 rgba(128, 26, 142, 0.92),
-        0 0 10px rgba(255, 255, 255, 0.75),
-        0 0 16px rgba(255, 78, 207, 0.58);
+        0 2px 0 rgba(89, 20, 0, 0.92),
+        0 0 8px rgba(255, 235, 92, 0.54),
+        0 0 12px rgba(255, 224, 70, 0.34);
 }
 
 #postSpinActions {
@@ -1598,15 +1598,15 @@ body {
     display: grid;
     place-items: center;
     padding: 0;
-    border: 2px solid rgba(255, 255, 255, 0.92);
+    border: 2px solid rgba(255, 234, 85, 0.9);
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 42%),
-        linear-gradient(180deg, #ff79cf 0%, #8b3fe3 100%);
-    color: #fff8ff;
+        linear-gradient(180deg, #073c84 0%, #020d2b 100%);
+    color: #ffe53b;
     font-size: 28px;
     text-shadow:
-        0 2px 0 rgba(126, 28, 142, 0.92),
-        0 0 10px rgba(255, 255, 255, 0.72);
+        0 2px 0 rgba(89, 20, 0, 0.92),
+        0 0 8px rgba(255, 235, 92, 0.52);
 }
 
 #tryAgainBtn span {
@@ -1756,26 +1756,26 @@ body {
     border-radius: 8px;
 
     background:
-        radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 42%),
-        radial-gradient(circle at 50% 58%, rgba(255, 103, 213, 0.42) 0%, rgba(102, 50, 216, 0) 58%),
-        linear-gradient(180deg, #ff8bdc 0%, #8d4be8 100%);
+        radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 42%),
+        radial-gradient(circle at 50% 62%, rgba(255, 224, 70, 0.24) 0%, rgba(0, 80, 168, 0) 60%),
+        linear-gradient(180deg, #073c84 0%, #020d2b 100%);
 
     box-shadow:
-        0 0 38px rgba(255, 82, 205, 0.5),
-        0 0 52px rgba(74, 220, 255, 0.34),
+        0 0 28px rgba(4, 36, 126, 0.42),
+        0 0 36px rgba(255, 224, 70, 0.2),
         inset 0 0 42px rgba(255, 255, 255, 0.18);
 }
 
 #ctaTitle {
-    color: #fff8ff;
+    color: #ffe53b;
     font-size: 25px;
     line-height: 1.08;
     text-align: center;
 
     text-shadow:
-        0 2px 0 rgba(127, 29, 145, 0.9),
-        0 0 12px rgba(255, 72, 205, 0.78),
-        0 0 20px rgba(255, 255, 255, 0.62);
+        0 2px 0 rgba(89, 20, 0, 0.9),
+        0 0 9px rgba(255, 235, 92, 0.54),
+        0 0 14px rgba(255, 224, 70, 0.34);
 }
 
 #ctaAmount {
@@ -1790,8 +1790,8 @@ body {
 
     text-shadow:
         0 0 12px rgba(255, 255, 255, 0.95),
-        0 0 26px rgba(255, 68, 205, 0.82),
-        0 3px 0 rgba(116, 24, 145, 0.72);
+        0 0 18px rgba(255, 224, 70, 0.52),
+        0 3px 0 rgba(0, 20, 72, 0.72);
 }
 
 #ctaSubtitle {
@@ -1818,16 +1818,16 @@ body {
 
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 38%),
-        linear-gradient(180deg, #fff86f 0%, #ff5fcb 100%);
+        linear-gradient(180deg, #fff36d 0%, #ffc400 100%);
 
-    color: #80135f;
+    color: #111111;
     font-size: 25px;
     line-height: 1;
 
     box-shadow:
-        0 6px 0 #a92b87,
-        0 0 18px rgba(255, 255, 255, 0.62),
-        0 0 28px rgba(255, 82, 205, 0.48);
+        0 6px 0 #b87800,
+        0 0 12px rgba(255, 224, 70, 0.38),
+        0 0 20px rgba(4, 36, 126, 0.26);
 
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
