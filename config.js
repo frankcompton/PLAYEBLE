@@ -24,27 +24,27 @@ export const gameConfig = {
     // =========================
 
     theme: {
-        bodyOverlayTop: "rgba(0, 210, 255, 0.08)",
-        bodyOverlayBottom: "rgba(0, 29, 66, 0.28)",
+        bodyOverlayTop: "rgba(160, 0, 20, 0.1)",
+        bodyOverlayBottom: "rgba(20, 0, 0, 0.32)",
 
-        balancePanelTop: "#073c84",
-        balancePanelMiddle: "#06245c",
-        balancePanelBottom: "#020d2b",
-        balancePanelBorder: "#ffea55",
+        balancePanelTop: "#b51222",
+        balancePanelMiddle: "#6e0712",
+        balancePanelBottom: "#240003",
+        balancePanelBorder: "#ffd84a",
         balanceText: "#ffe53b",
-        balanceGlow: "rgba(255, 224, 70, 0.42)",
+        balanceGlow: "rgba(255, 204, 44, 0.5)",
 
-        slotBackground: "rgba(0, 62, 100, 0.72)",
-        slotBorder: "#06357a",
-        slotGlow: "rgba(7, 38, 120, 0.72)",
+        slotBackground: "rgba(34, 0, 10, 0.86)",
+        slotBorder: "#ffd84a",
+        slotGlow: "rgba(255, 204, 44, 0.62)",
 
-        reelTop: "#075f94",
-        reelBottom: "#01335d",
+        reelTop: "#5d0711",
+        reelBottom: "#180004",
         reelBorder: "rgba(255, 255, 255, 0)",
 
-        ctaPopupTop: "#073c84",
-        ctaPopupBottom: "#020d2b",
-        ctaPopupBorder: "#ffea55",
+        ctaPopupTop: "#a60f1e",
+        ctaPopupBottom: "#260003",
+        ctaPopupBorder: "#ffd84a",
 
         ctaButtonTop: "#fff36d",
         ctaButtonBottom: "#ffc400",
