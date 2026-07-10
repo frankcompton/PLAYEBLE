@@ -24,31 +24,31 @@ export const gameConfig = {
     // =========================
 
     theme: {
-        bodyOverlayTop: "rgba(28, 0, 0, 0.12)",
-        bodyOverlayBottom: "rgba(0, 0, 0, 0.32)",
+        bodyOverlayTop: "rgba(58, 20, 0, 0.08)",
+        bodyOverlayBottom: "rgba(0, 0, 0, 0.36)",
 
-        balancePanelTop: "#3b1110",
-        balancePanelMiddle: "#1c0909",
-        balancePanelBottom: "#090202",
-        balancePanelBorder: "#ffcf4a",
+        balancePanelTop: "#583014",
+        balancePanelMiddle: "#2f1508",
+        balancePanelBottom: "#0d0502",
+        balancePanelBorder: "#d9aa42",
         balanceText: "#fff0a2",
-        balanceGlow: "rgba(255, 110, 24, 0.62)",
+        balanceGlow: "rgba(224, 146, 42, 0.5)",
 
-        slotBackground: "rgba(12, 4, 8, 0.94)",
-        slotBorder: "#ff9b22",
-        slotGlow: "rgba(255, 74, 16, 0.72)",
+        slotBackground: "rgba(24, 10, 4, 0.9)",
+        slotBorder: "#d9aa42",
+        slotGlow: "rgba(214, 139, 36, 0.54)",
 
-        reelTop: "#160511",
-        reelBottom: "#050106",
-        reelBorder: "rgba(255, 170, 48, 0.42)",
+        reelTop: "#241008",
+        reelBottom: "#090302",
+        reelBorder: "rgba(217, 170, 66, 0.36)",
 
-        ctaPopupTop: "#5c0e08",
-        ctaPopupBottom: "#160303",
-        ctaPopupBorder: "#ffcf4a",
+        ctaPopupTop: "#583014",
+        ctaPopupBottom: "#120602",
+        ctaPopupBorder: "#d9aa42",
 
-        ctaButtonTop: "#fff06f",
-        ctaButtonBottom: "#ff8a00",
-        ctaButtonText: "#4f1200"
+        ctaButtonTop: "#ffe46a",
+        ctaButtonBottom: "#b96a12",
+        ctaButtonText: "#281006"
     },
 
     fonts: {
