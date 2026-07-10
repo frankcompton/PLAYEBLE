@@ -753,11 +753,12 @@ body {
 }
 
 #reels>div.anticipation-reel {
-    border-color: #ffd84a;
+    border-color: transparent;
 }
 
 #reels>div.anticipation-reel::after {
-    animation: anticipationPulse 0.45s ease-in-out infinite;
+    animation: none;
+    opacity: 0;
 }
 
 @keyframes anticipationPulse {
@@ -1177,6 +1178,44 @@ body {
     justify-content: flex-start;
     gap: 13px;
     padding: 18px 20px 16px;
+    isolation: isolate;
+}
+
+#sceneZeus {
+    position: absolute;
+    right: -10px;
+    top: 152px;
+    width: 275px;
+    height: auto;
+
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+
+    filter:
+        drop-shadow(0 0 16px rgba(255, 226, 100, 0.2))
+        drop-shadow(0 10px 18px rgba(0, 0, 0, 0.26));
+
+    animation: zeusFloat 3.4s ease-in-out infinite;
+    will-change: transform;
+}
+
+#topWinPanel,
+#slotStage,
+#bottomControls {
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes zeusFloat {
+    0%,
+    100% {
+        transform: translate3d(0, -7px, 0);
+    }
+
+    50% {
+        transform: translate3d(0, 7px, 0);
+    }
 }
 
 #topWinPanel {
@@ -1227,13 +1266,14 @@ body {
 
     display: inline-block;
     padding: 5px 18px 6px;
-    border: 2px solid rgba(217, 170, 66, 0.96);
+    border: 2px solid rgba(243, 201, 75, 0.96);
     border-radius: 8px;
     background:
-        linear-gradient(180deg, rgba(90, 48, 20, 0.92), rgba(18, 7, 3, 0.88));
+        linear-gradient(180deg, rgba(106, 56, 109, 0.94), rgba(71, 35, 73, 0.93) 45%, rgba(35, 16, 38, 0.94));
     box-shadow:
-        0 0 12px rgba(225, 142, 38, 0.42),
-        inset 0 0 12px rgba(0, 0, 0, 0.62);
+        0 0 14px rgba(71, 35, 73, 0.46),
+        0 0 18px rgba(243, 201, 75, 0.22),
+        inset 0 0 12px rgba(255, 255, 255, 0.16);
 
     text-shadow:
         0 2px 0 #4b0b00,
@@ -1268,10 +1308,10 @@ body {
     padding: 2px 8px 3px;
     border-radius: 5px;
     background:
-        linear-gradient(180deg, rgba(78, 39, 16, 0.9), rgba(16, 6, 3, 0.82));
+        linear-gradient(180deg, rgba(106, 56, 109, 0.9), rgba(71, 35, 73, 0.88) 46%, rgba(35, 16, 38, 0.9));
     box-shadow:
-        0 0 8px rgba(225, 142, 38, 0.32),
-        inset 0 0 7px rgba(0, 0, 0, 0.48);
+        0 0 8px rgba(71, 35, 73, 0.38),
+        inset 0 0 7px rgba(255, 255, 255, 0.12);
 
     text-shadow:
         0 2px 0 rgba(57, 8, 0, 0.95),
@@ -1287,11 +1327,11 @@ body {
     justify-content: center;
     align-items: center;
 
-    border: 2px solid rgba(217, 170, 66, 0.96);
+    border: 2px solid rgba(243, 201, 75, 0.96);
     border-radius: 7px;
 
     background:
-        linear-gradient(180deg, rgba(90, 48, 20, 0.92), rgba(18, 7, 3, 0.88));
+        linear-gradient(180deg, rgba(106, 56, 109, 0.94), rgba(71, 35, 73, 0.93) 45%, rgba(35, 16, 38, 0.94));
 
     color: #fff3b0;
     font-family: "Arial Black", Impact, sans-serif;
@@ -1302,9 +1342,9 @@ body {
     white-space: nowrap;
 
     box-shadow:
-        0 0 10px rgba(225, 142, 38, 0.52),
-        0 0 16px rgba(255, 206, 91, 0.24),
-        inset 0 0 12px rgba(0, 0, 0, 0.78);
+        0 0 12px rgba(71, 35, 73, 0.48),
+        0 0 16px rgba(243, 201, 75, 0.24),
+        inset 0 0 12px rgba(8, 14, 72, 0.56);
 
     text-shadow:
         0 2px 0 rgba(92, 18, 0, 0.92),
@@ -1328,12 +1368,13 @@ body {
     border-width: 3px;
 
     box-shadow:
-        0 0 20px rgba(214, 139, 36, 0.56),
-        inset 0 0 18px rgba(255, 199, 64, 0.12);
+        0 0 20px rgba(71, 35, 73, 0.5),
+        inset 0 0 18px rgba(255, 255, 255, 0.14);
 }
 
 #slotArea.asset-slot-frame {
     --symbol-height: 108px;
+    --reels-bg-inset: 1px;
 
     background: transparent !important;
     border-color: transparent !important;
@@ -1342,12 +1383,33 @@ body {
     box-shadow: none !important;
 }
 
+#slotArea.asset-slot-frame::after {
+    content: "";
+    position: absolute;
+    inset: var(--reels-bg-inset);
+
+    background: linear-gradient(180deg, rgba(71, 35, 73, 0.78) 0%, rgba(35, 16, 38, 0.86) 100%);
+    clip-path: polygon(
+        4% 0,
+        94.2% 0,
+        100% 4%,
+        100% 94.2%,
+        94.2% 100%,
+        4% 100%,
+        0 94.2%,
+        0 4%
+    );
+
+    pointer-events: none;
+    z-index: 0;
+}
+
 #slotFrameImg {
     position: absolute;
-    inset: -1px;
+    inset: -10px;
 
-    width: calc(100% + 2px);
-    height: calc(100% + 2px);
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
     object-fit: fill;
 
     pointer-events: none;
@@ -1359,14 +1421,34 @@ body {
     display: block;
 }
 
+#slotArea.asset-slot-frame.anticipation-slot #slotFrameImg {
+    animation: slotFrameAnticipationGlow 0.9s ease-in-out infinite;
+}
+
+@keyframes slotFrameAnticipationGlow {
+    0%,
+    100% {
+        filter:
+            drop-shadow(0 0 4px rgba(255, 224, 92, 0.42))
+            drop-shadow(0 0 8px rgba(255, 224, 92, 0.2));
+    }
+
+    50% {
+        filter:
+            drop-shadow(0 0 8px rgba(255, 235, 120, 0.78))
+            drop-shadow(0 0 18px rgba(255, 224, 92, 0.42));
+    }
+}
+
 #slotArea.asset-slot-frame #reels {
     position: absolute;
     inset: 4px;
     width: auto;
     height: auto;
 
-    background: linear-gradient(180deg, rgba(46, 22, 10, 0.68) 0%, rgba(12, 4, 2, 0.72) 100%);
+    background: transparent;
     box-shadow: none;
+    z-index: 1;
     clip-path: polygon(
         4% 0,
         94.2% 0,
@@ -1380,8 +1462,11 @@ body {
 }
 
 #slotArea.asset-slot-frame #reels>div {
+    position: relative;
+    z-index: 1;
+
     border-color: transparent !important;
-    background: linear-gradient(180deg, rgba(40, 18, 8, 0.46) 0%, rgba(8, 2, 1, 0.5) 100%) !important;
+    background: transparent !important;
 }
 
 #slotArea.asset-slot-frame #reels>div::after {
@@ -1415,17 +1500,17 @@ body {
     width: 260px;
     height: 56px;
 
-    border: 2px solid rgba(217, 170, 66, 0.9);
+    border: 2px solid rgba(243, 201, 75, 0.92);
     border-radius: 8px;
 
     background:
-        linear-gradient(180deg, rgba(255, 220, 116, 0.3), rgba(255, 255, 255, 0) 42%),
-        linear-gradient(180deg, #6a3b19 0%, #180704 100%);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0) 42%),
+        linear-gradient(180deg, #6a386d 0%, #472349 46%, #231026 100%);
 
     box-shadow:
-        0 0 14px rgba(225, 142, 38, 0.54),
-        0 0 22px rgba(255, 210, 80, 0.26),
-        inset 0 0 12px rgba(0, 0, 0, 0.62);
+        0 0 14px rgba(71, 35, 73, 0.48),
+        0 0 20px rgba(243, 201, 75, 0.24),
+        inset 0 0 12px rgba(9, 16, 78, 0.5);
 }
 
 #spinText {
@@ -1594,10 +1679,10 @@ body {
     display: grid;
     place-items: center;
     padding: 0;
-    border: 2px solid rgba(217, 170, 66, 0.9);
+    border: 2px solid rgba(243, 201, 75, 0.92);
     background:
-        linear-gradient(180deg, rgba(255, 220, 116, 0.28), rgba(255, 255, 255, 0) 42%),
-        linear-gradient(180deg, #6a3b19 0%, #180704 100%);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 42%),
+        linear-gradient(180deg, #6a386d 0%, #472349 46%, #231026 100%);
     color: #fff2a5;
     font-size: 28px;
     text-shadow:
@@ -1752,13 +1837,14 @@ body {
     border-radius: 8px;
 
     background:
-        radial-gradient(circle at 50% 42%, rgba(224, 146, 42, 0.28) 0%, rgba(78, 36, 0, 0) 58%),
-        linear-gradient(180deg, #593014 0%, #160703 100%);
+        radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0) 46%),
+        radial-gradient(circle at 50% 55%, rgba(106, 56, 109, 0.34) 0%, rgba(71, 35, 73, 0) 62%),
+        linear-gradient(180deg, #6a386d 0%, #231026 100%);
 
     box-shadow:
-        0 0 34px rgba(224, 146, 42, 0.34),
-        0 0 52px rgba(0, 0, 0, 0.56),
-        inset 0 0 42px rgba(0, 0, 0, 0.34);
+        0 0 34px rgba(71, 35, 73, 0.48),
+        0 0 44px rgba(243, 201, 75, 0.18),
+        inset 0 0 42px rgba(255, 255, 255, 0.12);
 }
 
 #ctaTitle {
@@ -1769,7 +1855,7 @@ body {
 
     text-shadow:
         0 2px 0 rgba(105, 19, 0, 0.9),
-        0 0 10px rgba(224, 146, 42, 0.68),
+        0 0 10px rgba(71, 35, 73, 0.62),
         0 0 18px rgba(255, 220, 70, 0.5);
 }
 
@@ -1785,8 +1871,8 @@ body {
 
     text-shadow:
         0 0 12px rgba(255, 230, 108, 0.95),
-        0 0 22px rgba(224, 146, 42, 0.72),
-        0 3px 0 rgba(92, 18, 0, 0.72);
+        0 0 22px rgba(71, 35, 73, 0.66),
+        0 3px 0 rgba(35, 16, 38, 0.72);
 }
 
 #ctaSubtitle {
@@ -1813,21 +1899,105 @@ body {
 
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 38%),
-        linear-gradient(180deg, #ffe46a 0%, #b96a12 100%);
+        linear-gradient(180deg, #fff8d7 0%, #f3c94b 46%, #b88916 100%);
 
     color: #281006;
     font-size: 25px;
     line-height: 1;
 
     box-shadow:
-        0 6px 0 #70400b,
+        0 6px 0 #7b5b0d,
         0 0 16px rgba(255, 210, 70, 0.48),
-        0 0 24px rgba(224, 146, 42, 0.34);
+        0 0 22px rgba(71, 35, 73, 0.38);
 
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 #ctaCountdown {
     display: none;
+}
+
+.lightning-strike {
+    position: fixed;
+    left: var(--lightning-left);
+    top: var(--lightning-top);
+    width: var(--lightning-width);
+    height: auto;
+
+    opacity: 0;
+    pointer-events: none;
+    z-index: 58;
+
+    mix-blend-mode: screen;
+    transform-origin: 50% 0;
+    transform:
+        translate3d(0, 0, 0)
+        rotate(var(--lightning-rotation))
+        scaleX(var(--lightning-flip))
+        scale(0.94);
+
+    filter:
+        drop-shadow(0 0 10px rgba(255, 246, 170, 0.74))
+        drop-shadow(0 0 22px rgba(161, 103, 255, 0.42));
+
+    animation: lightningStrike var(--lightning-duration) steps(1, end) forwards;
+}
+
+.lightning-strike.strong {
+    z-index: 86;
+    filter:
+        drop-shadow(0 0 13px rgba(255, 250, 190, 0.98))
+        drop-shadow(0 0 30px rgba(255, 221, 92, 0.62))
+        drop-shadow(0 0 44px rgba(161, 103, 255, 0.38));
+    animation-name: lightningStrikeStrong;
+}
+
+@keyframes lightningStrike {
+    0%,
+    10%,
+    24%,
+    100% {
+        opacity: 0;
+    }
+
+    4% {
+        opacity: 0.82;
+        transform:
+            translate3d(0, 0, 0)
+            rotate(var(--lightning-rotation))
+            scaleX(var(--lightning-flip))
+            scale(1);
+    }
+
+    16% {
+        opacity: 0.48;
+    }
+}
+
+@keyframes lightningStrikeStrong {
+    0%,
+    8%,
+    20%,
+    36%,
+    100% {
+        opacity: 0;
+    }
+
+    3% {
+        opacity: 1;
+        transform:
+            translate3d(0, 0, 0)
+            rotate(var(--lightning-rotation))
+            scaleX(var(--lightning-flip))
+            scale(1.08);
+    }
+
+    14% {
+        opacity: 0.7;
+    }
+
+    27% {
+        opacity: 0.92;
+    }
 }
 

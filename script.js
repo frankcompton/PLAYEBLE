@@ -7,6 +7,7 @@ const topWinPanelArt = document.getElementById("topWinPanelArt");
 const slotArea = document.getElementById("slotArea");
 const slotFrameImg = document.getElementById("slotFrameImg");
 const gameLogo = document.getElementById("gameLogo");
+const sceneZeus = document.getElementById("sceneZeus");
 const ctaPopup = document.getElementById("ctaPopup");
 const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
@@ -67,6 +68,7 @@ const CTA_AMOUNT_FIT_MAX_FONT_SIZE = 200;
 const CTA_AMOUNT_FIT_MIN_FONT_SIZE = 18;
 let billRainActive = false;
 let billRainTimeoutIds = [];
+let lightningIntervalId = null;
 
 function addClasses(element, ...classNames) {
     element.classList.add(...classNames);
@@ -184,6 +186,8 @@ function showJackpot(outcome) {
         window.playJackpotFx();
     }
 
+    playLightningBurst(gameConfig.effects.lightningWinCount || 5, true);
+
     addClasses(slotArea, "jackpot-state", "jackpot-flash");
 
     highlightWinReels(outcome);
@@ -207,6 +211,78 @@ function getRandomSymbol() {
 
 function getRandomNumber(min, max) {
     return Math.random() * (max - min) + min;
+}
+
+function createLightningStrike(isWinStrike = false) {
+    const effects = gameConfig.effects;
+    const lightningSrc = effects.lightningAsset || gameConfig.assets.lightning;
+
+    if (!effects.lightningEnabled || !lightningSrc) {
+        return;
+    }
+
+    const lightning = document.createElement("img");
+    const minWidth = isWinStrike ? effects.lightningWinWidthMin : effects.lightningAmbientWidthMin;
+    const maxWidth = isWinStrike ? effects.lightningWinWidthMax : effects.lightningAmbientWidthMax;
+    const width = getRandomNumber(minWidth, maxWidth);
+    const left = getRandomNumber(-25, 0);
+    const top = 0;
+    const rotation = getRandomNumber(-16, 16);
+    const flip = Math.random() > 0.5 ? -1 : 1;
+    const duration = effects.lightningDuration || 520;
+
+    lightning.src = lightningSrc;
+    lightning.alt = "";
+    lightning.setAttribute("aria-hidden", "true");
+    addClasses(lightning, "lightning-strike");
+
+    if (isWinStrike) {
+        addClasses(lightning, "strong");
+    }
+
+    lightning.style.setProperty("--lightning-left", `${left}vw`);
+    lightning.style.setProperty("--lightning-top", `${top}px`);
+    lightning.style.setProperty("--lightning-width", `${width}px`);
+    lightning.style.setProperty("--lightning-rotation", `${rotation}deg`);
+    lightning.style.setProperty("--lightning-flip", flip);
+    lightning.style.setProperty("--lightning-duration", `${duration}ms`);
+
+    document.body.appendChild(lightning);
+
+    setTimeout(() => {
+        lightning.remove();
+    }, duration + 120);
+}
+
+function playLightningBurst(count, isWinStrike = false) {
+    const effects = gameConfig.effects;
+
+    if (!effects.lightningEnabled) {
+        return;
+    }
+
+    const strikeCount = count || (isWinStrike ? effects.lightningWinCount : effects.lightningAmbientCount);
+    const stagger = isWinStrike ? effects.lightningWinStagger || 95 : 0;
+
+    for (let i = 0; i < strikeCount; i++) {
+        setTimeout(() => {
+            createLightningStrike(isWinStrike);
+        }, i * stagger);
+    }
+}
+
+function startAmbientLightning() {
+    const effects = gameConfig.effects;
+
+    if (!effects.lightningEnabled || lightningIntervalId !== null) {
+        return;
+    }
+
+    lightningIntervalId = setInterval(() => {
+        if (!isCtaActive) {
+            playLightningBurst(effects.lightningAmbientCount || 1, false);
+        }
+    }, effects.lightningInterval || 3000);
 }
 
 function startSpin() {
@@ -312,6 +388,9 @@ function showSmallWin(outcome) {
     if (window.playSfx) {
         window.playSfx("smallWin");
     }
+
+    playLightningBurst(gameConfig.effects.lightningWinCount || 5, true);
+
     const winReels = outcome.winReels || [];
 
     if (window.playSmallWinFx) {
@@ -621,34 +700,7 @@ function startAnticipationFramePulse(reelIndex) {
     }
 
     anticipationPulseReelIndex = reelIndex;
-
-    const startTime = performance.now();
-
-    const animate = (now) => {
-        if (anticipationPulseReelIndex !== reelIndex || !reel.classList.contains("anticipation-reel")) {
-            reel.style.transform = "";
-            reel.style.borderColor = "";
-            reel.style.boxShadow = "";
-            anticipationFrameId = null;
-            return;
-        }
-
-        const wave = (Math.sin((now - startTime) * 0.01) + 1) * 0.5;
-        const pulseScale = 1 + wave * 0.012;
-        const glowAlpha = 0.45 + wave * 0.4;
-
-        reel.style.transformOrigin = "center center";
-        reel.style.transform = `scale(${pulseScale})`;
-        reel.style.borderColor = `rgba(255, 216, 74, ${0.75 + wave * 0.2})`;
-        reel.style.boxShadow = `
-            0 0 ${18 + wave * 10}px rgba(255, 216, 74, ${glowAlpha}),
-            inset 0 0 18px rgba(255, 216, 74, ${0.35 + wave * 0.1})
-        `;
-
-        anticipationFrameId = requestAnimationFrame(animate);
-    };
-
-    anticipationFrameId = requestAnimationFrame(animate);
+    addClasses(slotArea, "anticipation-slot");
 }
 
 function stopAnticipationFramePulse(reelIndex) {
@@ -662,6 +714,8 @@ function stopAnticipationFramePulse(reelIndex) {
         cancelAnimationFrame(anticipationFrameId);
         anticipationFrameId = null;
     }
+
+    removeClasses(slotArea, "anticipation-slot");
 
     if (reelIndex === undefined) {
         for (let i = 0; i < reelElements.length; i++) {
@@ -1409,6 +1463,10 @@ function applyGameAssets() {
     document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
     gameLogo.src = gameConfig.assets.logo;
 
+    if (sceneZeus && gameConfig.assets.zeus) {
+        sceneZeus.src = gameConfig.assets.zeus;
+    }
+
     if (gameConfig.assets.bill) {
         document.documentElement.style.setProperty(
             "--bill-image",
@@ -1539,7 +1597,9 @@ function getPreloadImageSources() {
 
     sources.push(gameConfig.assets.background);
     sources.push(gameConfig.assets.logo);
+    sources.push(gameConfig.assets.zeus);
     sources.push(gameConfig.assets.bill);
+    sources.push(gameConfig.assets.lightning);
     sources.push(gameConfig.assets.slotFrame);
 
     if (gameConfig.assets.ui) {
@@ -1696,6 +1756,7 @@ async function bootstrap() {
 
     initGame();
     hidePreloader();
+    startAmbientLightning();
 
     if (window.startMusic) {
         window.startMusic();

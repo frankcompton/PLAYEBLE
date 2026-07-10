@@ -24,27 +24,27 @@ export const gameConfig = {
     // =========================
 
     theme: {
-        bodyOverlayTop: "rgba(58, 20, 0, 0.08)",
-        bodyOverlayBottom: "rgba(0, 0, 0, 0.36)",
+        bodyOverlayTop: "rgba(72, 64, 190, 0.08)",
+        bodyOverlayBottom: "rgba(10, 20, 78, 0.24)",
 
-        balancePanelTop: "#583014",
-        balancePanelMiddle: "#2f1508",
-        balancePanelBottom: "#0d0502",
-        balancePanelBorder: "#d9aa42",
+        balancePanelTop: "#6a386d",
+        balancePanelMiddle: "#472349",
+        balancePanelBottom: "#231026",
+        balancePanelBorder: "#f3c94b",
         balanceText: "#fff0a2",
-        balanceGlow: "rgba(224, 146, 42, 0.5)",
+        balanceGlow: "rgba(71, 35, 73, 0.58)",
 
-        slotBackground: "rgba(24, 10, 4, 0.9)",
-        slotBorder: "#d9aa42",
-        slotGlow: "rgba(214, 139, 36, 0.54)",
+        slotBackground: "rgba(71, 35, 73, 0.82)",
+        slotBorder: "#f3c94b",
+        slotGlow: "rgba(71, 35, 73, 0.58)",
 
-        reelTop: "#241008",
-        reelBottom: "#090302",
-        reelBorder: "rgba(217, 170, 66, 0.36)",
+        reelTop: "#5a2c5e",
+        reelBottom: "#231026",
+        reelBorder: "rgba(243, 201, 75, 0.34)",
 
-        ctaPopupTop: "#583014",
-        ctaPopupBottom: "#120602",
-        ctaPopupBorder: "#d9aa42",
+        ctaPopupTop: "#6a386d",
+        ctaPopupBottom: "#231026",
+        ctaPopupBorder: "#f3c94b",
 
         ctaButtonTop: "#ffe46a",
         ctaButtonBottom: "#b96a12",
@@ -69,6 +69,8 @@ export const gameConfig = {
         background: "assets/background.webp",
         logo: "assets/logo.webp",
         bill: "assets/bill.webp",
+        lightning: "assets/lightning.webp",
+        zeus: "assets/zeus.webp",
         slotFrame: "assets/slot-frame.webp",
 
         ui: {
@@ -178,6 +180,18 @@ export const gameConfig = {
         billRainWidthMin: 82,
         billRainWidthMax: 130,
         billRainStagger: 145,
+
+        lightningEnabled: true,
+        lightningAsset: "assets/lightning.webp",
+        lightningInterval: 2000,
+        lightningAmbientCount: 1,
+        lightningWinCount: 5,
+        lightningAmbientWidthMin: 650,
+        lightningAmbientWidthMax: 650,
+        lightningWinWidthMin: 700,
+        lightningWinWidthMax: 800,
+        lightningDuration: 1020,
+        lightningWinStagger: 95,
     },
 
     sfx: {
