@@ -1918,7 +1918,7 @@ body {
 }
 
 .lightning-strike {
-    position: fixed;
+    position: absolute;
     left: var(--lightning-left);
     top: var(--lightning-top);
     width: var(--lightning-width);
@@ -1926,7 +1926,7 @@ body {
 
     opacity: 0;
     pointer-events: none;
-    z-index: 58;
+    z-index: 1;
 
     mix-blend-mode: screen;
     transform-origin: 50% 0;
@@ -1944,7 +1944,7 @@ body {
 }
 
 .lightning-strike.strong {
-    z-index: 86;
+    z-index: 1;
     filter:
         drop-shadow(0 0 13px rgba(255, 250, 190, 0.98))
         drop-shadow(0 0 30px rgba(255, 221, 92, 0.62))

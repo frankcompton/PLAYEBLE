@@ -185,7 +185,7 @@ export const gameConfig = {
         lightningAsset: "assets/lightning.webp",
         lightningInterval: 2000,
         lightningAmbientCount: 1,
-        lightningWinCount: 5,
+        lightningWinCount: 3,
         lightningAmbientWidthMin: 650,
         lightningAmbientWidthMax: 650,
         lightningWinWidthMin: 700,

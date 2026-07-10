@@ -247,7 +247,7 @@ function createLightningStrike(isWinStrike = false) {
     lightning.style.setProperty("--lightning-flip", flip);
     lightning.style.setProperty("--lightning-duration", `${duration}ms`);
 
-    document.body.appendChild(lightning);
+    gameScaler.appendChild(lightning);
 
     setTimeout(() => {
         lightning.remove();
