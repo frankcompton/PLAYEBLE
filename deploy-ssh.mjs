@@ -210,7 +210,8 @@ function run(command, args, options = {}) {
     const result = spawnSync(command, args, {
         encoding: "utf8",
         env: options.env || process.env,
-        stdio: options.interactive ? "inherit" : "pipe"
+        stdio: options.interactive ? "inherit" : "pipe",
+        shell: true
     });
 
     if (!options.silent && !options.interactive) {

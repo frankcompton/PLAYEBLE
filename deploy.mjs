@@ -201,7 +201,8 @@ async function triggerWorkflowWithApi(repoSlug, branchName, authToken) {
 
 function run(command, args, options = {}) {
     const result = spawnSync(command, args, {
-        encoding: "utf8"
+        encoding: "utf8",
+        shell: true
     });
 
     if (!options.silent) {
