@@ -39,7 +39,7 @@ if (!user) {
     fail("Set VPS_USER in .env.local or in the terminal environment.");
 }
 
-run("npm", ["run", "single"]);
+run(npmCommand(), ["run", "single"]);
 renameSync("dist/index.single.html", "dist/index.html");
 
 runRemote(`rm -rf ${quote(remoteTemp)} && mkdir -p ${quote(remoteTemp)}`);
@@ -47,6 +47,10 @@ runUpload();
 runRemote(buildPublishScript());
 
 console.log(url);
+
+function npmCommand() {
+    return process.platform === "win32" ? "npm.cmd" : "npm";
+}
 
 async function resolveProjectName() {
     const argValue = readArgValue("--project") || process.env.PROJECT_NAME;
