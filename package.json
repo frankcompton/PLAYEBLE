@@ -8,7 +8,10 @@
         "build": "node build.mjs",
         "single": "node single.mjs",
         "handoff": "node handoff.mjs",
+        "handoff:deploy": "node handoff-deploy.mjs",
         "deploy": "node deploy.mjs",
+        "deploy:ssh": "node deploy-ssh.mjs",
+        "deploy:project": "node deploy-project.mjs",
         "preview": "vite preview"
     },
     "devDependencies": {

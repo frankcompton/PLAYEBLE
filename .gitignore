@@ -2,6 +2,7 @@
 node_modules
 dist
 handoff
+handoff-deploy
 .vscode/settings.json
 .secrets/
 .env.local
