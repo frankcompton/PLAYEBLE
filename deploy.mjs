@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 const workflow = "vps.yml";
 loadLocalEnv();
 
-const host = process.env.VPS_HOST || "132.243.19.25";
+const host = process.env.VPS_HOST;
 const token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN;
 const dryRun = process.argv.includes("--dry-run");
 const forceTrigger = process.argv.includes("--force-trigger");
@@ -14,12 +14,12 @@ if (!branch) {
     fail("Could not detect the current git branch.");
 }
 
-const url = getDeployUrl(branch);
+const url = host ? getDeployUrl(branch) : "";
 
 if (dryRun) {
     console.log(`Would push branch ${branch} to origin.`);
     console.log(`Would trigger ${workflow} only if push is already up to date.`);
-    console.log(url);
+    printDeployUrl(url);
     process.exit(0);
 }
 
@@ -42,13 +42,23 @@ if (isUpToDate || forceTrigger) {
     console.log(`Pushed branch ${branch}. GitHub Actions will deploy it automatically.`);
 }
 
-console.log(url);
+printDeployUrl(url);
 
 function getDeployUrl(branchName) {
     const safeBranch = toSafeBranch(branchName);
     return branchName === "main"
         ? `http://${host}/`
         : `http://${host}/${safeBranch}/`;
+}
+
+function printDeployUrl(deployUrl) {
+    if (deployUrl) {
+        console.log(deployUrl);
+        return;
+    }
+
+    console.warn("VPS_HOST is not set locally, so deploy cannot print the published URL.");
+    console.warn("Add VPS_HOST to .env.local to match the VPS_HOST GitHub secret.");
 }
 
 function toSafeBranch(branchName) {
