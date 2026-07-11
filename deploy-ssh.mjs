@@ -37,7 +37,7 @@ if (!user) {
     fail("Set VPS_USER in .env.local or in the terminal environment.");
 }
 
-run("npm", ["run", "single"]);
+run(process.execPath, ["single.mjs"]);
 renameSync("dist/index.single.html", "dist/index.html");
 
 runRemote(`rm -rf ${quote(remoteTemp)} && mkdir -p ${quote(remoteTemp)}`);
