@@ -1,6 +1,6 @@
-import { build as esbuildBuild, transform } from "esbuild";
 import { readFile, writeFile, rm, mkdir, cp, readdir } from "node:fs/promises";
 import path from "node:path";
+import { bundleLocalScripts, minifyCss } from "./local-build-utils.mjs";
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, "dist");
@@ -18,27 +18,17 @@ async function main() {
 
     await removeDsStoreFiles(distDir);
 
-    await esbuildBuild({
-        entryPoints: [path.join(rootDir, "main.js")],
-        bundle: true,
-        format: "iife",
-        platform: "browser",
-        target: ["es2018"],
-        minify: true,
-        outfile: path.join(assetsDir, "app.js")
-    });
+    const appJs = await bundleLocalScripts(rootDir);
+    await writeFile(path.join(assetsDir, "app.js"), appJs, "utf8");
 
     const cssSource = await readFile(path.join(rootDir, "style.css"), "utf8");
-    const cssResult = await transform(cssSource, {
-        loader: "css",
-        minify: true
-    });
+    const cssOutput = minifyCss(cssSource);
 
     const htmlSource = await readFile(path.join(rootDir, "index.html"), "utf8");
     const htmlOutput = htmlSource
         .replace(
             /<link rel="stylesheet" href="style\.css">/,
-            `<style>${cssResult.code}</style>`
+            `<style>${cssOutput}</style>`
         )
         .replace(
             /<script type="module" src="main\.js"><\/script>/,
