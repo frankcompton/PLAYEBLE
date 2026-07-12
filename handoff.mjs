@@ -1,6 +1,6 @@
-import { build as esbuildBuild } from "esbuild";
 import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { bundleLocalScripts } from "./local-build-utils.mjs";
 
 const rootDir = process.cwd();
 const handoffDir = path.join(rootDir, "handoff");
@@ -14,6 +14,7 @@ const files = [
     "script.js",
     "main.js",
     "build.mjs",
+    "local-build-utils.mjs",
     "package-lock.json"
 ];
 
@@ -53,6 +54,9 @@ async function main() {
         { recursive: true }
     );
 
+    await copyWindowsNodeRuntime(handoffDir);
+    await writeLaunchers(handoffDir, false);
+
     await writeFile(
         path.join(handoffDir, "package.json"),
         JSON.stringify({
@@ -70,16 +74,11 @@ async function main() {
         "utf8"
     );
 
-    await esbuildBuild({
-        entryPoints: [path.join(rootDir, "main.js")],
-        bundle: true,
-        format: "iife",
-        platform: "browser",
-        target: ["es2018"],
-        minify: false,
-        legalComments: "inline",
-        outfile: path.join(handoffDir, "assets", "app.js")
-    });
+    await writeFile(
+        path.join(handoffDir, "assets", "app.js"),
+        await bundleLocalScripts(rootDir),
+        "utf8"
+    );
 
     const htmlSource = await readFile(path.join(rootDir, "index.html"), "utf8");
     const htmlOutput = htmlSource.replace(
@@ -111,13 +110,26 @@ async function main() {
             "- `package.json`",
             "- `assets/`",
             "- `node_modules/`",
+            "- `tools/node-win-x64/node.exe`",
+            "- `build.cmd`",
+            "- `build.sh`",
             "- `assets/app.js` is a readable, non-minified browser bundle used by `index.html`.",
             "",
             "To rebuild the production `dist/` folder inside this handoff:",
             "",
-            "```bash",
-            "npm run build",
+            "Windows:",
+            "",
+            "```bat",
+            "build.cmd",
             "```",
+            "",
+            "macOS:",
+            "",
+            "```bash",
+            "./build.sh",
+            "```",
+            "",
+            "The launchers use system Node.js first. On Windows, if Node.js is not installed, they use `tools/node-win-x64/node.exe`.",
             "",
             "Deployment, GitHub Actions, Git metadata, local tokens, and build tooling are intentionally excluded."
         ].join("\n"),
@@ -126,6 +138,65 @@ async function main() {
 
     await removeDsStoreFiles(handoffDir);
     console.log(`Created ${path.relative(rootDir, handoffDir)}`);
+}
+
+async function copyWindowsNodeRuntime(targetDir) {
+    if (process.platform !== "win32") {
+        return;
+    }
+
+    await mkdir(path.join(targetDir, "tools", "node-win-x64"), { recursive: true });
+    await cp(process.execPath, path.join(targetDir, "tools", "node-win-x64", "node.exe"));
+}
+
+async function writeLaunchers(targetDir, includeDeploy) {
+    const windowsLines = [
+        "@echo off",
+        "setlocal",
+        "cd /d \"%~dp0\"",
+        "where node >nul 2>nul",
+        "if %ERRORLEVEL% EQU 0 (",
+        "  node build.mjs",
+        "  goto done",
+        ")",
+        "set \"NODE_BIN=%~dp0tools\\node-win-x64\\node.exe\"",
+        "if not exist \"%NODE_BIN%\" (",
+        "  echo Node.js was not found. Install Node.js or keep tools\\node-win-x64\\node.exe in this folder.",
+        "  exit /b 1",
+        ")",
+        "\"%NODE_BIN%\" build.mjs",
+        ":done",
+        "pause"
+    ];
+
+    await writeFile(path.join(targetDir, "build.cmd"), windowsLines.join("\r\n") + "\r\n", "utf8");
+
+    const shellLines = [
+        "#!/usr/bin/env bash",
+        "set -e",
+        "cd \"$(dirname \"$0\")\"",
+        "if ! command -v node >/dev/null 2>&1; then",
+        "  echo \"Node.js was not found. Install Node.js for macOS to build this handoff.\" >&2",
+        "  exit 1",
+        "fi",
+        "node build.mjs"
+    ];
+
+    await writeFile(path.join(targetDir, "build.sh"), shellLines.join("\n") + "\n", "utf8");
+    await chmodIfAvailable(path.join(targetDir, "build.sh"));
+
+    if (!includeDeploy) {
+        return;
+    }
+}
+
+async function chmodIfAvailable(filePath) {
+    try {
+        const { chmod } = await import("node:fs/promises");
+        await chmod(filePath, 0o755);
+    } catch {
+        // Windows can ignore chmod failures for handoff shell helpers.
+    }
 }
 
 main().catch((error) => {
