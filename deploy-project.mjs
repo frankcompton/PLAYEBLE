@@ -1,7 +1,9 @@
 import { spawnSync } from "node:child_process";
-import { chmodSync, existsSync, renameSync, readFileSync } from "node:fs";
+import { existsSync, renameSync, readFileSync } from "node:fs";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
+import { buildSingle } from "./single.mjs";
+import { secureSshKey } from "./ssh-key-permissions.mjs";
 
 loadLocalEnv();
 
@@ -10,7 +12,7 @@ const user = process.env.VPS_USER;
 const password = process.env.VPS_PASSWORD;
 const port = process.env.VPS_PORT || "22";
 const targetRoot = process.env.VPS_TARGET_ROOT || "/var/www/playeble";
-const chown = process.env.VPS_CHOWN ?? "www-data:www-data";
+const chown = process.env.VPS_CHOWN || "";
 const dryRun = process.argv.includes("--dry-run");
 const keyPath = resolveKeyPath();
 const projectName = await resolveProjectName();
@@ -26,7 +28,7 @@ const remoteTemp = `/tmp/playeble-project-${safeProjectName}-${Date.now()}`;
 const remoteTarget = `${targetRoot}/${safeProjectName}`;
 
 if (dryRun) {
-    console.log("Would run npm run single.");
+    console.log("Would build dist/index.single.html.");
     console.log("Would publish dist/index.single.html as dist/index.html.");
     console.log(keyPath ? `Would authenticate with SSH key ${keyPath}.` : "Would authenticate with SSH key agent or password.");
     console.log(`Would upload dist to ${remote}:${remoteTemp}`);
@@ -39,7 +41,7 @@ if (!user) {
     fail("Set VPS_USER in .env.local or in the terminal environment.");
 }
 
-run("npm", ["run", "single"]);
+await buildSingle();
 renameSync("dist/index.single.html", "dist/index.html");
 
 runRemote(`rm -rf ${quote(remoteTemp)} && mkdir -p ${quote(remoteTemp)}`);
@@ -93,10 +95,23 @@ function buildPublishScript() {
         `source_dir=${quote(remoteTemp)}`,
         `target_dir=${quote(remoteTarget)}`,
         'tmp_dir="${target_dir}.tmp"',
-        'rm -rf "$tmp_dir"',
+        'remove_path() {',
+        '  if rm -rf "$1"; then',
+        '    return 0',
+        '  fi',
+        '  if command -v sudo >/dev/null 2>&1 && sudo -n true >/dev/null 2>&1; then',
+        '    sudo -n rm -rf "$1"',
+        '    return 0',
+        '  fi',
+        '  echo "Cannot remove $1. Fix ownership once on the VPS or allow passwordless sudo for deploy cleanup." >&2',
+        '  return 1',
+        '}',
+        'remove_path "$tmp_dir"',
         'mkdir -p "$tmp_dir"',
         'cp -a "$source_dir/." "$tmp_dir/"',
-        'rm -rf "$target_dir"',
+        'find "$tmp_dir" -type d -exec chmod 755 {} +',
+        'find "$tmp_dir" -type f -exec chmod 644 {} +',
+        'remove_path "$target_dir"',
         'mv "$tmp_dir" "$target_dir"',
         'rm -rf "$source_dir"'
     ];
@@ -164,7 +179,7 @@ function resolveKeyPath() {
             fail(`VPS_SSH_KEY_PATH does not exist: ${explicitPath}`);
         }
 
-        chmodSync(explicitPath, 0o600);
+        secureSshKey(explicitPath);
         return explicitPath;
     }
 
@@ -179,7 +194,7 @@ function resolveKeyPath() {
         return "";
     }
 
-    chmodSync(found, 0o600);
+    secureSshKey(found);
     return found;
 }
 
