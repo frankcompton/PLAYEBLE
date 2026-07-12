@@ -1,4 +1,4 @@
-export const gameConfig = {
+﻿export const gameConfig = {
     // =========================
     // 1. BASIC GAME SETTINGS
     // =========================
@@ -27,28 +27,83 @@ export const gameConfig = {
         bodyOverlayTop: "rgba(28, 0, 0, 0.12)",
         bodyOverlayBottom: "rgba(0, 0, 0, 0.32)",
 
+        logoGlow: "rgba(255, 220, 90, 0.42)",
+
+        welcomeTitleText: "#fff2a6",
+        welcomeTitleTop: "rgba(99, 17, 8, 0.92)",
+        welcomeTitleBottom: "rgba(30, 5, 2, 0.86)",
+        welcomeTitleGlow: "rgba(255, 74, 16, 0.44)",
+        welcomeTitleShadow: "#4b0b00",
+
+        bonusLabelText: "#ffe587",
+        bonusLabelTop: "rgba(88, 14, 6, 0.88)",
+        bonusLabelBottom: "rgba(24, 4, 2, 0.8)",
+        bonusLabelGlow: "rgba(255, 76, 16, 0.34)",
+
         balancePanelTop: "#3b1110",
         balancePanelMiddle: "#1c0909",
         balancePanelBottom: "#090202",
         balancePanelBorder: "#ffcf4a",
         balanceText: "#fff0a2",
         balanceGlow: "rgba(255, 110, 24, 0.62)",
+        balanceValueText: "#fff3b0",
+        balanceValueTop: "rgba(99, 17, 8, 0.92)",
+        balanceValueBottom: "rgba(30, 5, 2, 0.86)",
+        balanceValueGlow: "rgba(255, 88, 18, 0.7)",
+        balanceValueGoldGlow: "rgba(255, 204, 64, 0.34)",
 
         slotBackground: "rgba(12, 4, 8, 0.94)",
         slotBorder: "#ff9b22",
         slotGlow: "rgba(255, 74, 16, 0.72)",
+        slotOuterGlow: "rgba(255, 89, 18, 0.75)",
+        slotInnerGlow: "rgba(255, 199, 64, 0.14)",
+        slotReelsTop: "rgba(34, 8, 11, 0.6)",
+        slotReelsBottom: "rgba(8, 1, 3, 0.6)",
+        slotReelTop: "rgba(33, 7, 12, 0.6)",
+        slotReelBottom: "rgba(7, 1, 3, 0.6)",
 
         reelTop: "#160511",
         reelBottom: "#050106",
         reelBorder: "rgba(255, 170, 48, 0.42)",
 
+        buttonBorder: "rgba(255, 235, 150, 0.9)",
+        buttonText: "#fff3ad",
+        buttonTop: "#6a2114",
+        buttonBottom: "#250604",
+        buttonHighlight: "rgba(255, 220, 116, 0.3)",
+        buttonGlow: "rgba(255, 87, 18, 0.65)",
+        buttonGoldGlow: "rgba(255, 210, 80, 0.32)",
+        buttonInnerShadow: "rgba(0, 0, 0, 0.62)",
+
+        tryAgainText: "#fff2a5",
+        tryAgainTop: "#6a2114",
+        tryAgainBottom: "#240706",
+
+        tapRippleBorder: "rgba(255, 235, 150, 0.9)",
+        tapRippleGlow: "rgba(255, 216, 80, 0.65)",
+
+        winLineBorder: "rgba(255, 232, 146, 0.96)",
+        winLineGlow: "rgba(255, 226, 120, 0.95)",
+        winLineInnerGlow: "rgba(255, 226, 120, 0.28)",
+        winSymbolGlow: "rgba(255, 225, 92, 0.95)",
+        jackpotSymbolGlow: "rgba(255, 235, 110, 1)",
+
         ctaPopupTop: "#5c0e08",
         ctaPopupBottom: "#160303",
         ctaPopupBorder: "#ffcf4a",
+        ctaPopupGlow: "rgba(255, 73, 16, 0.42)",
+        ctaPopupRadialGlow: "rgba(255, 95, 22, 0.34)",
 
         ctaButtonTop: "#fff06f",
         ctaButtonBottom: "#ff8a00",
-        ctaButtonText: "#4f1200"
+        ctaButtonText: "#591400",
+        ctaButtonShadow: "#9d3d00",
+        ctaButtonGlow: "rgba(255, 210, 70, 0.62)",
+        ctaButtonOuterGlow: "rgba(255, 80, 12, 0.45)",
+
+        ctaTitleText: "#ffe46b",
+        ctaAmountText: "#fffef4",
+        ctaSubtitleText: "rgba(255, 255, 255, 0.88)"
     },
 
     fonts: {
@@ -66,33 +121,35 @@ export const gameConfig = {
 
 
     assets: {
-        background: "assets/background.webp",
-        logo: "assets/logo.webp",
-        bill: "assets/bill.webp",
-        slotFrame: "assets/slot-frame.webp",
+        background: "assets/img/background.webp",
+        logo: "assets/img/logo.webp",
+        bill: "assets/img/bill.webp",
+        hand: "assets/img/hand.webp",
+        getIt: "assets/img/getit.webp",
+        slotFrame: "assets/img/slot-frame.webp",
 
         ui: {
-            balancePanel: "assets/ui/balance-panel.webp",
-            spinButton: "assets/ui/spin-button.webp"
+            balancePanel: "assets/img/balance-panel.webp",
+            spinButton: "assets/img/spin-button.webp"
         },
 
         symbols: {
-            s1: "assets/symbols/cherry.webp",
-            s2: "assets/symbols/lemon.webp",
-            s3: "assets/symbols/bar.webp",
-            s4: "assets/symbols/grape.webp",
-            s5: "assets/symbols/melon.webp",
-            s6: "assets/symbols/orange.webp",
-            s7: "assets/symbols/plum.webp",
+            s1: "assets/img/symbol1.webp",
+            s2: "assets/img/symbol2.webp",
+            s3: "assets/img/symbol3.webp",
+            s4: "assets/img/symbol4.webp",
+            s5: "assets/img/symbol5.webp",
+            s6: "assets/img/symbol6.webp",
+            s7: "assets/img/symbol7.webp",
 
-            coin: "assets/symbols/coin.webp",
-            bonus: "assets/symbols/coin2.webp"
+            coin: "assets/img/symbolsmall.webp",
+            bonus: "assets/img/symbolbig.webp"
         }
     },
 
 
-    // Эти символы используются как случайные filler-символы во время прокрутки рилов.
-    // Сюда обычно не надо добавлять coin с суммами, потому что coin:100.00 задаётся отдельно в reels.
+    // Filler symbols used while reels are spinning.
+    // Keep prize/bonus symbols out of this list unless they should appear as random fillers.
 
 
     reelSymbols: [
@@ -165,7 +222,7 @@ export const gameConfig = {
 
         billParticlesEnabled: true,
         billRainEnabled: false,
-        billAsset: "assets/bill.webp",
+        billAsset: "assets/img/bill.webp",
         billsPerSmallWinSymbol: 1,
         billsPerJackpotSymbol: 5,
         billParticleDuration: 980,
@@ -185,7 +242,7 @@ export const gameConfig = {
         masterVolume: 0.7,
 
         music: {
-            src: "assets/music.MP3",
+            src: "assets/sfx/music.MP3",
             volume: 0.18,
             duckVolume: 0.08,
             fadeDuration: 450
@@ -334,7 +391,6 @@ export const gameConfig = {
     // 5. START SCREEN
     // =========================
 
-    // Порядок символов:
     // [0] [1] [2]
     // [3] [4] [5]
     // [6] [7] [8]
@@ -353,8 +409,6 @@ export const gameConfig = {
     // 6. SPIN SCRIPT
     // =========================
 
-    // Каждый объект = один клик по SPIN.
-    // reels задаются в таком порядке:
     // [0] [1] [2]
     // [3] [4] [5]
     // [6] [7] [8]

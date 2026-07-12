@@ -1409,6 +1409,10 @@ function applyGameAssets() {
     document.body.style.backgroundImage = `url("${gameConfig.assets.background}")`;
     gameLogo.src = gameConfig.assets.logo;
 
+    if (tapHand && gameConfig.assets.hand) {
+        tapHand.src = gameConfig.assets.hand;
+    }
+
     if (gameConfig.assets.bill) {
         document.documentElement.style.setProperty(
             "--bill-image",
@@ -1443,6 +1447,12 @@ function applyGameAssets() {
 }
 function applyGameTheme() {
     const theme = gameConfig.theme;
+    const rootStyle = document.documentElement.style;
+
+    for (const themeKey in theme) {
+        const cssName = themeKey.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+        rootStyle.setProperty(`--theme-${cssName}`, theme[themeKey]);
+    }
 
     slotArea.style.background = theme.slotBackground;
     slotArea.style.borderColor = theme.slotBorder;
@@ -1453,10 +1463,10 @@ function applyGameTheme() {
         slotArea.style.boxShadow = "inset 0 0 18px rgba(255, 216, 74, 0.12)";
     }
 
-    ctaPopup.style.background = `linear-gradient(${theme.ctaPopupTop}, ${theme.ctaPopupBottom})`;
+    ctaPopup.style.background = "";
     ctaPopup.style.borderColor = theme.ctaPopupBorder;
 
-    ctaButton.style.background = `linear-gradient(${theme.ctaButtonTop}, ${theme.ctaButtonBottom})`;
+    ctaButton.style.background = "";
     ctaButton.style.color = theme.ctaButtonText;
 
     for (let i = 0; i < reelElements.length; i++) {
@@ -1540,6 +1550,8 @@ function getPreloadImageSources() {
     sources.push(gameConfig.assets.background);
     sources.push(gameConfig.assets.logo);
     sources.push(gameConfig.assets.bill);
+    sources.push(gameConfig.assets.hand);
+    sources.push(gameConfig.assets.getIt);
     sources.push(gameConfig.assets.slotFrame);
 
     if (gameConfig.assets.ui) {
