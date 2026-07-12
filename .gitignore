@@ -3,5 +3,4 @@ node_modules
 dist
 handoff
 .vscode/settings.json
-.secrets/
 .env.local
