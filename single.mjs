@@ -1,6 +1,7 @@
-import { build as esbuildBuild, transform } from "esbuild";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { pathToFileURL } from "node:url";
+import { bundleLocalModuleScripts, minifyCss } from "./local-build-utils.mjs";
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, "dist");
@@ -23,35 +24,27 @@ const mimeTypes = new Map([
     [".woff2", "font/woff2"]
 ]);
 
-async function main() {
+export async function buildSingle() {
     await rm(distDir, { recursive: true, force: true });
     await mkdir(distDir, { recursive: true });
 
-    const jsBundle = await esbuildBuild({
-        entryPoints: [path.join(rootDir, "main.js")],
-        bundle: true,
-        format: "iife",
-        platform: "browser",
-        target: ["es2018"],
-        minify: true,
-        write: false
-    });
-
-    let appJs = jsBundle.outputFiles[0].text;
-
-    appJs = appJs
-        .replace(/https:\/\/google\.com/g, "")
-        .replace(/\/\/# sourceMappingURL=.*$/gm, "");
+    const appModules = await bundleLocalModuleScripts(rootDir);
 
     let cssSource = await readFile(path.join(rootDir, "style.css"), "utf8");
     cssSource = await inlineAssetReferences(cssSource);
 
-    const cssResult = await transform(cssSource, {
-        loader: "css",
-        minify: true
-    });
+    const cssOutput = minifyCss(cssSource);
 
-    appJs = await inlineAssetReferences(appJs);
+    const appScripts = [];
+
+    for (const module of appModules) {
+        let source = module.source
+            .replace(/https:\/\/google\.com/g, "")
+            .replace(/\/\/# sourceMappingURL=.*$/gm, "");
+
+        source = await inlineAssetReferences(source);
+        appScripts.push(`<script type="module">\n${source}\n</script>`);
+    }
 
     const pixiSource = await readPixiSource();
     const htmlSource = await readFile(path.join(rootDir, "index.html"), "utf8");
@@ -60,7 +53,7 @@ async function main() {
     let htmlOutput = htmlWithInlineAssets
         .replace(
             /<link rel="stylesheet" href="style\.css">/,
-            `<style>${cssResult.code}</style>`
+            `<style>${cssOutput}</style>`
         )
         .replace(
             /<script src="assets\/pixi\.min\.js"><\/script>/,
@@ -68,7 +61,7 @@ async function main() {
         )
         .replace(
             /<script type="module" src="main\.js"><\/script>/,
-            `<script>${appJs}</script>`
+            appScripts.join("\n")
         );
 
     htmlOutput = htmlOutput.replace(/<script src="assets\/pixi\.min\.js"><\/script>/g, "");
@@ -149,7 +142,9 @@ async function fileToDataUri(filePath) {
     return `data:${mimeType};base64,${buffer.toString("base64")}`;
 }
 
-main().catch((error) => {
-    console.error(error);
-    process.exit(1);
-});
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+    buildSingle().catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
+}

@@ -7,8 +7,11 @@
         "dev": "vite",
         "build": "node build.mjs",
         "single": "node single.mjs",
-        "handoff": "node handoff.mjs",
-        "deploy": "node deploy.mjs",
+        "handoff": "node handoff-deploy.mjs",
+        "deploy": "deploy.cmd",
+        "deploy:ssh": "deploy.cmd",
+        "deploy:branch": "node deploy-ssh.mjs",
+        "deploy:project": "deploy.cmd",
         "preview": "vite preview"
     },
     "devDependencies": {
