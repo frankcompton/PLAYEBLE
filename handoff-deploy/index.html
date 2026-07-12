@@ -1,0 +1,90 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Playable</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="preloader">
+        <div id="preloaderContent">
+            <img id="preloaderLogo" alt="Loading">
+            <div id="preloaderBar">
+                <div id="preloaderProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fxLayer"></div>
+    <div id="gameScaler">
+        <div id="game">
+            <div id="topWinPanel">
+                <img id="gameLogo" alt="Coin Strike">
+                <div id="welcomeBonusTitle">DEIN<br>WILLKOMMENSBONUS</div>
+                <div id="bonusBoxes">
+                    <div class="bonusBox">
+                        <div class="bonusLabel">GELDBONUS</div>
+                        <div id="topWinPanelText" class="bonusValue">0 €</div>
+                    </div>
+                    <div class="bonusBox">
+                        <div class="bonusLabel">FREISPIELE</div>
+                        <div id="freeSpinsValue" class="bonusValue">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="slotStage">
+                <div id="slotArea">
+                    <img id="slotFrameImg" alt="" aria-hidden="true">
+                    <div id="reels">
+                        <div>
+                            <div></div>
+                        </div>
+
+                        <div>
+                            <div></div>
+                        </div>
+
+                        <div>
+                            <div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="bottomControls">
+                <img id="tapHand" src="assets/hand.webp" alt="" aria-hidden="true">
+
+                <button id="spinBtn">
+                    <span id="spinText">BONUS FREISCHALTEN</span>
+                </button>
+
+                    <div id="postSpinActions" aria-hidden="true">
+                    <button id="tryAgainBtn" type="button">
+                        <span>NOCHMAL</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div id="ctaPopup">
+        <div id="ctaTitle">BONUS FREIGESCHALTET!</div>
+        <div id="ctaAmount">100% BIS ZU 2500€<br>+ 250 FREISPIELE</div>
+        <div id="ctaSubtitle">Du hast einen exklusiven Bonus vom Online Casino erhalten</div>
+        <button id="ctaButton">BONUS HOLEN</button>
+        <div id="ctaCountdown">
+            <span id="ctaCountdownLabel">ANGEBOT ENDET IN</span>
+            <span id="ctaCountdownTime">30:00</span>
+        </div>
+    </div>
+
+    <script src="assets/pixi.min.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
