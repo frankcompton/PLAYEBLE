@@ -186,7 +186,7 @@ export const gameConfig = {
 
         music: {
             src: "assets/music.mp3",
-            volume: 0.18,
+            volume: 0.48,
             duckVolume: 0.08,
             fadeDuration: 450
         },
