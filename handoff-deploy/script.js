@@ -226,7 +226,7 @@ function createLightningStrike(isWinStrike = false) {
     const maxWidth = isWinStrike ? effects.lightningWinWidthMax : effects.lightningAmbientWidthMax;
     const width = getRandomNumber(minWidth, maxWidth);
     const left = getRandomNumber(-25, 0);
-    const top = 0;
+    const top = effects.lightningTop ?? 0;
     const rotation = getRandomNumber(-16, 16);
     const flip = Math.random() > 0.5 ? -1 : 1;
     const duration = effects.lightningDuration || 520;
@@ -248,6 +248,10 @@ function createLightningStrike(isWinStrike = false) {
     lightning.style.setProperty("--lightning-duration", `${duration}ms`);
 
     gameScaler.appendChild(lightning);
+
+    if (window.playSfx) {
+        window.playSfx("thunderSingleHit");
+    }
 
     setTimeout(() => {
         lightning.remove();
