@@ -17,6 +17,7 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    position: relative;
 
     color: white;
 
@@ -29,6 +30,33 @@ body {
     margin: 0;
 
     overflow: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+
+    background:
+        radial-gradient(ellipse at 50% 45%, rgba(255, 188, 78, 0.22), rgba(255, 188, 78, 0) 48%),
+        rgba(0, 0, 0, 0.08);
+
+    animation: backgroundLightBreath 2.4s ease-in-out infinite;
+}
+
+@keyframes backgroundLightBreath {
+    0%,
+    100% {
+        opacity: 0.26;
+        filter: brightness(0.94);
+    }
+
+    50% {
+        opacity: 0.78;
+        filter: brightness(1.08);
+    }
 }
 
 #logo {
@@ -819,6 +847,10 @@ body {
     width: 430px;
     height: 760px;
 
+    --character-left: -130px;
+    --character-top: 149px;
+    --character-width: 310px;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -828,6 +860,24 @@ body {
     padding: 18px;
 
     position: relative;
+}
+
+#sceneCharacter {
+    position: absolute;
+    left: var(--character-left);
+    top: var(--character-top);
+    width: var(--character-width);
+    height: auto;
+    display: block;
+    pointer-events: none;
+    z-index: 0;
+}
+
+#topWinPanel,
+#slotStage,
+#bottomControls {
+    position: relative;
+    z-index: 2;
 }
 
 /* базовые размеры сцены */
@@ -1357,6 +1407,22 @@ body {
 
 #slotArea.asset-slot-frame #slotFrameImg {
     display: block;
+    animation: slotFrameGoldBreath 2.4s ease-in-out infinite;
+}
+
+@keyframes slotFrameGoldBreath {
+    0%,
+    100% {
+        filter:
+            drop-shadow(0 0 4px rgba(255, 214, 94, 0.28))
+            drop-shadow(0 0 8px rgba(255, 172, 42, 0.16));
+    }
+
+    50% {
+        filter:
+            drop-shadow(0 0 8px rgba(255, 224, 126, 0.62))
+            drop-shadow(0 0 18px rgba(255, 174, 44, 0.34));
+    }
 }
 
 #slotArea.asset-slot-frame #reels {

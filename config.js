@@ -69,6 +69,7 @@ export const gameConfig = {
         background: "assets/background.webp",
         logo: "assets/logo.webp",
         bill: "assets/bill.webp",
+        character: "assets/character.webp",
         slotFrame: "assets/slot-frame.webp",
 
         ui: {
