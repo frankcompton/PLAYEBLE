@@ -190,6 +190,7 @@ export const gameConfig = {
         lightningAmbientWidthMax: 650,
         lightningWinWidthMin: 700,
         lightningWinWidthMax: 800,
+        lightningTop: 0,
         lightningDuration: 1020,
         lightningWinStagger: 95,
     },
