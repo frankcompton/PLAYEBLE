@@ -183,14 +183,14 @@ export const gameConfig = {
 
         lightningEnabled: true,
         lightningAsset: "assets/lightning.webp",
-        lightningInterval: 2000,
+        lightningInterval: 4000,
         lightningAmbientCount: 1,
-        lightningWinCount: 3,
+        lightningWinCount: 1,
         lightningAmbientWidthMin: 650,
         lightningAmbientWidthMax: 650,
         lightningWinWidthMin: 700,
         lightningWinWidthMax: 800,
-        lightningTop: 0,
+        lightningTop: -150,
         lightningDuration: 1020,
         lightningWinStagger: 95,
     },
@@ -235,6 +235,11 @@ export const gameConfig = {
             jackpot: {
                 src: "assets/sfx/jackpot.mp3",
                 volume: 1
+            },
+
+            thunderSingleHit: {
+                src: "assets/thunder-single-hit.mp3",
+                volume: 0.15
             }
         }
     },

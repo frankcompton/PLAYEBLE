@@ -249,6 +249,10 @@ function createLightningStrike(isWinStrike = false) {
 
     gameScaler.appendChild(lightning);
 
+    if (window.playSfx) {
+        window.playSfx("thunderSingleHit");
+    }
+
     setTimeout(() => {
         lightning.remove();
     }, duration + 120);

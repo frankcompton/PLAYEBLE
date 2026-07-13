@@ -1474,6 +1474,17 @@ body {
     box-shadow: none;
 }
 
+#slotArea.asset-slot-frame.small-win #reels,
+#slotArea.asset-slot-frame.jackpot-state #reels {
+    overflow: visible;
+}
+
+#slotArea.asset-slot-frame.small-win #reels>div,
+#slotArea.asset-slot-frame.jackpot-state #reels>div {
+    overflow: visible;
+    contain: none;
+}
+
 .symbol {
     width: 100%;
 }
