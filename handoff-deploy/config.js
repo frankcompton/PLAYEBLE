@@ -69,6 +69,7 @@ export const gameConfig = {
         background: "assets/background.webp",
         logo: "assets/logo.webp",
         bill: "assets/bill.webp",
+        character: "assets/character.webp",
         slotFrame: "assets/slot-frame.webp",
 
         ui: {
@@ -186,7 +187,7 @@ export const gameConfig = {
 
         music: {
             src: "assets/music.mp3",
-            volume: 0.18,
+            volume: 0.48,
             duckVolume: 0.08,
             fadeDuration: 450
         },
