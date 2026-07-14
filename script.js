@@ -1550,6 +1550,7 @@ function getPreloadImageSources() {
     sources.push(gameConfig.assets.background);
     sources.push(gameConfig.assets.logo);
     sources.push(gameConfig.assets.bill);
+    sources.push(gameConfig.assets.hand);
     sources.push(gameConfig.assets.character);
     sources.push(gameConfig.assets.character2);
     sources.push(gameConfig.assets.slotFrame);
