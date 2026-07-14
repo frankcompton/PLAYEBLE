@@ -851,6 +851,10 @@ body {
     --character-top: 149px;
     --character-width: 310px;
 
+    --character2-left: 190px;
+    --character2-top: 120px;
+    --character2-width: 390px;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -862,15 +866,25 @@ body {
     position: relative;
 }
 
-#sceneCharacter {
+#sceneCharacter,
+#sceneCharacter2 {
     position: absolute;
-    left: var(--character-left);
-    top: var(--character-top);
-    width: var(--character-width);
     height: auto;
     display: block;
     pointer-events: none;
     z-index: 0;
+}
+
+#sceneCharacter {
+    left: var(--character-left);
+    top: var(--character-top);
+    width: var(--character-width);
+}
+
+#sceneCharacter2 {
+    left: var(--character2-left);
+    top: var(--character2-top);
+    width: var(--character2-width);
 }
 
 #topWinPanel,
@@ -1394,7 +1408,8 @@ body {
 
 #slotFrameImg {
     position: absolute;
-    inset: -1px;
+    left: -1px;
+    top: 2px;
 
     width: calc(100% + 2px);
     height: calc(100% + 2px);

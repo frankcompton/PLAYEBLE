@@ -8,6 +8,7 @@ const slotArea = document.getElementById("slotArea");
 const slotFrameImg = document.getElementById("slotFrameImg");
 const gameLogo = document.getElementById("gameLogo");
 const sceneCharacter = document.getElementById("sceneCharacter");
+const sceneCharacter2 = document.getElementById("sceneCharacter2");
 const ctaPopup = document.getElementById("ctaPopup");
 const ctaTitle = document.getElementById("ctaTitle");
 const ctaAmount = document.getElementById("ctaAmount");
@@ -1414,6 +1415,10 @@ function applyGameAssets() {
         sceneCharacter.src = gameConfig.assets.character;
     }
 
+    if (sceneCharacter2 && gameConfig.assets.character2) {
+        sceneCharacter2.src = gameConfig.assets.character2;
+    }
+
     if (gameConfig.assets.bill) {
         document.documentElement.style.setProperty(
             "--bill-image",
@@ -1546,6 +1551,7 @@ function getPreloadImageSources() {
     sources.push(gameConfig.assets.logo);
     sources.push(gameConfig.assets.bill);
     sources.push(gameConfig.assets.character);
+    sources.push(gameConfig.assets.character2);
     sources.push(gameConfig.assets.slotFrame);
 
     if (gameConfig.assets.ui) {
