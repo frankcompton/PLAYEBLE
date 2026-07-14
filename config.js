@@ -66,27 +66,27 @@ export const gameConfig = {
 
 
     assets: {
-        background: "assets/background.webp",
-        logo: "assets/logo.webp",
-        bill: "assets/bill.webp",
-        slotFrame: "assets/slot-frame.webp",
+        background: "assets/img/background.webp",
+        logo: "assets/img/logo.webp",
+        bill: "assets/img/bill.webp",
+        slotFrame: "assets/img/slot-frame.webp",
 
         ui: {
-            balancePanel: "assets/ui/balance-panel.webp",
-            spinButton: "assets/ui/spin-button.webp"
+            balancePanel: "assets/img/balance-panel.webp",
+            spinButton: "assets/img/spin-button.webp"
         },
 
         symbols: {
-            s1: "assets/symbols/cherry.webp",
-            s2: "assets/symbols/lemon.webp",
-            s3: "assets/symbols/bar.webp",
-            s4: "assets/symbols/grape.webp",
-            s5: "assets/symbols/melon.webp",
-            s6: "assets/symbols/orange.webp",
-            s7: "assets/symbols/plum.webp",
+            s1: "assets/img/symbol1.webp",
+            s2: "assets/img/symbol2.webp",
+            s3: "assets/img/symbol3.webp",
+            s4: "assets/img/symbol4.webp",
+            s5: "assets/img/symbol5.webp",
+            s6: "assets/img/symbol6.webp",
+            s7: "assets/img/symbol7.webp",
 
-            coin: "assets/symbols/coin.webp",
-            bonus: "assets/symbols/coin2.webp"
+            coin: "assets/img/symbolsmall.webp",
+            bonus: "assets/img/symbolbig.webp"
         }
     },
 
@@ -165,7 +165,7 @@ export const gameConfig = {
 
         billParticlesEnabled: true,
         billRainEnabled: false,
-        billAsset: "assets/bill.webp",
+        billAsset: "assets/img/bill.webp",
         billsPerSmallWinSymbol: 1,
         billsPerJackpotSymbol: 5,
         billParticleDuration: 980,
@@ -185,7 +185,7 @@ export const gameConfig = {
         masterVolume: 0.7,
 
         music: {
-            src: "assets/music.mp3",
+            src: "assets/sfx/music.mp3",
             volume: 0.18,
             duckVolume: 0.08,
             fadeDuration: 450
