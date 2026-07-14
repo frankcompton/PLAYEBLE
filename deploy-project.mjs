@@ -124,7 +124,7 @@ function buildPublishScript() {
 }
 
 function runRemote(script) {
-    runWithPassword("ssh", [
+    runWithPassword(resolveSshCommand("ssh"), [
         "-p",
         port,
         "-o",
@@ -136,7 +136,7 @@ function runRemote(script) {
 }
 
 function runUpload() {
-    runWithPassword("scp", [
+    runWithPassword(resolveSshCommand("scp"), [
         "-P",
         port,
         "-o",
@@ -146,6 +146,15 @@ function runUpload() {
         "dist/.",
         `${remote}:${remoteTemp}/`
     ]);
+}
+
+function resolveSshCommand(command) {
+    if (process.platform !== "win32") {
+        return command;
+    }
+
+    const systemRoot = process.env.SystemRoot || "C:\\Windows";
+    return `${systemRoot}\\System32\\OpenSSH\\${command}.exe`;
 }
 
 function runWithPassword(command, args) {
