@@ -24,7 +24,11 @@ const mimeTypes = new Map([
     [".woff2", "font/woff2"]
 ]);
 
-export async function buildSingle() {
+export async function buildSingle(options = {}) {
+    const outputFileName = options.outputFileName || singleFileName;
+    const shouldMinifyHtml = options.minifyHtml || false;
+    const deliveryTarget = options.deliveryTarget || "moloco";
+
     await rm(distDir, { recursive: true, force: true });
     await mkdir(distDir, { recursive: true });
 
@@ -41,6 +45,10 @@ export async function buildSingle() {
         let source = module.source
             .replace(/https:\/\/google\.com/g, "")
             .replace(/\/\/# sourceMappingURL=.*$/gm, "");
+
+        if (module.file === "config.js") {
+            source = applyDeliveryTarget(source, deliveryTarget);
+        }
 
         source = await inlineAssetReferences(source);
         appScripts.push(`<script type="module">\n${source}\n</script>`);
@@ -66,12 +74,16 @@ export async function buildSingle() {
 
     htmlOutput = htmlOutput.replace(/<script src="assets\/pixi\.min\.js"><\/script>/g, "");
 
-    await writeFile(path.join(distDir, singleFileName), htmlOutput, "utf8");
+    if (shouldMinifyHtml) {
+        htmlOutput = minifyHtmlShell(htmlOutput);
+    }
+
+    await writeFile(path.join(distDir, outputFileName), htmlOutput, "utf8");
 
     const sizeBytes = Buffer.byteLength(htmlOutput);
     const sizeMb = sizeBytes / 1024 / 1024;
 
-    console.log(`Created dist/${singleFileName}`);
+    console.log(`Created dist/${outputFileName}`);
     console.log(`Size: ${sizeBytes} bytes (${sizeMb.toFixed(2)} MB)`);
 
     if (sizeBytes > 5 * 1024 * 1024) {
@@ -114,8 +126,32 @@ async function readPixiSource() {
 function sanitizePixiSource(source) {
     return source
         .replace(/\/\/# sourceMappingURL=.*$/gm, "")
+        .replace(/\bwindow\.location\.href\b/g, "document.baseURI||\"\"")
         .replace(/\bfetch\s*\(/g, "window.__molocoDisabledFetch__(")
         .replace(/https?:\/\/[^"',`)\\\s]+/g, "");
+}
+
+function applyDeliveryTarget(source, deliveryTarget) {
+    const deliveryMode = deliveryTarget === "unity"
+        ? {
+            source: "unity",
+            ctaMode: "mraid"
+        }
+        : {
+            source: "moloco",
+            ctaMode: "fb"
+        };
+
+    return source.replace(
+        /delivery:\s*{[\s\S]*?ctaMode:\s*["'][^"']+["']\s*}/,
+        `delivery: {\n        source: "${deliveryMode.source}",\n        ctaMode: "${deliveryMode.ctaMode}"\n    }`
+    );
+}
+
+function minifyHtmlShell(source) {
+    return source
+        .replace(/>\s+</g, "><")
+        .trim();
 }
 
 async function inlineAssetReferences(source) {
