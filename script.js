@@ -241,35 +241,23 @@ function startSpin() {
     prepareReelsForSpin(currentOutcome);
     animateReelsToResult(currentOutcome);
 }
-function getUnityStoreUrl() {
-    const userAgent = navigator.userAgent || "";
-    const isIos = /iPad|iPhone|iPod/i.test(userAgent);
-
-    return isIos
-        ? gameConfig.unity.iosStoreUrl
-        : gameConfig.unity.androidStoreUrl;
-}
-
 function handleCtaClick() {
     const delivery = gameConfig.delivery || {};
     const ctaMode = delivery.ctaMode || "";
 
     if (ctaMode === "mraid") {
-        const storeUrl = getUnityStoreUrl();
-
         if (window.mraid && typeof window.mraid.open === "function") {
-            window.mraid.open(storeUrl);
+            window.mraid.open();
             return;
         }
 
-        console.log("Unity CTA click:", storeUrl);
+        console.log("Unity CTA click: mraid.open()");
         return;
     }
 
     console.log("CTA click:", gameConfig.offer?.url || "");
 }
 
-window.getUnityStoreUrl = getUnityStoreUrl;
 window.handleCtaClick = handleCtaClick;
 
 function showInitialSpinButton() {

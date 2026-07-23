@@ -25,8 +25,7 @@ export const gameConfig = {
     },
 
     unity: {
-        androidStoreUrl: "https://play.google.com/store/apps/details?id=YOUR_ANDROID_PACKAGE",
-        iosStoreUrl: "https://apps.apple.com/app/YOUR_IOS_APP_ID"
+        openWithoutUrl: true
     },
 
     // =========================
