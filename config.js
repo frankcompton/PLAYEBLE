@@ -19,6 +19,15 @@ export const gameConfig = {
         maxScale: 1.15
     },
 
+    delivery: {
+        source: "unity",
+        ctaMode: "mraid"
+    },
+
+    unity: {
+        openWithoutUrl: true
+    },
+
     // =========================
     // 2. VISUAL THEME
     // =========================
