@@ -241,20 +241,36 @@ function startSpin() {
     prepareReelsForSpin(currentOutcome);
     animateReelsToResult(currentOutcome);
 }
-function goToOffer() {
-    if (window.FbPlayableAd && typeof window.FbPlayableAd.onCTAClick === "function") {
-        window.FbPlayableAd.onCTAClick();
-        return;
-    }
+function getUnityStoreUrl() {
+    const userAgent = navigator.userAgent || "";
+    const isIos = /iPad|iPhone|iPod/i.test(userAgent);
 
-    const offerUrl = gameConfig.offer.url;
-
-    if (!offerUrl) {
-        return;
-    }
-
-    window.location.href = offerUrl;
+    return isIos
+        ? gameConfig.unity.iosStoreUrl
+        : gameConfig.unity.androidStoreUrl;
 }
+
+function handleCtaClick() {
+    const delivery = gameConfig.delivery || {};
+    const ctaMode = delivery.ctaMode || "";
+
+    if (ctaMode === "mraid") {
+        const storeUrl = getUnityStoreUrl();
+
+        if (window.mraid && typeof window.mraid.open === "function") {
+            window.mraid.open(storeUrl);
+            return;
+        }
+
+        console.log("Unity CTA click:", storeUrl);
+        return;
+    }
+
+    console.log("CTA click:", gameConfig.offer?.url || "");
+}
+
+window.getUnityStoreUrl = getUnityStoreUrl;
+window.handleCtaClick = handleCtaClick;
 
 function showInitialSpinButton() {
     setDisplayed(spinBtn, "flex");
@@ -416,7 +432,7 @@ function handleSpinButtonClick() {
     }
 
     if (isCtaActive === true) {
-        goToOffer();
+        handleCtaClick();
         return;
     }
 
@@ -1708,10 +1724,51 @@ async function bootstrap() {
 
     initGame();
     hidePreloader();
+}
 
-    if (window.startMusic) {
-        window.startMusic();
+let playableStarted = false;
+
+function startPlayableOnce() {
+    if (playableStarted) {
+        return;
     }
+
+    playableStarted = true;
+    void bootstrap();
+}
+
+function startPlayableWhenMraidViewable() {
+    const mraidApi = window.mraid;
+
+    if (!mraidApi || typeof mraidApi.getState !== "function") {
+        startPlayableOnce();
+        return;
+    }
+
+    const startWhenViewable = () => {
+        if (typeof mraidApi.isViewable !== "function" || mraidApi.isViewable()) {
+            startPlayableOnce();
+        }
+    };
+
+    const onReady = () => {
+        if (typeof mraidApi.addEventListener === "function") {
+            mraidApi.addEventListener("viewableChange", (isViewable) => {
+                if (isViewable) {
+                    startPlayableOnce();
+                }
+            });
+        }
+
+        startWhenViewable();
+    };
+
+    if (mraidApi.getState() === "loading" && typeof mraidApi.addEventListener === "function") {
+        mraidApi.addEventListener("ready", onReady);
+        return;
+    }
+
+    onReady();
 }
 
 function unlockSfxOnFirstInteraction() {
@@ -1728,7 +1785,7 @@ window.addEventListener("pointerdown", unlockSfxOnFirstInteraction, {
 });
 spinBtn.addEventListener("click", handleSpinButtonClick);
 tryAgainBtn.addEventListener("click", handleSpinButtonClick);
-ctaButton.addEventListener("click", goToOffer);
+ctaButton.addEventListener("click", handleCtaClick);
 
 window.addEventListener("resize", () => {
     updateGameScale();
@@ -1740,4 +1797,4 @@ window.addEventListener("orientationchange", () => {
     setTimeout(fitAmountText, 300);
 });
 
-bootstrap();
+startPlayableWhenMraidViewable();

@@ -19,6 +19,16 @@ export const gameConfig = {
         maxScale: 1.15
     },
 
+    delivery: {
+        source: "unity",
+        ctaMode: "mraid"
+    },
+
+    unity: {
+        androidStoreUrl: "https://play.google.com/store/apps/details?id=YOUR_ANDROID_PACKAGE",
+        iosStoreUrl: "https://apps.apple.com/app/YOUR_IOS_APP_ID"
+    },
+
     // =========================
     // 2. VISUAL THEME
     // =========================

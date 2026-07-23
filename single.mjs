@@ -24,7 +24,10 @@ const mimeTypes = new Map([
     [".woff2", "font/woff2"]
 ]);
 
-export async function buildSingle() {
+export async function buildSingle(options = {}) {
+    const outputFileName = options.outputFileName || singleFileName;
+    const shouldMinifyHtml = options.minifyHtml || false;
+
     await rm(distDir, { recursive: true, force: true });
     await mkdir(distDir, { recursive: true });
 
@@ -66,12 +69,16 @@ export async function buildSingle() {
 
     htmlOutput = htmlOutput.replace(/<script src="assets\/pixi\.min\.js"><\/script>/g, "");
 
-    await writeFile(path.join(distDir, singleFileName), htmlOutput, "utf8");
+    if (shouldMinifyHtml) {
+        htmlOutput = minifyHtmlShell(htmlOutput);
+    }
+
+    await writeFile(path.join(distDir, outputFileName), htmlOutput, "utf8");
 
     const sizeBytes = Buffer.byteLength(htmlOutput);
     const sizeMb = sizeBytes / 1024 / 1024;
 
-    console.log(`Created dist/${singleFileName}`);
+    console.log(`Created dist/${outputFileName}`);
     console.log(`Size: ${sizeBytes} bytes (${sizeMb.toFixed(2)} MB)`);
 
     if (sizeBytes > 5 * 1024 * 1024) {
@@ -91,6 +98,12 @@ export async function buildSingle() {
     if (failedPattern) {
         console.warn(`Warning: found forbidden pattern ${failedPattern}`);
     }
+}
+
+function minifyHtmlShell(source) {
+    return source
+        .replace(/>\s+</g, "><")
+        .trim();
 }
 
 async function readPixiSource() {
@@ -114,6 +127,7 @@ async function readPixiSource() {
 function sanitizePixiSource(source) {
     return source
         .replace(/\/\/# sourceMappingURL=.*$/gm, "")
+        .replace(/\bwindow\.location\.href\b/g, "document.baseURI||\"\"")
         .replace(/\bfetch\s*\(/g, "window.__molocoDisabledFetch__(")
         .replace(/https?:\/\/[^"',`)\\\s]+/g, "");
 }
