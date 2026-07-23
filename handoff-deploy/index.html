@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Playable</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="preloader">
+        <div id="preloaderContent">
+            <img id="preloaderLogo" alt="Loading">
+            <div id="preloaderBar">
+                <div id="preloaderProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fxLayer"></div>
+    <div id="gameScaler">
+        <div id="game">
+            <div id="scratchStage">
+                <div id="scratchTop">
+                    <div id="scratchAmount">25.000€</div>
+                    <div id="scratchSubtitle">SPITZENGEWINN</div>
+                    <img id="scratchLogo" alt="Book of Ra">
+                </div>
+
+                <img id="scratchCharacter" alt="">
+
+                <div id="scratchInfoPanel">
+                    <img id="scratchInfoPanelArt" alt="">
+                    <div id="scratchInfoText">
+                        <span id="scratchInfoNumber">6</span>
+                        <span id="scratchInfoLabel">GEWINN-CHANCE</span>
+                    </div>
+                </div>
+
+                <div id="scratchCards" aria-label="Scratch cards"></div>
+                <div id="scratchGestureHint" aria-hidden="true">
+                    <img id="scratchGestureHand" src="assets/strach/scratch-hand.webp" alt="">
+                </div>
+                <div id="scratchInstruction">Rubbel die Vase!</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div id="ctaPopup">
+        <div id="ctaTitle">BIG WIN!</div>
+        <div id="ctaText"></div>
+        <div id="ctaAmount"></div>
+        <button id="ctaButton">CLAIM BONUS</button>
+        <div id="ctaHint"></div>
+        <div id="ctaCountdown">
+            <span id="ctaCountdownLabel">OFFER ENDS IN</span>
+            <span id="ctaCountdownTime">30:00</span>
+        </div>
+    </div>
+
+    <script src="assets/pixi.min.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>

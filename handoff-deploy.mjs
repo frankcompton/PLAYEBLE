@@ -1,9 +1,10 @@
-import { chmod, cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { access, chmod, cp, mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const rootDir = process.cwd();
 const handoffDir = path.join(rootDir, "handoff-deploy");
 const sourceKeyPath = path.join(rootDir, ".secrets", "playable_handoff");
+const pixiSourcePath = await resolvePixiSourcePath();
 
 const files = [
     "index.html",
@@ -45,12 +46,12 @@ async function main() {
     await mkdir(path.join(handoffDir, ".secrets"), { recursive: true });
 
     await cp(
-        path.join(rootDir, "public", "assets", "pixi.min.js"),
+        pixiSourcePath,
         path.join(handoffDir, "assets", "pixi.min.js")
     );
 
     await cp(
-        path.join(rootDir, "public", "assets", "pixi.min.js"),
+        pixiSourcePath,
         path.join(handoffDir, "public", "assets", "pixi.min.js")
     );
 
@@ -353,6 +354,24 @@ main().catch((error) => {
     console.error(error);
     process.exit(1);
 });
+
+async function resolvePixiSourcePath() {
+    const candidates = [
+        path.join(rootDir, "assets", "pixi.min.js"),
+        path.join(rootDir, "public", "assets", "pixi.min.js")
+    ];
+
+    for (const candidate of candidates) {
+        try {
+            await access(candidate);
+            return candidate;
+        } catch {
+            // Try the next known project layout.
+        }
+    }
+
+    throw new Error("Could not find pixi.min.js in assets/ or public/assets/.");
+}
 
 async function removeDsStoreFiles(dir) {
     const entries = await readdir(dir, { withFileTypes: true });
