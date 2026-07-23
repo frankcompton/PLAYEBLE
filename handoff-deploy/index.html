@@ -1,0 +1,69 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Playable</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="preloader">
+        <div id="preloaderContent">
+            <img id="preloaderLogo" alt="Loading">
+            <div id="preloaderBar">
+                <div id="preloaderProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fxLayer"></div>
+    <div id="gameScaler">
+        <div id="game">
+            <div id="topWinPanel">
+                <div id="topWinPanelArt" aria-hidden="true"></div>
+                <span id="topWinPanelText">0 A$</span>
+            </div>
+
+            <div id="slotStage">
+                <img id="gameLogo" alt="Mega Fortune">
+
+                <div id="wheelScene">
+                    <div id="wheelWrap">
+                        <div id="wheelRotor">
+                            <img id="wheelSectors" alt="">
+                            <div id="wheelPrizeLabels" aria-hidden="true"></div>
+                        </div>
+                        <img id="wheelFrame" alt="">
+                        <img id="wheelCenter" alt="">
+                        <img id="wheelPointer" alt="">
+                    </div>
+
+                    <img id="boat" alt="">
+                </div>
+
+            </div>
+
+            <button id="spinBtn">
+                <span id="spinText">SPINN</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div id="ctaPopup">
+        <div id="ctaTitle">BIG WIN!</div>
+        <div id="ctaAmount">10 350 A$</div>
+        <button id="ctaButton">CLAIM BONUS</button>
+        <div id="ctaCountdown">
+            <span id="ctaCountdownLabel">OFFER ENDS IN</span>
+            <span id="ctaCountdownTime">30:00</span>
+        </div>
+    </div>
+
+    <script src="assets/pixi.min.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
+
+</html>
