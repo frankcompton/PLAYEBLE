@@ -1,4 +1,4 @@
-export const gameConfig = {
+﻿export const gameConfig = {
     // =========================
     // 1. BASIC GAME SETTINGS
     // =========================
@@ -17,6 +17,15 @@ export const gameConfig = {
         baseWidth: 430,
         baseHeight: 760,
         maxScale: 1.15
+    },
+
+    delivery: {
+        source: "moloco",
+        ctaMode: "fb"
+    },
+
+    unity: {
+        fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
     },
 
     // =========================

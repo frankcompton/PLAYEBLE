@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "playeble",
     "private": true,
     "version": "1.0.0",
@@ -7,6 +7,7 @@
         "dev": "vite",
         "build": "node build.mjs",
         "single": "node single.mjs",
+        "unity": "node unity.mjs",
         "handoff": "node handoff-deploy.mjs",
         "deploy": "deploy.cmd",
         "deploy:ssh": "deploy.cmd",

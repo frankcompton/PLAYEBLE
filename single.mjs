@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
+﻿import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { bundleLocalModuleScripts, minifyCss } from "./local-build-utils.mjs";
@@ -24,7 +24,12 @@ const mimeTypes = new Map([
     [".woff2", "font/woff2"]
 ]);
 
-export async function buildSingle() {
+export async function buildSingle(options = {}) {
+    const outputFileName = options.outputFileName || singleFileName;
+    const shouldMinifyHtml = options.minifyHtml || false;
+    const deliveryTarget = options.deliveryTarget || "moloco";
+    const includeMraidScript = options.includeMraidScript || false;
+
     await rm(distDir, { recursive: true, force: true });
     await mkdir(distDir, { recursive: true });
 
@@ -41,6 +46,10 @@ export async function buildSingle() {
         let source = module.source
             .replace(/https:\/\/google\.com/g, "")
             .replace(/\/\/# sourceMappingURL=.*$/gm, "");
+
+        if (module.file === "config.js") {
+            source = applyDeliveryTarget(source, deliveryTarget);
+        }
 
         source = await inlineAssetReferences(source);
         appScripts.push(`<script type="module">\n${source}\n</script>`);
@@ -64,14 +73,22 @@ export async function buildSingle() {
             appScripts.join("\n")
         );
 
+    if (includeMraidScript) {
+        htmlOutput = htmlOutput.replace("</head>", `    <script src="mraid.js"></script>\n</head>`);
+    }
+
     htmlOutput = htmlOutput.replace(/<script src="assets\/pixi\.min\.js"><\/script>/g, "");
 
-    await writeFile(path.join(distDir, singleFileName), htmlOutput, "utf8");
+    if (shouldMinifyHtml) {
+        htmlOutput = minifyHtmlShell(htmlOutput);
+    }
+
+    await writeFile(path.join(distDir, outputFileName), htmlOutput, "utf8");
 
     const sizeBytes = Buffer.byteLength(htmlOutput);
     const sizeMb = sizeBytes / 1024 / 1024;
 
-    console.log(`Created dist/${singleFileName}`);
+    console.log(`Created dist/${outputFileName}`);
     console.log(`Size: ${sizeBytes} bytes (${sizeMb.toFixed(2)} MB)`);
 
     if (sizeBytes > 5 * 1024 * 1024) {
@@ -81,8 +98,8 @@ export async function buildSingle() {
     const forbiddenPatterns = [
         /XMLHttpRequest/,
         /\bfetch\s*\(/,
-        /https?:\/\//,
-        /<script[^>]+src=/i,
+        deliveryTarget === "unity" ? /https?:\/\/(?!play\.google\.com\/store\/apps\/details\?id=com\.wanted5game)/ : /https?:\/\//,
+        deliveryTarget === "unity" ? /<script(?![^>]+src="mraid\.js")[^>]+src=/i : /<script[^>]+src=/i,
         /<link[^>]+href=/i
     ];
 
@@ -114,8 +131,37 @@ async function readPixiSource() {
 function sanitizePixiSource(source) {
     return source
         .replace(/\/\/# sourceMappingURL=.*$/gm, "")
+        .replace(/\bwindow\.location\.href\b/g, "document.baseURI||\"\"")
         .replace(/\bfetch\s*\(/g, "window.__molocoDisabledFetch__(")
         .replace(/https?:\/\/[^"',`)\\\s]+/g, "");
+}
+
+function applyDeliveryTarget(source, deliveryTarget) {
+    const deliveryMode = deliveryTarget === "unity"
+        ? {
+            source: "unity",
+            ctaMode: "unity",
+            fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
+        }
+        : {
+            source: "moloco",
+            ctaMode: "fb",
+            fallbackUrl: ""
+        };
+
+    return source.replace(
+        /delivery:\s*{[\s\S]*?ctaMode:\s*["'][^"']+["']\s*}/,
+        `delivery: {\n        source: "${deliveryMode.source}",\n        ctaMode: "${deliveryMode.ctaMode}"\n    }`
+    ).replace(
+        /unity:\s*{[\s\S]*?fallbackUrl:\s*["'][^"']*["']\s*}/,
+        `unity: {\n        fallbackUrl: "${deliveryMode.fallbackUrl}"\n    }`
+    );
+}
+
+function minifyHtmlShell(source) {
+    return source
+        .replace(/>\s+</g, "><")
+        .trim();
 }
 
 async function inlineAssetReferences(source) {
