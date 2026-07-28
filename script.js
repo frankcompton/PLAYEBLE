@@ -235,20 +235,37 @@ function startSpin() {
     prepareReelsForSpin(currentOutcome);
     animateReelsToResult(currentOutcome);
 }
-function goToOffer() {
+function handleCtaClick() {
+    const delivery = gameConfig.delivery || {};
+    const ctaMode = delivery.ctaMode || "unity";
+    const fallbackUrl = gameConfig.unity?.fallbackUrl || "";
+
+    if (ctaMode === "unity" || ctaMode === "mraid") {
+        if (window.mraid && typeof window.mraid.open === "function") {
+            window.mraid.open();
+            console.log("Unity CTA click: mraid.open()");
+            return;
+        }
+
+        if (fallbackUrl) {
+            window.open(fallbackUrl, "_blank");
+            console.log("Unity CTA click fallback: window.open()");
+            return;
+        }
+
+        console.log("Unity CTA click fallback: missing fallbackUrl");
+        return;
+    }
+
     if (window.FbPlayableAd && typeof window.FbPlayableAd.onCTAClick === "function") {
         window.FbPlayableAd.onCTAClick();
         return;
     }
 
-    const offerUrl = gameConfig.offer.url;
-
-    if (!offerUrl) {
-        return;
-    }
-
-    window.location.href = offerUrl;
+    console.log("Moloco CTA click");
 }
+
+window.handleCtaClick = handleCtaClick;
 
 function showInitialSpinButton() {
     setDisplayed(spinBtn, "flex");
@@ -402,7 +419,7 @@ function showCta() {
 }
 function handleSpinButtonClick() {
     if (isCtaActive === true) {
-        goToOffer();
+        handleCtaClick();
         return;
     }
 
@@ -1696,7 +1713,7 @@ window.addEventListener("pointerdown", unlockSfxOnFirstInteraction, {
 });
 spinBtn.addEventListener("click", handleSpinButtonClick);
 tryAgainBtn.addEventListener("click", handleSpinButtonClick);
-ctaButton.addEventListener("click", goToOffer);
+ctaButton.addEventListener("click", handleCtaClick);
 
 window.addEventListener("resize", () => {
     updateGameScale();
@@ -1708,4 +1725,34 @@ window.addEventListener("orientationchange", () => {
     setTimeout(fitAmountText, 300);
 });
 
-bootstrap();
+let playableStarted = false;
+
+function startPlayableOnce() {
+    if (playableStarted) {
+        return;
+    }
+
+    playableStarted = true;
+    void bootstrap();
+}
+
+function onSdkReady() {
+    console.log("MRAID Ready!");
+    startPlayableOnce();
+}
+
+function initApp() {
+    const delivery = gameConfig.delivery || {};
+
+    if ((delivery.ctaMode === "unity" || delivery.ctaMode === "mraid") && window.mraid) {
+        if (typeof window.mraid.getState === "function" && window.mraid.getState() === "loading") {
+            window.mraid.addEventListener("ready", onSdkReady);
+        } else {
+            onSdkReady();
+        }
+    } else {
+        onSdkReady();
+    }
+}
+
+window.addEventListener("load", initApp);
