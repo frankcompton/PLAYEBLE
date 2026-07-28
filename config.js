@@ -19,6 +19,15 @@ export const gameConfig = {
         maxScale: 1.15
     },
 
+    delivery: {
+        source: "moloco",
+        ctaMode: "fb"
+    },
+
+    unity: {
+        fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
+    },
+
     // =========================
     // 2. VISUAL THEME
     // =========================
