@@ -20,12 +20,12 @@ export const gameConfig = {
     },
 
     delivery: {
-        source: "unity",
-        ctaMode: "mraid"
+        source: "moloco",
+        ctaMode: "fb"
     },
 
     unity: {
-        openWithoutUrl: true
+        fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
     },
 
     // =========================

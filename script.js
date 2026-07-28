@@ -242,19 +242,32 @@ function startSpin() {
 }
 function handleCtaClick() {
     const delivery = gameConfig.delivery || {};
-    const ctaMode = delivery.ctaMode || "";
+    const ctaMode = delivery.ctaMode || "unity";
+    const fallbackUrl = gameConfig.unity?.fallbackUrl || "";
 
-    if (ctaMode === "mraid") {
+    if (ctaMode === "unity" || ctaMode === "mraid") {
         if (window.mraid && typeof window.mraid.open === "function") {
             window.mraid.open();
+            console.log("Unity CTA click: mraid.open()");
             return;
         }
 
-        console.log("Unity CTA click: mraid.open()");
+        if (fallbackUrl) {
+            window.open(fallbackUrl, "_blank");
+            console.log("Unity CTA click fallback: window.open()");
+            return;
+        }
+
+        console.log("Unity CTA click fallback: missing fallbackUrl");
         return;
     }
 
-    console.log("CTA click:", gameConfig.offer?.url || "");
+    if (window.FbPlayableAd && typeof window.FbPlayableAd.onCTAClick === "function") {
+        window.FbPlayableAd.onCTAClick();
+        return;
+    }
+
+    console.log("Moloco CTA click");
 }
 
 window.handleCtaClick = handleCtaClick;
@@ -1747,7 +1760,13 @@ function startPlayableOnce() {
 }
 
 function startPlayableWhenMraidViewable() {
+    const delivery = gameConfig.delivery || {};
     const mraidApi = window.mraid;
+
+    if (delivery.ctaMode !== "unity" && delivery.ctaMode !== "mraid") {
+        startPlayableOnce();
+        return;
+    }
 
     if (!mraidApi || typeof mraidApi.getState !== "function") {
         startPlayableOnce();

@@ -27,6 +27,8 @@ const mimeTypes = new Map([
 export async function buildSingle(options = {}) {
     const outputFileName = options.outputFileName || singleFileName;
     const shouldMinifyHtml = options.minifyHtml || false;
+    const deliveryTarget = options.deliveryTarget || "moloco";
+    const includeMraidScript = options.includeMraidScript || false;
 
     await rm(distDir, { recursive: true, force: true });
     await mkdir(distDir, { recursive: true });
@@ -44,6 +46,10 @@ export async function buildSingle(options = {}) {
         let source = module.source
             .replace(/https:\/\/google\.com/g, "")
             .replace(/\/\/# sourceMappingURL=.*$/gm, "");
+
+        if (module.file === "config.js") {
+            source = applyDeliveryTarget(source, deliveryTarget);
+        }
 
         source = await inlineAssetReferences(source);
         appScripts.push(`<script type="module">\n${source}\n</script>`);
@@ -67,6 +73,10 @@ export async function buildSingle(options = {}) {
             appScripts.join("\n")
         );
 
+    if (includeMraidScript) {
+        htmlOutput = htmlOutput.replace("</head>", `    <script src="mraid.js"></script>\n</head>`);
+    }
+
     htmlOutput = htmlOutput.replace(/<script src="assets\/pixi\.min\.js"><\/script>/g, "");
 
     if (shouldMinifyHtml) {
@@ -88,8 +98,8 @@ export async function buildSingle(options = {}) {
     const forbiddenPatterns = [
         /XMLHttpRequest/,
         /\bfetch\s*\(/,
-        /https?:\/\//,
-        /<script[^>]+src=/i,
+        deliveryTarget === "unity" ? /https?:\/\/(?!play\.google\.com\/store\/apps\/details\?id=com\.wanted5game)/ : /https?:\/\//,
+        deliveryTarget === "unity" ? /<script(?![^>]+src="mraid\.js")[^>]+src=/i : /<script[^>]+src=/i,
         /<link[^>]+href=/i
     ];
 
@@ -130,6 +140,28 @@ function minifyHtmlShell(source) {
     return source
         .replace(/>\s+</g, "><")
         .trim();
+}
+
+function applyDeliveryTarget(source, deliveryTarget) {
+    const deliveryMode = deliveryTarget === "unity"
+        ? {
+            source: "unity",
+            ctaMode: "unity",
+            fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
+        }
+        : {
+            source: "moloco",
+            ctaMode: "fb",
+            fallbackUrl: ""
+        };
+
+    return source.replace(
+        /delivery:\s*{[\s\S]*?ctaMode:\s*["'][^"']+["']\s*}/,
+        `delivery: {\n        source: "${deliveryMode.source}",\n        ctaMode: "${deliveryMode.ctaMode}"\n    }`
+    ).replace(
+        /unity:\s*{[\s\S]*?fallbackUrl:\s*["'][^"']*["']\s*}/,
+        `unity: {\n        fallbackUrl: "${deliveryMode.fallbackUrl}"\n    }`
+    );
 }
 
 async function inlineAssetReferences(source) {
