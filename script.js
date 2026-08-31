@@ -5,7 +5,6 @@ const spinBtn = document.getElementById("spinBtn");
 const topWinPanel = document.getElementById("topWinPanel");
 const topWinPanelArt = document.getElementById("topWinPanelArt");
 const slotArea = document.getElementById("slotArea");
-const slotFrameImg = document.getElementById("slotFrameImg");
 const gameLogo = document.getElementById("gameLogo");
 const ctaPopup = document.getElementById("ctaPopup");
 const ctaTitle = document.getElementById("ctaTitle");
@@ -823,24 +822,6 @@ function spawnCoinParticlesFromWinCoins(outcome) {
     }
 }
 
-function getBillTargetPoint() {
-    const targetElement = topWinPanelText || topWinPanel;
-
-    if (!targetElement) {
-        return {
-            x: window.innerWidth / 2,
-            y: 90
-        };
-    }
-
-    const rect = targetElement.getBoundingClientRect();
-
-    return {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-    };
-}
-
 function createBillParticle(startX, startY, index = 0) {
     const effects = gameConfig.effects;
 
@@ -848,14 +829,15 @@ function createBillParticle(startX, startY, index = 0) {
         return;
     }
 
-    const target = getBillTargetPoint();
     const bill = document.createElement("div");
     const width = effects.billParticleWidth || 72;
     const duration = effects.billParticleDuration || 980;
-    const arcY = -getRandomNumber(70, 125);
-    const startRotation = 0;
-    const midRotation = 0;
-    const endRotation = 0;
+    const horizontalDrift = getRandomNumber(-110, 110);
+    const endX = startX + horizontalDrift;
+    const endY = window.innerHeight + width;
+    const startRotation = getRandomNumber(-8, 8);
+    const midRotation = startRotation + getRandomNumber(-16, 16);
+    const endRotation = midRotation + getRandomNumber(-24, 24);
 
     addClasses(bill, "bill-particle");
 
@@ -863,10 +845,10 @@ function createBillParticle(startX, startY, index = 0) {
     bill.style.setProperty("--bill-duration", `${duration}ms`);
     bill.style.setProperty("--bill-start-x", `${startX}px`);
     bill.style.setProperty("--bill-start-y", `${startY}px`);
-    bill.style.setProperty("--bill-mid-x", `${startX + (target.x - startX) * 0.35}px`);
-    bill.style.setProperty("--bill-mid-y", `${startY + (target.y - startY) * 0.35 + arcY}px`);
-    bill.style.setProperty("--bill-end-x", `${target.x}px`);
-    bill.style.setProperty("--bill-end-y", `${target.y}px`);
+    bill.style.setProperty("--bill-mid-x", `${startX + horizontalDrift * 0.35}px`);
+    bill.style.setProperty("--bill-mid-y", `${startY + (endY - startY) * 0.38}px`);
+    bill.style.setProperty("--bill-end-x", `${endX}px`);
+    bill.style.setProperty("--bill-end-y", `${endY}px`);
     bill.style.setProperty("--bill-pop-scale", effects.billParticlePopScale || 1.08);
     bill.style.setProperty("--bill-target-scale", effects.billParticleTargetScale || 0.24);
     bill.style.setProperty("--bill-rotation-start", `${startRotation}deg`);
@@ -1438,9 +1420,6 @@ function applyGameAssets() {
             "--slot-frame-image",
             `url("${gameConfig.assets.slotFrame}")`
         );
-        if (slotFrameImg) {
-            slotFrameImg.src = gameConfig.assets.slotFrame;
-        }
         addClasses(slotArea, "asset-slot-frame");
     }
 

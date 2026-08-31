@@ -1,4 +1,4 @@
-export const gameConfig = {
+﻿export const gameConfig = {
     // =========================
     // 1. BASIC GAME SETTINGS
     // =========================
@@ -78,7 +78,7 @@ export const gameConfig = {
         background: "assets/background.webp",
         logo: "assets/logo.webp",
         bill: "assets/bill.webp",
-        slotFrame: "assets/slot-frame.webp",
+        slotFrame: "",
 
         ui: {
             balancePanel: "assets/ui/balance-panel.webp",
@@ -181,7 +181,7 @@ export const gameConfig = {
         billParticleStagger: 95,
         billParticleWidth: 108,
         billParticlePopScale: 1.08,
-        billParticleTargetScale: 0.24,
+        billParticleTargetScale: 0.72,
         billRainCount: 15,
         billRainDuration: 3600,
         billRainWidthMin: 82,
@@ -401,6 +401,21 @@ export const gameConfig = {
                 "s4", "s3", "s1",
                 "coin", "coin", "coin",
                 "s7", "s2", "s1"
+            ]
+        },
+
+        {
+            type: "lose",
+            spinSfx: "spin3",
+            balance: 350,
+            bonusCash: 300,
+            bonusFreeSpins: 50,
+            balanceDelay: 0,
+            balanceCountDuration: 0,
+            reels: [
+                "s2", "s5", "s7",
+                "s4", "s1", "s6",
+                "s3", "s7", "s2"
             ]
         },
 
