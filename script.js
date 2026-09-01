@@ -321,8 +321,20 @@ function startSpin() {
 }
 function handleCtaClick() {
     const delivery = gameConfig.delivery || {};
+    const platform = gameConfig.platform || delivery;
+    const source = platform.source || delivery.source || "";
     const ctaMode = delivery.ctaMode || "unity";
     const fallbackUrl = gameConfig.unity?.fallbackUrl || "";
+
+    if (source === "snapchat" || ctaMode === "snapchat") {
+        if (typeof window.snapchatCta === "function") {
+            window.snapchatCta();
+            return;
+        }
+
+        console.log("Snapchat CTA clicked");
+        return;
+    }
 
     if (ctaMode === "unity" || ctaMode === "mraid") {
         if (window.mraid && typeof window.mraid.open === "function") {

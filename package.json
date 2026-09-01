@@ -8,6 +8,7 @@
         "build": "node build.mjs",
         "single": "node single.mjs",
         "unity": "node unity.mjs",
+        "snapchat": "node snapchat.mjs",
         "handoff": "node handoff-deploy.mjs",
         "deploy": "deploy.cmd",
         "deploy:ssh": "deploy.cmd",

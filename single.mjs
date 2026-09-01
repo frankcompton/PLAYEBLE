@@ -51,6 +51,10 @@ export async function buildSingle(options = {}) {
             source = applyDeliveryTarget(source, deliveryTarget);
         }
 
+        if (module.file === "script.js" && deliveryTarget === "snapchat") {
+            source = applySnapchatScriptTarget(source);
+        }
+
         source = await inlineAssetReferences(source);
         appScripts.push(`<script type="module">\n${source}\n</script>`);
     }
@@ -83,7 +87,9 @@ export async function buildSingle(options = {}) {
         htmlOutput = minifyHtmlShell(htmlOutput);
     }
 
-    await writeFile(path.join(distDir, outputFileName), htmlOutput, "utf8");
+    const outputPath = path.join(distDir, outputFileName);
+    await mkdir(path.dirname(outputPath), { recursive: true });
+    await writeFile(outputPath, htmlOutput, "utf8");
 
     const sizeBytes = Buffer.byteLength(htmlOutput);
     const sizeMb = sizeBytes / 1024 / 1024;
@@ -137,24 +143,43 @@ function sanitizePixiSource(source) {
 }
 
 function applyDeliveryTarget(source, deliveryTarget) {
-    const deliveryMode = deliveryTarget === "unity"
-        ? {
-            source: "unity",
-            ctaMode: "unity",
-            fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
-        }
-        : {
+    const deliveryModes = {
+        moloco: {
             source: "moloco",
             ctaMode: "fb",
             fallbackUrl: ""
-        };
+        },
+        unity: {
+            source: "unity",
+            ctaMode: "unity",
+            fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
+        },
+        snapchat: {
+            source: "snapchat",
+            ctaMode: "snapchat",
+            fallbackUrl: ""
+        }
+    };
+    const deliveryMode = deliveryModes[deliveryTarget] || deliveryModes.moloco;
 
     return source.replace(
         /delivery:\s*{[\s\S]*?ctaMode:\s*["'][^"']+["']\s*}/,
         `delivery: {\n        source: "${deliveryMode.source}",\n        ctaMode: "${deliveryMode.ctaMode}"\n    }`
     ).replace(
+        /platform:\s*{[\s\S]*?ctaMode:\s*["'][^"']+["']\s*}/,
+        `platform: {\n        source: "${deliveryMode.source}",\n        ctaMode: "${deliveryMode.ctaMode}"\n    }`
+    ).replace(
         /unity:\s*{[\s\S]*?fallbackUrl:\s*["'][^"']*["']\s*}/,
         `unity: {\n        fallbackUrl: "${deliveryMode.fallbackUrl}"\n    }`
+    );
+}
+
+function applySnapchatScriptTarget(source) {
+    const snapchatCtaHandler = `function handleCtaClick() {\n    if (typeof window.snapchatCta === "function") {\n        window.snapchatCta();\n        return;\n    }\n\n    console.log("Snapchat CTA clicked");\n}\n\nwindow.handleCtaClick = handleCtaClick;`;
+
+    return source.replace(
+        /function handleCtaClick\(\) {[\s\S]*?}\s*\n\s*window\.handleCtaClick = handleCtaClick;/,
+        snapchatCtaHandler
     );
 }
 

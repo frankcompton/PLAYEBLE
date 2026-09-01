@@ -24,6 +24,11 @@
         ctaMode: "fb"
     },
 
+    platform: {
+        source: "moloco",
+        ctaMode: "fb"
+    },
+
     unity: {
         fallbackUrl: "https://play.google.com/store/apps/details?id=com.wanted5game"
     },
